@@ -1,0 +1,32 @@
+
+## bro.org package location
+bro_prefix: /opt/bro
+#bro_prefix: /usr/local
+bro_extractedfiles: "{{ bro_prefix }}/logs/extracted"
+
+bro_mode: alone
+#bro_mode: manager
+#bro_mode: node
+#bro_manager: 10.0.0.10
+#bro_nodes:
+#   - 10.0.0.11
+#   - 10.0.0.12
+#bro_nodes_if: eth0
+
+## Only available for Ubuntu 12.04 (EOL Apr 2017), has pfring
+use_securityonion_deb: false
+## pfring/high network performance = build source
+bro_w_pfring: false
+## for source install
+force_source_build: false
+bro_v: 2.4
+bro_archive_sha256: 740c0d0b0bec279c2acef5e1b6b4d0016c57cd02a729f5e2924ae4a922e208b2
+bro_archive_md5: b0768ba77e6347d77a20e595f7eee120
+
+
+## mysql setup for passivedns
+mysql_user: root
+mysql_root_password: mysql_root_pass_to_change_or_get_lost
+mysql_old_root_password:
+mysql_pdns_user: pdns
+mysql_pdns_pass: pdns_pass_to_change_or_get_lost

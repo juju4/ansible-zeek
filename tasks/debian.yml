@@ -1,0 +1,40 @@
+---
+- name: Ubuntu | Add bro repository
+  apt_repository: repo='deb http://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/ /' state=present
+  when: ansible_distribution == 'Ubuntu' and not use_securityonion_deb
+- apt_key: url=http://download.opensuse.org/repositories/network:bro/xUbuntu_{{ ansible_distribution_version }}/Release.key state=present
+  when: ansible_distribution == 'Ubuntu' and not use_securityonion_deb
+- name: Debian | Add bro repository
+  apt_repository: repo='deb http://download.opensuse.org/repositories/network:/bro/Debian_{{ ansible_distribution_version }}/ /' state=present
+  when: ansible_distribution == 'Debian' and not use_securityonion_deb
+- apt_key: url=http://download.opensuse.org/repositories/network:bro/Debian_{{ ansible_distribution_version }}/Release.key state=present
+  when: ansible_distribution == 'Debian' and not use_securityonion_deb
+
+## WARNING: The following packages cannot be authenticated! = force
+- name: Debian/Ubuntu | Install Bro and dependencies
+  apt: name={{item}} state=present update_cache=yes cache_valid_time=3600 force=yes
+  with_items:
+    - bro
+    - mysql-server
+    - libapache2-mod-auth-mysql
+    - php5-mysql
+    - python-pip
+    - python-sqlalchemy
+    - python-mysqldb
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  when: not use_securityonion_deb
+
+## https://github.com/Security-Onion-Solutions/security-onion/wiki/InstallingOnUbuntu   Only Ubuntu 12.04
+- name: Ubuntu | using securityonion repository
+  apt_repository: repo='ppa:securityonion/stable'
+  when: use_securityonion_deb and ansible_distribution_release == "precise"
+- name: Ubuntu | Install Bro from securityonion
+  apt: name={{item}} state=present update_cache=yes cache_valid_time=3600
+  with_items:
+    - securityonion-bro
+    - securityonion-bro-scripts
+    - securityonion-pfring-devel
+    - securityonion-pfring-ld
+    - securityonion-pfring-module
+  when: use_securityonion_deb and ansible_distribution_release == "precise"
+

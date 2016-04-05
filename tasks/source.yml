@@ -1,0 +1,62 @@
+---
+- name: Debian | Install Bro dependencies
+  apt: name={{item}} state=present update_cache=yes
+  with_items:
+    - cmake
+    - make
+    - gcc
+    - g++
+    - flex
+    - bison
+    - libpcap-dev
+    - libgeoip-dev
+    - libssl-dev
+    - python-dev
+    - zlib1g-dev
+    - libmagic-dev
+    - swig2.0
+    - git
+    - curl
+    - libgoogle-perftools-dev
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+- name: Redhat | Install Bro dependencies
+  yum: name={{item}} state=present update_cache=yes
+  with_items:
+    - cmake
+    - make
+    - gcc
+    - gcc-c++
+    - flex
+    - bison
+    - libpcap-devel
+    - openssl-devel
+    - python-devel
+    - swig
+    - zlib-devel
+    - file-devel
+  when: ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- stat: path=/root/bro-{{ bro_v }}.tar.gz
+  register: broarchive
+- name: Download BRO archive
+## github archive doesn't contain submodules/not recursive
+  #get_url: url=https://github.com/bro/bro/archive/v{{ bro_v }}.tar.gz
+  get_url: url=https://www.bro.org/downloads/release/bro-{{ bro_v }}.tar.gz
+    dest=/root/bro-{{ bro_v }}.tar.gz
+    mode=0400
+    sha256sum={{ bro_archive_sha256 }}
+  when: not broarchive.stat.exists
+#  when: not broarchive.stat.exists or not broarchive.stat.md5 == {{ bro_archive_md5 }}
+#  when: broarchive.stat.md5 ne {{ bro_archive_md5 }}
+- stat: path={{ bro_prefix }}/bin/bro
+  register: brobin
+- name: compile and install bro
+  command: "{{ item.command }} chdir={{ item.chdir }}"
+  with_items:
+## https://github.com/ansible/ansible/issues/8260
+    - { command: 'tar xzf /root/bro-{{ bro_v }}.tar.gz', chdir: '/root' }
+    - { command: './configure --prefix={{ bro_prefix }}', chdir: '/root/bro-{{ bro_v }}' }
+    - { command: 'make', chdir: '/root/bro-{{ bro_v }}' }
+    - { command: 'make install', chdir: '/root/bro-{{ bro_v }}' }
+  when: not brobin.stat.exists
+

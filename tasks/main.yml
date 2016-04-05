@@ -1,0 +1,157 @@
+---
+- name: Debian | Install Bro dependencies
+  apt: name={{item}} state=present update_cache=yes
+  with_items:
+    - git
+    - gdb
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+
+- name: Debian-based | install bro
+  include: debian.yml
+  when: not force_source_build and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+
+- name: Redhat-based | install bro
+  include: redhat.yml
+  when: not force_source_build and (ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+
+- name: install bro from source
+  include: source.yml
+  when: force_source_build
+
+
+## Extra configuration
+- name: Add BROPATH to /etc/profile
+  lineinfile: 'dest=/etc/profile regexp="{{ item.regexp }}" line="{{ item.line }}" state=present create=yes'
+  with_items:
+    - { regexp: '^export BROPATH=', line: 'export BROPATH={{ bro_prefix }}' }
+    - { regexp: '^export PATH=', line: 'export PATH=$PATH:$BROPATH/bin' }
+#- name: young-ssl bro script
+#  copy:
+#    src=young-ssl.bro dest={{ bro_prefix }}/share/bro/site/young-ssl.bro mode=644
+## https://github.com/JustinAzoff/bro_scripts
+- name: Extra bro script
+  copy:
+    src={{ item }} dest={{ bro_prefix }}/share/bro/site/{{ item }} mode=644
+  with_items:
+    - file_analysis_02.bro
+#- name: Add options to local.bro
+#  lineinfile: 'dest={{ bro_prefix }}/share/bro/site/local.bro regexp="{{ item.regexp }}" line="{{ item.line }}" state=present create=yes'
+#  with_items:
+#    - { regexp: '^@load protocols/ssl/extract-certs-pem', line: '@load protocols/ssl/extract-certs-pem' }
+#    - { regexp: '^redef SSL::extract_certs_pem = ALL_HOSTS;', line: 'redef SSL::extract_certs_pem = ALL_HOSTS;' }
+#    - { regexp: '^@load policy/protocols/ssl/expiring-certs.bro', line: '@load policy/protocols/ssl/expiring-certs.bro' }
+#    - { regexp: '^redef SSL::notify_certs_expiration = ALL_HOSTS;', line: 'redef SSL::notify_certs_expiration = ALL_HOSTS;' }
+#    - { regexp: '^@load policy/frameworks/files/detect-MHR.bro', line: '@load policy/frameworks/files/detect-MHR.bro' }
+##    - { regexp: '^', line: '' }
+### FIXME! errors: "error in /opt/bro/spool/installed-scripts-do-not-touch/site/young-ssl.bro, line 6: no such field in record (rec?$not_valid_before)"
+##    - { regexp: '^@load young-ssl', line: '@load young-ssl' }
+- name: add bro local configuration
+  template: src=local.bro dest="{{ bro_prefix }}/share/bro/site/local.bro" mode=0644 backup=yes
+  notify:
+    - restart bro
+
+## Note: file is created by broctl: install and {{ bro_prefix }}/spool/broctl-config.sh -> {{ bro_prefix }}/share/broctl/scripts/broctl-config.sh
+- stat: path={{ bro_prefix }}/spool/broctl-config.sh
+  register: st
+- name: Reset send-mail config (not used by default)
+  lineinfile: 'dest={{ bro_prefix }}/spool/broctl-config.sh regexp="{{ item.regexp }}" line="{{ item.line }}" state=present'
+  with_items:
+## FIXME! not working ??? changed all time.
+    - { regexp: '^sendmail=', line: 'sendmail=\"\"' }
+  when: st.stat.exists
+  notify:
+    - restart bro
+
+- cron: name="bro maintainance" minute="0-59/5"
+        user="root" job="{{ bro_prefix }}/bin/broctl cron"
+        cron_file=ansible_bro
+
+- name: Configure cluster mode
+  template: src=node.cfg dest={{ bro_prefix }}/etc/node.cfg mode=0664 owner=root group=bro
+  notify:
+    - restart bro
+
+## http://nullsecure.org/building-your-own-passivedns-feed/
+## OR ? http://stackoverflow.com/questions/16444306/ansible-idempotent-mysql-installation-playbook
+## is mysql_install_db necessary? probably not
+#- name: setup database
+#  command: "{{ item }}"
+#  with_items:
+#    - mysql_install_db
+#    - mysql_secure_installation    ## interactive
+
+- name: Set root user password
+  mysql_user: name=root
+              host="{{ item }}"
+              password="{{ mysql_root_password }}"
+              check_implicit_admin=yes
+              login_user="{{ mysql_user }}"
+              login_password="{{ mysql_old_root_password }}"
+              state=present
+  with_items:
+        - "{{ ansible_hostname }}"
+        - 127.0.0.1
+        - ::1
+        - localhost
+  ignore_errors: true
+- mysql_db: name=pdns state=present login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
+- mysql_user: name={{ mysql_pdns_user }} password={{ mysql_pdns_pass }} priv=pdns.*:ALL state=present login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
+- name: delete anonymous MySQL server user for localhost
+  action: mysql_user user="" state="absent" login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
+- name: remove the MySQL test database
+  action: mysql_db db=test state=absent login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
+- name: Install Pdns requirements
+  pip: name=bottle state=present
+
+- name: git clone bro-pdns
+  git:
+    repo=https://github.com/JustinAzoff/bro-pdns.git
+    dest={{ bro_prefix }}/share/bro/site/bro-pdns
+#- name: Add pdns to local.bro
+#  lineinfile: 'dest={{ bro_prefix }}/share/bro/site/local.bro regexp="{{ item.regexp }}" line="{{ item.line }}" state=present create=yes'
+#  with_items:
+#    - { regexp: '^@load {{ bro_prefix }}/share/bro/site/bro-pdns', line: '@load {{ bro_prefix }}/share/bro/site/bro-pdns' }
+#    - { regexp: '^redef PDNS::uri = \"mysql://{{ mysql_pdns_user }}::{{ mysql_pdns_pass }}@localhost/pdns\";', line: 'redef PDNS::uri = \"mysql://{{ mysql_pdns_user }}::{{ mysql_pdns_pass }}@localhost/pdns\";' }
+### Alternative: use sqlite
+##    - { regexp: '^redef PDNS::uri = "sqlite:////tmp/dns.db";', line: 'redef PDNS::uri = "sqlite:////tmp/dns.db";' }
+#  notify:
+#    - restart bro
+
+- name: create directory for extracted files
+  file: dest="{{ item }}" state=directory mode=0755
+  with_items:
+    - "{{ bro_extractedfiles }}/http"
+    - "{{ bro_extractedfiles }}/ftp"
+
+- name: git clone seth hall APT1
+  git:
+    repo=https://github.com/sethhall/bro-apt1
+    dest={{ bro_prefix }}/share/bro/site/apt1
+
+- name: Ending bro configuration
+  command: "{{ item }}"
+  with_items:
+    - /opt/bro/bin/broctl install
+    - /opt/bro/bin/broctl check
+  notify:
+    - restart bro
+
+#- name: start BRO_PDNS API service
+#  command: "BRO_PDNS_DB=mysql://{{ mysql_pdns_user }}::{{ mysql_pdns_pass }}@localhost/pdns {{ bro_prefix }}/share/bro/site/bro-pdns/bro_pdns.py serve"
+
+# Test
+# curl http://localhost:8081/dns/www.youtube.com
+
+## Anything to recover?
+##  https://github.com/Security-Onion-Solutions/securityonion-bro-scripts
+## https://github.com/Crowdstrike/cs-bro/
+## https://github.com/LiamRandall/bro-scripts
+## https://github.com/criticalstack/bro-scripts
+## https://github.com/sethhall/bro-scripts
+## https://github.com/sethhall/bro-apt1
+## https://github.com/securitykitten/bro_scripts
+## https://github.com/fox-it/bro-scripts
+## https://github.com/TravisFSmith/MyBroElk
+## https://github.com/jonschipp/bro-scripts
+## https://gist.github.com/mavam/5028034

@@ -1,0 +1,32 @@
+---
+## FIXME! setup var is set during setup phase. means we always fail on first run if not already install...
+- name: Redhat | Install lsb-core
+  yum: name=redhat-lsb state=present
+
+## force to gather facts again because of redhat-lsb
+- action: setup
+- debug: var=ansible_lsb
+- name: Install Bro yum repository
+  get_url: url="http://download.opensuse.org/repositories/network:bro/CentOS_{{ ansible_lsb.major_release|int }}/network:bro.repo"
+        dest=/etc/yum.repos.d/bro.repo
+        owner=root group=root mode=0644
+  when: ansible_distribution == 'CentOS' or ansible_os_family == "RedHat"
+- name: Install Bro yum repository
+  get_url: url="http://download.opensuse.org/repositories/network:bro/Fedora_{{ ansible_lsb.major_release|int }}/network:bro.repo"
+        dest=/etc/yum.repos.d/bro.repo
+        owner=root group=root mode=0644
+  when: ansible_os_family == "Fedora"
+
+- name: Redhat | Install Bro and dependencies
+  yum: name={{item}} state=present update_cache=yes
+  with_items:
+    - bro
+    - GeoIP-devel
+    - mariadb
+    - mariadb-server
+    - MySQL-python
+    - python-pip
+
+- name: Redhat | Ensure Mysql/Mariadb is running and enabled on boot.
+  service: name=mariadb state=started enabled=yes
+
