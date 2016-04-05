@@ -81,7 +81,13 @@
 #    - mysql_install_db
 #    - mysql_secure_installation    ## interactive
 
-- name: Set root user password
+- stat: path=/root/.my.cnf
+  register: mycnf
+- debug: var=mycnf
+- stat: path=/var/run/mysqld/mysqld.sock
+  register: mysock
+- debug: var=mysock
+- name: Set mysql root user password
   mysql_user: name=root
               host="{{ item }}"
               password="{{ mysql_root_password }}"
