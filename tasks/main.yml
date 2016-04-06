@@ -81,6 +81,8 @@
 #    - mysql_install_db
 #    - mysql_secure_installation    ## interactive
 
+- name: check that mysql is running
+  service: "name={{ mysql_svc }} state=started"
 - stat: path=/root/.my.cnf
   register: mycnf
 - debug: var=mycnf

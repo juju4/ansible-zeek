@@ -38,3 +38,6 @@
     - securityonion-pfring-module
   when: use_securityonion_deb and ansible_distribution_release == "precise"
 
+- set_fact:
+    mysql_svc: mysql-server
+

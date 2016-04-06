@@ -27,6 +27,9 @@
     - MySQL-python
     - python-pip
 
+- set_fact:
+    mysql_svc: mariadb
+
 - name: Redhat | Ensure Mysql/Mariadb is running and enabled on boot.
-  service: name=mariadb state=started enabled=yes
+  service: "name={{ mysql_svc }} state=started enabled=yes"
 
