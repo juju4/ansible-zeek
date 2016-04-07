@@ -89,6 +89,10 @@
 - stat: path=/var/run/mysqld/mysqld.sock
   register: mysock
 - debug: var=mysock
+- shell: "grep -rin sock /etc/mysql/*"
+  register: myconf
+- debug: var=myconf.stdout_lines
+
 - name: Set mysql root user password
   mysql_user: name=root
               host="{{ item }}"
