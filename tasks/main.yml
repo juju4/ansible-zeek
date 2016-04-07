@@ -57,7 +57,7 @@
 - name: Reset send-mail config (not used by default)
   lineinfile: 'dest={{ bro_prefix }}/spool/broctl-config.sh regexp="{{ item.regexp }}" line="{{ item.line }}" state=present'
   with_items:
-## FIXME! not working ??? changed all time.
+## FIXME! not working/not idempotent ??? changed all time.
     - { regexp: '^sendmail=', line: 'sendmail=\"\"' }
   when: st.stat.exists
   notify:
@@ -91,6 +91,7 @@
 - debug: var=mysock
 - shell: "grep -rin sock /etc/mysql/*"
   register: myconf
+  changed_when: false
 - debug: var=myconf.stdout_lines
 
 - name: Set mysql root user password

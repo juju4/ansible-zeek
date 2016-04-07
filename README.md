@@ -93,7 +93,8 @@ $ vagrant ssh
 
 ## Troubleshooting & Known issues
 
-...
+* role is not idempotent, mostly broctl
+* doing travis test with docker to do multiple distribution brings issues with mysql so for now, sticking to ubuntu trusty test only.
 
 ## License
 
