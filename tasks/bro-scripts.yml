@@ -1,0 +1,56 @@
+---
+
+- name: git clone seth hall APT1
+  git:
+    repo=https://github.com/sethhall/bro-apt1
+    dest={{ bro_prefix }}/share/bro/site/apt1
+- name: git clone Crowdstrike bro scripts
+  git:
+    repo=https://github.com/CrowdStrike/cs-bro.git
+    dest={{ bro_prefix }}/share/bro/site/cs-bro
+- name: git clone jonschipp bro scripts
+  git:
+    repo=https://github.com/jonschipp/bro-scripts.git
+    dest={{ bro_prefix }}/share/bro/site/jonschipp-bro
+- name: git clone securitykitten bro scripts
+  git:
+    repo=https://github.com/securitykitten/bro_scripts.git
+    dest={{ bro_prefix }}/share/bro/site/securitykitten-bro
+- name: git clone fox-it bro scripts
+  git:
+    repo=https://github.com/fox-it/bro-scripts.git
+    dest={{ bro_prefix }}/share/bro/site/foxit-bro
+- name: git clone criticalstack bro scripts
+  git:
+    repo=https://github.com/criticalstack/bro-scripts.git
+    dest={{ bro_prefix }}/share/bro/site/foxit-bro
+
+
+- name: Add scripts to local.bro
+  lineinfile: "dest={{ bro_prefix }}/share/bro/site/local.bro regexp=\"{{ item.regexp }}\" line=\"{{ item.line }}\" state=present create=yes"
+  with_items:
+    - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/dce-rpc", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/dce-rpc" }
+    - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/extensions", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/extensions" }
+    - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/msb", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/msb" }
+    - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/rfd", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/rfd" }
+    - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/shellshock/detect-shellshock.bro", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/shellshock/detect-shellshock.bro" }
+#    - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/sinkholes", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/sinkholes" }
+    - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/ssdp", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/ssdp" }
+    - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/tor", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/tor" }
+    - { regexp: "^@load {{ bro-prefix }}/share/bro/site/cs-bro/bro-scripts/tracked-providers", line: "@load {{ bro-prefix }}/share/bro/site/cs-bro/bro-scripts/tracked-providers" }
+    - { regexp: "^@load {{ bro_prefix }}/share/bro/site/jonschipp-bro/ipmi.bro", line: "@load {{ bro_prefix }}/share/bro/site/jonschipp-bro/ipmi.bro" }
+    - { regexp: "^@load {{ bro_prefix }}/share/bro/site/securitykitten-bro/bro_beacons.bro", line: "@load {{ bro_prefix }}/share/bro/site/securitykitten-bro/bro_beacons.bro" }
+    - { regexp: "^@load {{ bro_prefix }}/share/bro/site/securitykitten-bro/bro_typosquatting.bro", line: "@load {{ bro_prefix }}/share/bro/site/securitykitten-bro/bro_typosquatting.bro" }
+    - { regexp: "^@load {{ bro_prefix }}/share/bro/site/securitykitten-bro/bro_typosquatting_email.bro", line: "@load {{ bro_prefix }}/share/bro/site/securitykitten-bro/bro_typosquatting_email.bro" }
+  notify:
+    - restart bro
+
+## Anything to recover?
+##  https://github.com/Security-Onion-Solutions/securityonion-bro-scripts
+## https://github.com/LiamRandall/bro-scripts
+## https://github.com/sethhall/bro-scripts
+## https://github.com/TravisFSmith/MyBroElk
+## https://gist.github.com/mavam/5028034
+
+## https://github.com/thnyheim/misp2bro; https://github.com/MISP/MISP/issues/424
+

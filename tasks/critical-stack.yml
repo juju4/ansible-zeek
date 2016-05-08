@@ -1,0 +1,45 @@
+---
+## https://intel.criticalstack.com/
+
+- name: package - debian - i386
+  set_fact:
+    bro_cs_pkg: https://intel.criticalstack.com/client/critical-stack-intel-i386.deb
+  when: ansible_architecture == 'i386' and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+- name: package - debian - amd64
+  set_fact:
+    bro_cs_pkg: https://intel.criticalstack.com/client/critical-stack-intel-amd64.deb
+  when: ansible_architecture == 'x86_64' and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+
+- name: package - redhat - i386
+  set_fact:
+    bro_cs_pkg: https://intel.criticalstack.com/client/critical-stack-intel-i386.rpm
+  when: ansible_architecture == 'i386' and (ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+- name: package - redhat - amd64
+  set_fact:
+    bro_cs_pkg: https://intel.criticalstack.com/client/critical-stack-intel-amd64.rpm
+  when: ansible_architecture == 'x86_64' and (ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+
+- name: download critical stack package
+  get_url: url={{ bro_cs_pkg }} dest=/tmp/{{ bro_cs_pkg | basename }} mode=0644
+- set_fact:
+    bro_cs_pkg: "/tmp/{{ bro_cs_pkg | basename }}"
+
+## FIXME! No package matching 'https://intel.criticalstack.com/client/critical-stack-intel-amd64.deb' is available = same if get_url before???
+- name: apt | install critical stack
+#  apt: name={{ bro_cs_pkg }} state=present
+  command: "dpkg -i {{ bro_cs_pkg }}"
+  become: yes
+  when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+- name: yum | install critical stack
+  yum: name={{ bro_cs_pkg }} state=present
+  become: yes
+  when: (ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+
+- name: register critical stack API key
+  command: "critical-stack-intel api {{ bro_cs_apikey }}"
+  become: yes
+  when: bro_cs_apikey is defined and bro_cs_apikey != ''
+- name: set a proxy for critical stack
+  command: "critical-stack-intel config --set proxy.url=\"{{ bro_cs_proxy }}\""
+  become: yes
+  when: bro_cs_proxy is defined and bro_cs_proxy != ''

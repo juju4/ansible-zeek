@@ -1,4 +1,7 @@
 ---
+
+- include: mysql-env.yml
+
 - name: Debian | Install Bro dependencies
   apt: name={{item}} state=present update_cache=yes
   with_items:
@@ -89,9 +92,10 @@
 - stat: path=/var/run/mysqld/mysqld.sock
   register: mysock
 - debug: var=mysock
-- shell: "grep -rin sock /etc/mysql/*"
+- shell: "grep -rin sock {{ mysql_confdir }}/* /etc/my.cnf"
   register: myconf
   changed_when: false
+  ignore_errors: true
 - debug: var=myconf.stdout_lines
 
 - name: Set mysql root user password
@@ -137,10 +141,10 @@
     - "{{ bro_extractedfiles }}/http"
     - "{{ bro_extractedfiles }}/ftp"
 
-- name: git clone seth hall APT1
-  git:
-    repo=https://github.com/sethhall/bro-apt1
-    dest={{ bro_prefix }}/share/bro/site/apt1
+- include: bro-scripts.yml
+
+- include: critical-stack.yml
+  when: bro_cs_enable is defined and bro_cs_enable
 
 - name: Ending bro configuration
   command: "{{ item }}"
@@ -156,15 +160,3 @@
 # Test
 # curl http://localhost:8081/dns/www.youtube.com
 
-## Anything to recover?
-##  https://github.com/Security-Onion-Solutions/securityonion-bro-scripts
-## https://github.com/Crowdstrike/cs-bro/
-## https://github.com/LiamRandall/bro-scripts
-## https://github.com/criticalstack/bro-scripts
-## https://github.com/sethhall/bro-scripts
-## https://github.com/sethhall/bro-apt1
-## https://github.com/securitykitten/bro_scripts
-## https://github.com/fox-it/bro-scripts
-## https://github.com/TravisFSmith/MyBroElk
-## https://github.com/jonschipp/bro-scripts
-## https://gist.github.com/mavam/5028034

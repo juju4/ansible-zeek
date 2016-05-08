@@ -95,6 +95,7 @@ $ vagrant ssh
 
 * role is not idempotent, mostly broctl
 * doing travis test with docker to do multiple distribution brings issues with mysql so for now, sticking to ubuntu trusty test only.
+* "Error bro: capstats failed (Host 127.0.0.1 is not alive)" (/opt/bro/logs/stats/stats.log)
 
 ## License
 

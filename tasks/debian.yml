@@ -21,8 +21,18 @@
     - python-pip
     - python-sqlalchemy
     - python-mysqldb
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-  when: not use_securityonion_deb
+  when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+
+- name: download startup script for bro
+  get_url:
+    url: https://raw.githubusercontent.com/lruppert/bro-scripts/master/shell/bro-ids
+    dest: /etc/init.d/bro-ids
+    mode: '0755'
+    sha256sum: 'cafc0b8eebae434c4600bc71a4a3448e0e3a59ff306f5ef8408a838f58e33860'
+  when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+- name: update bro path in init.d/bro-ids
+  replace: dest=/etc/init.d/bro-ids regexp='^DAEMON=.*' replace="DAEMON={{ bro_prefix }}/bin/broctl" backup=yes
+  when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
 
 ## https://github.com/Security-Onion-Solutions/security-onion/wiki/InstallingOnUbuntu   Only Ubuntu 12.04
 - name: Ubuntu | using securityonion repository
@@ -38,6 +48,22 @@
     - securityonion-pfring-module
   when: use_securityonion_deb and ansible_distribution_release == "precise"
 
-- set_fact:
-    mysql_svc: mysql
+## from https://github.com/geerlingguy/drupal-vm/pull/456/files#diff-b1546b21a9366075f1e1245d7551eee6R11
+- name: Detect if AppArmor is installed.
+  stat:
+    path: /etc/init.d/apparmor
+  register: apparmor_installed
+  when: travisci is defined and travisci
+
+- name: Ensure MySQL AppArmor profile is disabled (for slow query log).
+  file:
+    path: /etc/apparmor.d/disable/usr.sbin.mysqld
+    src: /etc/apparmor.d/usr.sbin.mysqld
+    state: link
+  register: mysql_apparmor
+  when: travisci is defined and travisci and apparmor_installed.stat.exists
+
+- name: Restart the AppArmor if necessary.
+  service: name=apparmor state=restarted
+  when: travisci is defined and travisci and mysql_apparmor.changed
 

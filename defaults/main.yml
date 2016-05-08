@@ -23,6 +23,10 @@ bro_v: 2.4
 bro_archive_sha256: 740c0d0b0bec279c2acef5e1b6b4d0016c57cd02a729f5e2924ae4a922e208b2
 bro_archive_md5: b0768ba77e6347d77a20e595f7eee120
 
+## install critical stack (need to register to get API key)
+bro_cs_enable: true
+bro_cs_apikey:
+#bro_cs_proxy: 'http://username:password@hostname:port'
 
 ## mysql setup for passivedns
 mysql_user: root
@@ -30,3 +34,5 @@ mysql_root_password: mysql_root_pass_to_change_or_get_lost
 mysql_old_root_password:
 mysql_pdns_user: pdns
 mysql_pdns_pass: pdns_pass_to_change_or_get_lost
+
+
