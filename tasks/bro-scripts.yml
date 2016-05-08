@@ -32,7 +32,7 @@
     - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/dce-rpc", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/dce-rpc" }
     - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/extensions", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/extensions" }
     - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/msb", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/msb" }
-    - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/rfd", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/rfd" }
+    - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/rfd/detect-rfd.bro", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/rfd/detect-rfd.bro" }
     - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/shellshock/detect-shellshock.bro", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/shellshock/detect-shellshock.bro" }
 #    - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/sinkholes", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/sinkholes" }
     - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/ssdp", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/ssdp" }
