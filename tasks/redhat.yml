@@ -17,6 +17,7 @@
         owner=root group=root mode=0644
   when: ansible_os_family == "Fedora"
 
+## FIXME! travis: skipping + "[Errno 30] Read-only file system"
 - name: Redhat | Install Bro and dependencies
   yum: name={{item}} state=present update_cache=yes
   with_items:

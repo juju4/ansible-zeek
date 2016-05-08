@@ -37,7 +37,7 @@
 #    - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/sinkholes", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/sinkholes" }
     - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/ssdp", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/ssdp" }
     - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/tor", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/tor" }
-    - { regexp: "^@load {{ bro-prefix }}/share/bro/site/cs-bro/bro-scripts/tracked-providers", line: "@load {{ bro-prefix }}/share/bro/site/cs-bro/bro-scripts/tracked-providers" }
+    - { regexp: "^@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/tracked-providers", line: "@load {{ bro_prefix }}/share/bro/site/cs-bro/bro-scripts/tracked-providers" }
     - { regexp: "^@load {{ bro_prefix }}/share/bro/site/jonschipp-bro/ipmi.bro", line: "@load {{ bro_prefix }}/share/bro/site/jonschipp-bro/ipmi.bro" }
     - { regexp: "^@load {{ bro_prefix }}/share/bro/site/securitykitten-bro/bro_beacons.bro", line: "@load {{ bro_prefix }}/share/bro/site/securitykitten-bro/bro_beacons.bro" }
     - { regexp: "^@load {{ bro_prefix }}/share/bro/site/securitykitten-bro/bro_typosquatting.bro", line: "@load {{ bro_prefix }}/share/bro/site/securitykitten-bro/bro_typosquatting.bro" }
