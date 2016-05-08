@@ -39,6 +39,7 @@ script:
   - 'sudo docker run --detach --volume="${PWD}":/etc/ansible/roles/bro-ids:ro ${run_opts} ${distribution}-${version}:ansible "${init}" > "${container_id}"'
 
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible --version'
+  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible -i inventory --connection=local -m setup'
 
   # Ansible syntax check.
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/bro-ids/test/integration/default/default.yml --syntax-check'

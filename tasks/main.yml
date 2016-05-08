@@ -70,7 +70,7 @@
         user="root" job="{{ bro_prefix }}/bin/broctl cron"
         cron_file=ansible_bro
 
-- name: Configure cluster mode
+- name: Configure node.cfg
   template: src=node.cfg dest={{ bro_prefix }}/etc/node.cfg mode=0664 owner=root group=bro
   notify:
     - restart bro
