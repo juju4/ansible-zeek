@@ -93,8 +93,8 @@ $ vagrant ssh
 
 ## Troubleshooting & Known issues
 
+* At May 2016, kitchen tests are validated. Travis still have issues (Read-only filesystem. Huh?) and some ansible variable (ansible_default_ipv4) not set
 * role is not idempotent, mostly broctl
-* doing travis test with docker to do multiple distribution brings issues with mysql so for now, sticking to ubuntu trusty test only.
 * "Error bro: capstats failed (Host 127.0.0.1 is not alive)" (/opt/bro/logs/stats/stats.log)
 
 ## License
