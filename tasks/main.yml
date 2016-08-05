@@ -35,47 +35,36 @@
     - { regexp: '^export PATH=', line: 'export PATH=$PATH:$BROPATH/bin' }
 #- name: young-ssl bro script
 #  copy:
-#    src=young-ssl.bro dest={{ bro_prefix }}/share/bro/site/young-ssl.bro mode=644
+#    src=young-ssl.bro dest={{ broids_site }}/young-ssl.bro mode=644
 ## https://github.com/JustinAzoff/bro_scripts
 - name: Extra bro script
   copy:
-    src={{ item }} dest={{ bro_prefix }}/share/bro/site/{{ item }} mode=644
+    src={{ item }} dest={{ broids_site }}/{{ item }} mode=644
   with_items:
     - file_analysis_02.bro
-#- name: Add options to local.bro
-#  lineinfile: 'dest={{ bro_prefix }}/share/bro/site/local.bro regexp="{{ item.regexp }}" line="{{ item.line }}" state=present create=yes'
-#  with_items:
-#    - { regexp: '^@load protocols/ssl/extract-certs-pem', line: '@load protocols/ssl/extract-certs-pem' }
-#    - { regexp: '^redef SSL::extract_certs_pem = ALL_HOSTS;', line: 'redef SSL::extract_certs_pem = ALL_HOSTS;' }
-#    - { regexp: '^@load policy/protocols/ssl/expiring-certs.bro', line: '@load policy/protocols/ssl/expiring-certs.bro' }
-#    - { regexp: '^redef SSL::notify_certs_expiration = ALL_HOSTS;', line: 'redef SSL::notify_certs_expiration = ALL_HOSTS;' }
-#    - { regexp: '^@load policy/frameworks/files/detect-MHR.bro', line: '@load policy/frameworks/files/detect-MHR.bro' }
-##    - { regexp: '^', line: '' }
-### FIXME! errors: "error in /opt/bro/spool/installed-scripts-do-not-touch/site/young-ssl.bro, line 6: no such field in record (rec?$not_valid_before)"
-##    - { regexp: '^@load young-ssl', line: '@load young-ssl' }
 - name: add bro local configuration
-  template: src=local.bro dest="{{ bro_prefix }}/share/bro/site/local.bro" mode=0644 backup=yes
+  template: src=local.bro dest="{{ broids_site }}/local.bro" mode=0644 backup=yes
   notify:
     - restart bro
 
-## Note: file is created by broctl: install and {{ bro_prefix }}/spool/broctl-config.sh -> {{ bro_prefix }}/share/broctl/scripts/broctl-config.sh
-- stat: path={{ bro_prefix }}/spool/broctl-config.sh
+## Note: file is created by broctl: install and {{ broids_spool }}/broctl-config.sh -> {{ bro_prefix }}/share/broctl/scripts/broctl-config.sh
+- stat: path={{ broids_spool }}/broctl-config.sh
   register: st
 - name: Reset send-mail config (not used by default)
-  lineinfile: 'dest={{ bro_prefix }}/spool/broctl-config.sh regexp="{{ item.regexp }}" line="{{ item.line }}" state=present'
+  lineinfile: 'dest={{ broids_spool }}/broctl-config.sh regexp="{{ item.regexp }}" line="{{ item.line }}" state=present'
   with_items:
 ## FIXME! not working/not idempotent ??? changed all time.
     - { regexp: '^sendmail=', line: 'sendmail=\"\"' }
   when: st.stat.exists
-  notify:
-    - restart bro
+#  notify:
+#    - restart bro
 
 - cron: name="bro maintainance" minute="0-59/5"
         user="root" job="{{ bro_prefix }}/bin/broctl cron"
         cron_file=ansible_bro
 
 - name: Configure node.cfg
-  template: src=node.cfg dest={{ bro_prefix }}/etc/node.cfg mode=0664 owner=root group=bro
+  template: src=node.cfg dest={{ broids_etc }}/node.cfg mode=0664 owner=root group={{ broids_group }}
   notify:
     - restart bro
 
@@ -90,17 +79,18 @@
 
 - name: check that mysql is running
   service: "name={{ mysql_svc }} state=started"
-- stat: path=/root/.my.cnf
-  register: mycnf
-- debug: var=mycnf
-- stat: path=/var/run/mysqld/mysqld.sock
-  register: mysock
-- debug: var=mysock
-- shell: "grep -rin sock {{ mysql_confdir }}/* /etc/my.cnf"
-  register: myconf
-  changed_when: false
-  ignore_errors: true
-- debug: var=myconf.stdout_lines
+#- stat: path=/root/.my.cnf
+#  register: mycnf
+#- debug: var=mycnf
+#- stat: path=/var/run/mysqld/mysqld.sock
+#  register: mysock
+#- debug: var=mysock
+#- name: check mysql socket configuration
+#  shell: "grep -rin sock {{ mysql_confdir }}/* /etc/my.cnf"
+#  register: myconf
+#  changed_when: false
+#  ignore_errors: true
+#- debug: var=myconf.stdout_lines
 
 - name: Set mysql root user password
   mysql_user: name=root
@@ -128,16 +118,7 @@
 - name: git clone bro-pdns
   git:
     repo=https://github.com/JustinAzoff/bro-pdns.git
-    dest={{ bro_prefix }}/share/bro/site/bro-pdns
-#- name: Add pdns to local.bro
-#  lineinfile: 'dest={{ bro_prefix }}/share/bro/site/local.bro regexp="{{ item.regexp }}" line="{{ item.line }}" state=present create=yes'
-#  with_items:
-#    - { regexp: '^@load {{ bro_prefix }}/share/bro/site/bro-pdns', line: '@load {{ bro_prefix }}/share/bro/site/bro-pdns' }
-#    - { regexp: '^redef PDNS::uri = \"mysql://{{ mysql_pdns_user }}::{{ mysql_pdns_pass }}@localhost/pdns\";', line: 'redef PDNS::uri = \"mysql://{{ mysql_pdns_user }}::{{ mysql_pdns_pass }}@localhost/pdns\";' }
-### Alternative: use sqlite
-##    - { regexp: '^redef PDNS::uri = "sqlite:////tmp/dns.db";', line: 'redef PDNS::uri = "sqlite:////tmp/dns.db";' }
-#  notify:
-#    - restart bro
+    dest={{ broids_site }}/bro-pdns
 
 - name: create directory for extracted files
   file: dest="{{ item }}" state=directory mode=0755
@@ -148,19 +129,21 @@
 - include: bro-scripts.yml
 
 - include: critical-stack.yml
-  when: bro_cs_enable is defined and bro_cs_enable
+  when: bro_cs_enable is defined and bro_cs_enable and bro_cs_apikey is defined and bro_cs_apikey != ''
 
 - name: Ending bro configuration
   command: "{{ item }}"
   with_items:
-    - /opt/bro/bin/broctl install
-    - /opt/bro/bin/broctl check
+    - "{{ broids_broctl }} install"
+    - "{{ broids_broctl }} check"
   notify:
     - restart bro
 
 #- name: start BRO_PDNS API service
-#  command: "BRO_PDNS_DB=mysql://{{ mysql_pdns_user }}::{{ mysql_pdns_pass }}@localhost/pdns {{ bro_prefix }}/share/bro/site/bro-pdns/bro_pdns.py serve"
+#  command: "BRO_PDNS_DB=mysql://{{ mysql_pdns_user }}::{{ mysql_pdns_pass }}@localhost/pdns {{ broids_site }}/bro-pdns/bro_pdns.py serve"
 
 # Test
 # curl http://localhost:8081/dns/www.youtube.com
+
+- include: monit.yml
 

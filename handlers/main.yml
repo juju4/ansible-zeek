@@ -1,4 +1,8 @@
 ---
 
 - name: restart bro
-  command: /opt/bro/bin/broctl restart
+  command: "{{ broids_broctl }} restart"
+
+- name: restart monit
+  service: name=monit state=restarted
+

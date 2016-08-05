@@ -63,7 +63,6 @@ bro_w_pfring: false
 force_source_build: false
 bro_v: 2.4
 bro_archive_sha256: 740c0d0b0bec279c2acef5e1b6b4d0016c57cd02a729f5e2924ae4a922e208b2
-bro_archive_md5: b0768ba77e6347d77a20e595f7eee120
 
 
 ## mysql setup for passivedns
@@ -96,6 +95,7 @@ $ vagrant ssh
 * At May 2016, kitchen tests are validated. Travis still have issues (Read-only filesystem. Huh?) and some ansible variable (ansible_default_ipv4) not set
 * role is not idempotent, mostly broctl
 * "Error bro: capstats failed (Host 127.0.0.1 is not alive)" (/opt/bro/logs/stats/stats.log)
+* Monit: bro_rc and bro process falls in "Not monitored" state so no automatic restart
 
 ## License
 

@@ -1,13 +1,16 @@
 ---
-- name: Ubuntu | Add bro repository
-  apt_repository: repo='deb http://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/ /' state=present
-  when: ansible_distribution == 'Ubuntu' and not use_securityonion_deb
-- apt_key: url=http://download.opensuse.org/repositories/network:bro/xUbuntu_{{ ansible_distribution_version }}/Release.key state=present
-  when: ansible_distribution == 'Ubuntu' and not use_securityonion_deb
-- name: Debian | Add bro repository
-  apt_repository: repo='deb http://download.opensuse.org/repositories/network:/bro/Debian_{{ ansible_distribution_version }}/ /' state=present
-  when: ansible_distribution == 'Debian' and not use_securityonion_deb
-- apt_key: url=http://download.opensuse.org/repositories/network:bro/Debian_{{ ansible_distribution_version }}/Release.key state=present
+
+- block:
+    - name: Ubuntu | Add bro repository key
+      apt_key: url=http://download.opensuse.org/repositories/network:bro/xUbuntu_{{ ansible_distribution_version }}/Release.key state=present
+    - name: Ubuntu | Add bro repository
+      apt_repository: repo='deb http://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/ /' state=present
+  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_version.split('.')[0] < 16) and not use_securityonion_deb
+- block:
+    - name: Debian | Add bro repository key
+      apt_key: url=http://download.opensuse.org/repositories/network:bro/Debian_{{ ansible_distribution_version }}/Release.key state=present
+    - name: Debian | Add bro repository
+      apt_repository: repo='deb http://download.opensuse.org/repositories/network:/bro/Debian_{{ ansible_distribution_version }}/ /' state=present
   when: ansible_distribution == 'Debian' and not use_securityonion_deb
 
 ## WARNING: The following packages cannot be authenticated! = force
@@ -16,29 +19,31 @@
   with_items: "{{ broids_ubuntu_packages }}"
   when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
 
+- stat: path=/etc/init.d/bro-ids
+  register: initbro
 - name: download startup script for bro
   get_url:
     url: https://raw.githubusercontent.com/lruppert/bro-scripts/master/shell/bro-ids
     dest: /etc/init.d/bro-ids
     mode: '0755'
     sha256sum: 'cafc0b8eebae434c4600bc71a4a3448e0e3a59ff306f5ef8408a838f58e33860'
-  when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+  when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and not initbro.stat.exists
 - name: update bro path in init.d/bro-ids
-  replace: dest=/etc/init.d/bro-ids regexp='^DAEMON=.*' replace="DAEMON={{ bro_prefix }}/bin/broctl" backup=yes
+  replace: dest=/etc/init.d/bro-ids regexp='^DAEMON=.*' replace="DAEMON={{ broids_broctl }}" backup=yes
   when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
 
 ## https://github.com/Security-Onion-Solutions/security-onion/wiki/InstallingOnUbuntu   Only Ubuntu 12.04
-- name: Ubuntu | using securityonion repository
-  apt_repository: repo='ppa:securityonion/stable'
-  when: use_securityonion_deb and ansible_distribution_release == "precise"
-- name: Ubuntu | Install Bro from securityonion
-  apt: name={{item}} state=present update_cache=yes cache_valid_time=3600
-  with_items:
-    - securityonion-bro
-    - securityonion-bro-scripts
-    - securityonion-pfring-devel
-    - securityonion-pfring-ld
-    - securityonion-pfring-module
+- block:
+    - name: Ubuntu | using securityonion repository
+      apt_repository: repo='ppa:securityonion/stable'
+    - name: Ubuntu | Install Bro from securityonion
+      apt: name={{item}} state=present update_cache=yes cache_valid_time=3600
+      with_items:
+        - securityonion-bro
+        - securityonion-bro-scripts
+        - securityonion-pfring-devel
+        - securityonion-pfring-ld
+        - securityonion-pfring-module
   when: use_securityonion_deb and ansible_distribution_release == "precise"
 
 - name: ensure aide hids directory exists

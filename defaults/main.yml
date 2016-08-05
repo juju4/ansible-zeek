@@ -1,7 +1,11 @@
 
-## bro.org package location
-bro_prefix: /opt/bro
-#bro_prefix: /usr/local
+## bro.org package location, xenial use its own rep
+bro_prefix: '/opt/bro'
+broids_etc: '/opt/bro/etc'
+broids_site: '/opt/bro/share/bro/site'
+broids_group: 'bro'
+broids_broctl: '/opt/bro/bin/broctl'
+broids_spool: "{{ bro_prefix }}/spool"
 bro_extractedfiles: "{{ bro_prefix }}/logs/extracted"
 
 bro_mode: alone
@@ -22,9 +26,9 @@ force_source_build: false
 bro_v: 2.4.1
 bro_archive_sha256: d8b99673a5024630f6bae820c4f8c3ca9029f1167f9e5729c914c66e1fc7c8f6
 
-## install critical stack (need to register to get API key)
-bro_cs_enable: true
-bro_cs_apikey:
+## install critical stack (need to register to get API key, https://intel.criticalstack.com/)
+#bro_cs_enable: true
+#bro_cs_apikey:
 #bro_cs_proxy: 'http://username:password@hostname:port'
 
 ## mysql setup for passivedns

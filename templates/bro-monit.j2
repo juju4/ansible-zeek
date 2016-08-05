@@ -1,0 +1,18 @@
+# check process bro with pidfile /var/run/bro.pid
+ check process bro matching "\/bro"
+   group system
+   group bro
+   start program = "{{ broids_broctl }} start"
+   stop  program = "{{ broids_broctl }} stop"
+   if 5 restarts with 5 cycles then timeout
+   depend on bro_bin
+   depend on bro_rc
+
+ check file bro_bin with path {{ bro_prefix }}/bin/bro
+   group bro
+   include /etc/monit/templates/rootbin
+
+ check file bro_rc with path {{ broids_etc }}/node.cfg
+   group bro
+   include /etc/monit/templates/rootrc
+

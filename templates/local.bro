@@ -111,9 +111,23 @@ redef SSL::extract_certs_pem = ALL_HOSTS;
 @load policy/protocols/ssl/expiring-certs.bro
 redef SSL::notify_certs_expiration = ALL_HOSTS;
 @load policy/frameworks/files/detect-MHR.bro
-@load /opt/bro/share/bro/site/bro-pdns
+@load {{ broids_site }}/bro-pdns
 redef PDNS::uri = "mysql://{{ mysql_pdns_user }}::{{ mysql_pdns_pass }}@localhost/pdns";
 
 #### Intel ####
 @load apt1
+
+@load {{ broids_site }}/cs-bro/bro-scripts/dce-rpc
+@load {{ broids_site }}/cs-bro/bro-scripts/extensions
+@load {{ broids_site }}/cs-bro/bro-scripts/msb
+@load {{ broids_site }}/cs-bro/bro-scripts/rfd/detect-rfd.bro
+@load {{ broids_site }}/cs-bro/bro-scripts/shellshock/detect-shellshock.bro
+#@load {{ broids_site }}/cs-bro/bro-scripts/sinkholes
+@load {{ broids_site }}/cs-bro/bro-scripts/ssdp
+@load {{ broids_site }}/cs-bro/bro-scripts/tor
+@load {{ broids_site }}/cs-bro/bro-scripts/tracked-providers
+@load {{ broids_site }}/jonschipp-bro/ipmi.bro
+@load {{ broids_site }}/securitykitten-bro/bro_beacons.bro
+@load {{ broids_site }}/securitykitten-bro/bro_typosquatting.bro
+@load {{ broids_site }}/securitykitten-bro/bro_typosquatting_email.bro
 
