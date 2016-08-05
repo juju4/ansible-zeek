@@ -44,10 +44,8 @@
   get_url: url=https://www.bro.org/downloads/release/bro-{{ bro_v }}.tar.gz
     dest=/root/bro-{{ bro_v }}.tar.gz
     mode=0400
-    sha256sum={{ bro_archive_sha256 }}
+    checksum=sha256:{{ bro_archive_sha256 }}
   when: not broarchive.stat.exists
-#  when: not broarchive.stat.exists or not broarchive.stat.md5 == {{ bro_archive_md5 }}
-#  when: broarchive.stat.md5 ne {{ bro_archive_md5 }}
 - stat: path={{ bro_prefix }}/bin/bro
   register: brobin
 - name: compile and install bro

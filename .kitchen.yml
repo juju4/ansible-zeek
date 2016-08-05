@@ -1,6 +1,7 @@
 ---
 driver:
   name: vagrant
+  provider: <%= ENV['KITCHEN_PROVIDER'] || 'virtualbox' %>
 
 provisioner:
   name: ansible_playbook

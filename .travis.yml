@@ -13,6 +13,10 @@ env:
     init: /usr/lib/systemd/systemd
     run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - distribution: ubuntu
+    version: 16.04
+    init: /lib/systemd/systemd
+    run_opts: ""
+  - distribution: ubuntu
     version: 14.04
     init: /sbin/init
     run_opts: "--privileged"
@@ -41,6 +45,7 @@ script:
   - 'sudo docker run --detach --volume="${PWD}":/etc/ansible/roles/bro-ids:ro ${run_opts} ${distribution}-${version}:ansible "${init}" > "${container_id}"'
 
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible --version'
+## FIXME! where is ansible_default_ipv4 on centos?
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible --connection=local -m setup localhost'
 
   # Ansible syntax check.
@@ -56,6 +61,9 @@ script:
     | grep -q 'changed=0.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && cat /tmp/idempotency.log && exit 0)
+
+  # serverspec tests
+  - 'sudo docker exec --tty "$(cat ${container_id})" /etc/ansible/roles/bro-ids/test/integration/default/serverspec/run-local-tests.sh'
 
   # Clean up
   - 'sudo docker stop "$(cat ${container_id})"'
