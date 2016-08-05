@@ -22,6 +22,8 @@
   yum: name={{item}} state=present update_cache=yes
   with_items:
     - bro
+    - bro-core
+    - broctl
     - GeoIP-devel
     - mariadb
     - mariadb-server
