@@ -2,6 +2,10 @@
 
 - include: mysql-env.yml
 
+- name: Include version-specific variables for Ubuntu.
+  include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
+  when: ansible_distribution == 'Ubuntu'
+
 - name: Debian | Install Bro dependencies
   apt: name={{item}} state=present update_cache=yes
   with_items:

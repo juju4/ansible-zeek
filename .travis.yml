@@ -3,6 +3,7 @@
 sudo: required
 
 env:
+## FIXME! ansible initial playbook run stops silently?
   - distribution: centos
     version: 6
     init: /sbin/init

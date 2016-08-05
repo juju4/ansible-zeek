@@ -1,0 +1,10 @@
+---
+
+broids_ubuntu_packages:
+    - bro
+    - mysql-server
+    - php5-mysql
+    - python-pip
+    - python-sqlalchemy
+    - python-mysqldb
+

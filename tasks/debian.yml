@@ -13,14 +13,7 @@
 ## WARNING: The following packages cannot be authenticated! = force
 - name: Debian/Ubuntu | Install Bro and dependencies
   apt: name={{item}} state=present update_cache=yes cache_valid_time=3600 force=yes
-  with_items:
-    - bro
-    - mysql-server
-    - libapache2-mod-auth-mysql
-    - php5-mysql
-    - python-pip
-    - python-sqlalchemy
-    - python-mysqldb
+  with_items: "{{ broids_ubuntu_packages }}"
   when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
 
 - name: download startup script for bro
