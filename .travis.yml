@@ -27,6 +27,7 @@ before_install:
 ## use appropriate role path and not github name
   - ln -s ansible-bro-ids ../bro-ids && cd ../bro-ids
   - git clone https://github.com/juju4/ansible-maxmind ../maxmind
+  - git clone https://github.com/juju4/ansible-redhat-epel ../redhat-epel
 ## No Xenial, https://github.com/travis-ci/travis-ci/issues/5821
 #  - sudo apt install lxd
   - echo "deb http://archive.ubuntu.com/ubuntu trusty-backports main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/trusty-backports.list

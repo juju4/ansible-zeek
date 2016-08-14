@@ -29,6 +29,7 @@
     - mariadb-server
     - MySQL-python
     - python-pip
+    - git
 
 - name: Redhat | Ensure Mysql/Mariadb is running and enabled on boot.
   service: "name={{ mysql_svc }} state=started enabled=yes"

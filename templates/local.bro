@@ -131,7 +131,8 @@ redef PDNS::uri = "mysql://{{ mysql_pdns_user }}::{{ mysql_pdns_pass }}@localhos
 @load {{ broids_site }}/securitykitten-bro/bro_typosquatting.bro
 @load {{ broids_site }}/securitykitten-bro/bro_typosquatting_email.bro
 ## fast-flux, non-standard port dns
-@load {{ broids_site }}/sooshie-bro/2.4-scripts/ffluxDNS.bro
+## errors?
+#@load {{ broids_site }}/sooshie-bro/2.4-scripts/ffluxDNS.bro
 @load {{ broids_site }}/sooshie-bro/2.4-scripts/dns-bad_behavior.bro
 @load {{ broids_site }}/sooshie-bro/2.4-scripts/largeUpload.bro
 @load {{ broids_site }}/sooshie-bro/exploitkit/exploitkit.bro
