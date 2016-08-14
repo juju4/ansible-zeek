@@ -3,6 +3,7 @@
 
 location=`dirname "$0"`
 cd $location
+v=2.3
 
 ## docker environment in travis missing few utils
 [ -f /etc/debian_version ] && apt-get install -y curl
@@ -18,9 +19,9 @@ env
 
 #export PATH=/usr/local/rvm/bin:$PATH
 
-bash -l -c "rvm install 2.0"
-bash -l -c "rvm use 2.0"
-bash -l -c "rvm use 2.0 --default"
+bash -l -c "rvm install $v"
+bash -l -c "rvm use $v"
+bash -l -c "rvm use $v --default"
 bash -l -c "gem install bundler"
 bash -l -c "bundle install --path ./gems"
 if [ "X$USER" != "Xroot" -a "X$USER" != "X" ]; then
