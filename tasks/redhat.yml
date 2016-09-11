@@ -20,16 +20,7 @@
 ## FIXME! travis: skipping + "[Errno 30] Read-only file system"
 - name: Redhat | Install Bro and dependencies
   yum: name={{item}} state=present update_cache=yes
-  with_items:
-    - bro
-    - bro-core
-    - broctl
-    - GeoIP-devel
-    - mariadb
-    - mariadb-server
-    - MySQL-python
-    - python-pip
-    - git
+  with_items: "{{ broids_redhat_packages }}"
 
 - name: Redhat | Ensure Mysql/Mariadb is running and enabled on boot.
   service: "name={{ mysql_svc }} state=started enabled=yes"

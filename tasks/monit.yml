@@ -3,8 +3,6 @@
     daemon: bro
 
 - block:
-    - set_fact:
-        monitrc: /etc/monit/monitrc
     - name: apt | monit package
       apt: name={{item}} state=present
       with_items:
@@ -32,9 +30,6 @@
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - block:
-    - set_fact:
-        monitrc: /etc/monitrc
-        monitconfd: /etc/monit.d
     - name: yum | monit package
       yum: name={{item}} state=present
       with_items:

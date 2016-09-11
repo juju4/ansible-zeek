@@ -1,0 +1,19 @@
+---
+
+broids_redhat_packages:
+    - bro
+    - bro-core
+    - broctl
+    - GeoIP-devel
+    - mariadb
+    - mariadb-server
+    - MySQL-python
+    - python-pip
+    - git
+
+mysql_svc: mariadb
+mysql_confdir: /etc/my.cnf.d
+
+monitrc: /etc/monitrc
+monitconfd: /etc/monit.d
+
