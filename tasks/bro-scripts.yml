@@ -41,6 +41,7 @@
     - { re: 'http://misp.example/', rep: "{{ broids_misp_url }}" }
     - { re: '1234', rep: "{{ broids_misp_apikey }}" }
     - { re: 'tmp/intel.dat', rep: "{{ broids_misp_output }}" }
+  when: broids_misp_url is defined and broids_misp_url != ''
 
 ## Anything to recover?
 ##  https://github.com/Security-Onion-Solutions/securityonion-bro-scripts
