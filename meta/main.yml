@@ -10,19 +10,18 @@ galaxy_info:
   # platform on this list, let us know and we'll get it added!
   #
   platforms:
-  - name: Centos
+  - name: EL
     versions:
      - 7
   - name: Ubuntu
     versions:
+    - xenial
     - trusty
-  - name: Debian
-    versions:
   #
   # Below are all categories currently available. Just as with
   # the platforms above, uncomment those that apply to your role.
   #
-  categories:
+  galaxy_tags:
   - system
   - security
 dependencies:
@@ -30,6 +29,6 @@ dependencies:
   # dependencies available via galaxy should be listed here.
   # Be sure to remove the '[]' above if you add dependencies
   # to this list.
-  - maxmind
-  - redhat-epel
+  - juju4.maxmind
+  - juju4.redhat-epel
 

@@ -38,4 +38,8 @@ mysql_old_root_password:
 mysql_pdns_user: pdns
 mysql_pdns_pass: pdns_pass_to_change_or_get_lost
 
+## if using misp
+#broids_misp_url:
+#broids_misp_apikey:
+#broids_misp_output:
 

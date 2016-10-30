@@ -29,6 +29,18 @@
   git:
     repo=https://github.com/sooshie/bro-scripts.git
     dest={{ broids_site }}/sooshie-bro
+## https://github.com/MISP/MISP/issues/424
+- name: git clone misp2bro
+  git:
+    repo=https://github.com/thnyheim/misp2bro.git
+    dest={{ broids_site }}/misp2bro
+    update=no
+- name: update misp2bro config
+  replace: "dest={{ broids_site }}/misp2bro/misp2bro.py regexp={{ item.re }} replace={{ item.rep }} backup=yes"
+  with_items:
+    - { re: 'http://misp.example/', rep: "{{ broids_misp_url }}" }
+    - { re: '1234', rep: "{{ broids_misp_apikey }}" }
+    - { re: 'tmp/intel.dat', rep: "{{ broids_misp_output }}" }
 
 ## Anything to recover?
 ##  https://github.com/Security-Onion-Solutions/securityonion-bro-scripts
@@ -37,5 +49,4 @@
 ## https://github.com/TravisFSmith/MyBroElk
 ## https://gist.github.com/mavam/5028034
 
-## https://github.com/thnyheim/misp2bro; https://github.com/MISP/MISP/issues/424
 
