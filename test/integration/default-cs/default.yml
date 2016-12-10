@@ -1,0 +1,13 @@
+---
+
+## https://github.com/ansible/ansible/issues/9260
+- hosts: all
+  tasks: []
+
+- hosts: all
+#- hosts: test-kitchen
+  vars:
+    - bro_cs_enable: true
+  roles:
+    - bro-ids
+

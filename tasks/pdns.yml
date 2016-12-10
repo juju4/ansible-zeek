@@ -1,0 +1,57 @@
+---
+
+## http://nullsecure.org/building-your-own-passivedns-feed/
+## OR ? http://stackoverflow.com/questions/16444306/ansible-idempotent-mysql-installation-playbook
+## is mysql_install_db necessary? probably not
+#- name: setup database
+#  command: "{{ item }}"
+#  with_items:
+#    - mysql_install_db
+#    - mysql_secure_installation    ## interactive
+
+- name: check that mysql is running
+  service: "name={{ mysql_svc }} state=started"
+#- stat: path=/root/.my.cnf
+#  register: mycnf
+#- debug: var=mycnf
+#- stat: path=/var/run/mysqld/mysqld.sock
+#  register: mysock
+#- debug: var=mysock
+#- name: check mysql socket configuration
+#  shell: "grep -rin sock {{ mysql_confdir }}/* /etc/my.cnf"
+#  register: myconf
+#  changed_when: false
+#  ignore_errors: true
+#- debug: var=myconf.stdout_lines
+
+- name: Set mysql root user password
+  mysql_user: name=root
+              host="{{ item }}"
+              password="{{ mysql_root_password }}"
+              check_implicit_admin=yes
+              login_user="{{ mysql_user }}"
+              login_password="{{ mysql_old_root_password }}"
+              state=present
+  with_items:
+        - "{{ ansible_hostname }}"
+        - 127.0.0.1
+        - ::1
+        - localhost
+  ignore_errors: true
+- name: ensure pdns database exists
+  mysql_db: name=pdns state=present login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
+- name: ensure pdns db user exists
+  mysql_user: name={{ mysql_pdns_user }} password={{ mysql_pdns_pass }} priv=pdns.*:ALL state=present login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
+
+- name: delete anonymous MySQL server user for localhost
+  action: mysql_user user="" state="absent" login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
+- name: remove the MySQL test database
+  action: mysql_db db=test state=absent login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
+- name: Install Pdns requirements
+  pip: name=bottle state=present
+
+- name: git clone bro-pdns
+  git:
+    repo=https://github.com/JustinAzoff/bro-pdns.git
+    dest={{ broids_site }}/bro-pdns
+

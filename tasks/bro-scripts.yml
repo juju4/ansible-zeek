@@ -9,6 +9,7 @@
   git:
     repo=https://github.com/CrowdStrike/cs-bro.git
     dest={{ broids_site }}/cs-bro
+    update=no
 - name: git clone jonschipp bro scripts
   git:
     repo=https://github.com/jonschipp/bro-scripts.git
@@ -17,6 +18,7 @@
   git:
     repo=https://github.com/securitykitten/bro_scripts.git
     dest={{ broids_site }}/securitykitten-bro
+    update=no
 - name: git clone fox-it bro scripts
   git:
     repo=https://github.com/fox-it/bro-scripts.git
@@ -24,24 +26,70 @@
 - name: git clone criticalstack bro scripts
   git:
     repo=https://github.com/criticalstack/bro-scripts.git
-    dest={{ broids_site }}/foxit-bro
+    dest={{ broids_site }}/criticalstack
 - name: git clone sooshie bro scripts
   git:
     repo=https://github.com/sooshie/bro-scripts.git
     dest={{ broids_site }}/sooshie-bro
-## https://github.com/MISP/MISP/issues/424
-- name: git clone misp2bro
-  git:
-    repo=https://github.com/thnyheim/misp2bro.git
-    dest={{ broids_site }}/misp2bro
-    update=no
-- name: update misp2bro config
-  replace: "dest={{ broids_site }}/misp2bro/misp2bro.py regexp={{ item.re }} replace={{ item.rep }} backup=yes"
+
+## from https://www.bro.org/download/CHANGES.bro.txt, 2.3-404
+- name: update script s/split_all/string_split/all in detect-shellshock.bro
+  replace:
+    dest: "{{ broids_site }}/cs-bro/bro-scripts/shellshock/detect-shellshock.bro"
+    regexp: "{{ item.re }}"
+    replace: "{{ item.rep }}"
+    backup: yes
   with_items:
-    - { re: 'http://misp.example/', rep: "{{ broids_misp_url }}" }
-    - { re: '1234', rep: "{{ broids_misp_apikey }}" }
-    - { re: 'tmp/intel.dat', rep: "{{ broids_misp_output }}" }
-  when: broids_misp_url is defined and broids_misp_url != ''
+## line 32: unknown identifier string_split_all
+#    - { re: split_all, rep: string_split_all }
+    - { re: find_ip_addresses, rep: extract_ip_addresses }
+#- name: update script s/split_all/string_split/all in bro_typosquatting.bro
+#  replace:
+#    dest: "{{ broids_site }}/securitykitten-bro/bro_typosquatting.bro"
+#    regexp: split_all
+#    replace: string_split_all
+#    backup: yes
+
+## https://github.com/MISP/MISP/issues/424
+- block:
+    - name: git clone misp2bro
+      git:
+        repo=https://github.com/thnyheim/misp2bro.git
+        dest={{ broids_site }}/misp2bro
+        update=no
+    - name: update misp2bro config
+      replace: "dest={{ broids_site }}/misp2bro/misp2bro.py regexp={{ item.re }} replace={{ item.rep }} backup=yes"
+      with_items:
+        - { re: '^MISP_HOST=".*"', rep: "MISP_HOST=\"{{ broids_misp_url }}\"" }
+        - { re: '^API_KEY=".*"', rep: "API_KEY=\"{{ broids_misp_apikey }}\"" }
+        - { re: '^BRO_FILENAME=".*"', rep: "BRO_FILENAME=\"{{ broids_misp_output | basename }}\"" }
+        - { re: '^BRO_PATH=".*"', rep: "BRO_PATH=\"{{ broids_misp_output | dirname }}\"" }
+        - { re: 'logging.basicConfig\(filename=".*"', rep: "logging.basicConfig(filename=\"{{ broids_log }}/misp2bro.log\"" }
+        - { re: '"tmp/', rep: "\"{{ broids_spool }}/misp2bro/" }
+## https://github.com/thnyheim/misp2bro/pull/1
+        - { re: " if int\\(event.find\\('attribute_count'\\).text\\)", rep: " #if int(event.find('attribute_count').text)" }
+#      no_log: true
+    - name: update misp2bro sensors.txt
+      template:
+        src: misp2bro-sensors.txt.j2
+        dest: "{{ broids_site }}/misp2bro/sensors.txt"
+        mode: '0644'
+        backup: yes
+## Note: if Killed, probably lacking memory (check oom in kern.log)
+##  OR UnicodeEncodeError: 'ascii' codec can't encode character u'\\u201c' in position 143: ordinal not in range(128)
+    - name: run misp2bro once
+      command: "python {{ broids_site }}/misp2bro/misp2bro.py creates={{ broids_misp_output }}"
+      ignore_errors: true
+    - cron: name="misp2bro refresh" minute=0 hour=12
+        user="root" job="python {{ broids_site }}/misp2bro/misp2bro.py > /tmp/misp2bro-cron.out"
+        cron_file=ansible_misp2bro-refresh
+  when: broids_misp_url is defined and broids_misp_url != '' and broids_misp_agent == 'misp2bro'
+
+## http://feathub.com/MISP/MISP/+21
+## or curl ? http://10.252.116.20/events/downloadExport/bro
+- include: misp-integration.yml
+  when: broids_misp_url is defined and broids_misp_url != '' and broids_misp_agent == 'curl'
+
 
 ## Anything to recover?
 ##  https://github.com/Security-Onion-Solutions/securityonion-bro-scripts

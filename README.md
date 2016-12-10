@@ -42,10 +42,6 @@ There is a good number of variables to set the different settings.
 Some like password should be stored in ansible vault for production systems at least.
 
 ```
-## bro.org package location
-bro_prefix: /opt/bro
-#bro_prefix: /usr/local
-
 bro_mode: alone
 #bro_mode: manager
 #bro_mode: node

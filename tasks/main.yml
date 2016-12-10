@@ -6,6 +6,9 @@
 - name: Include version-specific variables for RedHat
   include_vars: "RedHat-{{ ansible_distribution_version.split('.')[0] }}.yml"
   when: ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+- name: Include securityonion variables
+  include_vars: securityonion.yml
+  when: use_securityonion_deb and (ansible_distribution_release == "precise" or ansible_distribution_release == "trusty")
 
 - name: Debian | Install Bro dependencies
   apt: name={{item}} state=present update_cache=yes
@@ -17,15 +20,15 @@
 
 - name: Debian-based | install bro
   include: debian.yml
-  when: not force_source_build and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+  when: not bro_force_source_build and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
 
 - name: Redhat-based | install bro
   include: redhat.yml
-  when: not force_source_build and (ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+  when: not bro_force_source_build and (ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
 
 - name: install bro from source
   include: source.yml
-  when: force_source_build
+  when: bro_force_source_build
 
 
 ## Extra configuration
@@ -34,6 +37,17 @@
   with_items:
     - { regexp: '^export BROPATH=', line: 'export BROPATH={{ bro_prefix }}' }
     - { regexp: '^export PATH=', line: 'export PATH=$PATH:$BROPATH/bin' }
+
+- name: ensure bro directories exist
+  file: dest={{ item }} state=directory mode=0775 group={{ broids_group }}
+  with_items:
+    - "{{ broids_site }}"
+    - "{{ broids_log }}"
+    - "{{ broids_log }}/stats"
+    - "{{ broids_spool }}"
+    - "{{ broids_spool }}/misp2bro"
+    - "/usr/share/bro/intel"
+
 #- name: young-ssl bro script
 #  copy:
 #    src=young-ssl.bro dest={{ broids_site }}/young-ssl.bro mode=644
@@ -44,7 +58,7 @@
   with_items:
     - file_analysis_02.bro
 - name: add bro local configuration
-  template: src=local.bro dest="{{ broids_site }}/local.bro" mode=0644 backup=yes
+  template: src=local.bro.j2 dest="{{ broids_site }}/local.bro" mode=0644 backup=yes
   notify:
     - restart bro
 
@@ -54,8 +68,8 @@
 - name: Reset send-mail config (not used by default)
   lineinfile: 'dest={{ broids_spool }}/broctl-config.sh regexp="{{ item.regexp }}" line="{{ item.line }}" state=present'
   with_items:
-## FIXME! not working/not idempotent ??? changed all time.
-    - { regexp: '^sendmail=', line: 'sendmail=\"\"' }
+## FIXME! not working/not idempotent ??? changed all time. other task filling w /usr/sbin/sendmail
+    - { regexp: '^sendmail=.*', line: 'sendmail=\"\"' }
   when: st.stat.exists
 #  notify:
 #    - restart bro
@@ -65,61 +79,11 @@
         cron_file=ansible_bro
 
 - name: Configure node.cfg
-  template: src=node.cfg dest={{ broids_etc }}/node.cfg mode=0664 owner=root group={{ broids_group }}
+  template: src=node.cfg.j2 dest={{ broids_etc }}/node.cfg mode=0664 owner=root group={{ broids_group }}
   notify:
     - restart bro
 
-## http://nullsecure.org/building-your-own-passivedns-feed/
-## OR ? http://stackoverflow.com/questions/16444306/ansible-idempotent-mysql-installation-playbook
-## is mysql_install_db necessary? probably not
-#- name: setup database
-#  command: "{{ item }}"
-#  with_items:
-#    - mysql_install_db
-#    - mysql_secure_installation    ## interactive
-
-- name: check that mysql is running
-  service: "name={{ mysql_svc }} state=started"
-#- stat: path=/root/.my.cnf
-#  register: mycnf
-#- debug: var=mycnf
-#- stat: path=/var/run/mysqld/mysqld.sock
-#  register: mysock
-#- debug: var=mysock
-#- name: check mysql socket configuration
-#  shell: "grep -rin sock {{ mysql_confdir }}/* /etc/my.cnf"
-#  register: myconf
-#  changed_when: false
-#  ignore_errors: true
-#- debug: var=myconf.stdout_lines
-
-- name: Set mysql root user password
-  mysql_user: name=root
-              host="{{ item }}"
-              password="{{ mysql_root_password }}"
-              check_implicit_admin=yes
-              login_user="{{ mysql_user }}"
-              login_password="{{ mysql_old_root_password }}"
-              state=present
-  with_items:
-        - "{{ ansible_hostname }}"
-        - 127.0.0.1
-        - ::1
-        - localhost
-  ignore_errors: true
-- mysql_db: name=pdns state=present login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
-- mysql_user: name={{ mysql_pdns_user }} password={{ mysql_pdns_pass }} priv=pdns.*:ALL state=present login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
-- name: delete anonymous MySQL server user for localhost
-  action: mysql_user user="" state="absent" login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
-- name: remove the MySQL test database
-  action: mysql_db db=test state=absent login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
-- name: Install Pdns requirements
-  pip: name=bottle state=present
-
-- name: git clone bro-pdns
-  git:
-    repo=https://github.com/JustinAzoff/bro-pdns.git
-    dest={{ broids_site }}/bro-pdns
+- include: pdns.yml
 
 - name: create directory for extracted files
   file: dest="{{ item }}" state=directory mode=0755
@@ -130,8 +94,9 @@
 - include: bro-scripts.yml
 
 - include: critical-stack.yml
-  when: bro_cs_enable is defined and bro_cs_enable and bro_cs_apikey is defined and bro_cs_apikey != ''
+  when: bro_cs_enable is defined and bro_cs_enable
 
+## FIXME! idempotency
 - name: Ending bro configuration
   command: "{{ item }}"
   with_items:
@@ -139,6 +104,17 @@
     - "{{ broids_broctl }} check"
   notify:
     - restart bro
+
+## OR http://serverfault.com/questions/421995/disable-tcp-offloading-completely-generically-and-easily
+- name: check network card checksum offloading state
+  command: ethtool --show-offload eth0
+  register: ethtool
+  changed_when: false
+## FIXME! not working on digitalocean droplet: got: 'rx-checksumming: on [fixed] tx-checksumming: off' and can't change
+- name: Disable network card offloading for eth0
+  command: ethtool --offload eth0 rx off tx off
+  when: ethtool.stdout is defined and ethtool.stdout.find("-checksumming{{ ':' }} on") != -1
+  ignore_errors: true
 
 #- name: start BRO_PDNS API service
 #  command: "BRO_PDNS_DB=mysql://{{ mysql_pdns_user }}::{{ mysql_pdns_pass }}@localhost/pdns {{ broids_site }}/bro-pdns/bro_pdns.py serve"

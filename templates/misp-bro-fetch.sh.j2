@@ -1,0 +1,13 @@
+#!/bin/sh
+## retrieve MISP indicators in bro format
+
+export PATH=/usr/sbin:/usr/bin:/sbin:/bin
+umask 077
+
+userkey={{ broids_misp_apikey }}
+misp_base_url={{ broids_misp_url }}
+
+for attr in ip url domain email filename filehash certhash software; do
+    mv /usr/share/bro/intel/$attr.intel /usr/share/bro/intel/$attr.intel.old
+    curl -s -X POST -H "Authorization: $userkey" -H 'Content-Type: application/json' -H 'Accept: application/json' "$misp_base_url/attributes/bro/download/$attr" > /usr/share/bro/intel/$attr.intel
+done

@@ -1,35 +1,40 @@
-
-## bro.org package location, xenial use its own rep
-bro_prefix: '/opt/bro'
-broids_etc: '/opt/bro/etc'
-broids_site: '/opt/bro/share/bro/site'
-broids_group: 'bro'
-broids_broctl: '/opt/bro/bin/broctl'
-broids_spool: "{{ bro_prefix }}/spool"
-bro_extractedfiles: "{{ bro_prefix }}/logs/extracted"
+---
 
 bro_mode: alone
 #bro_mode: manager
 #bro_mode: node
 #bro_manager: 10.0.0.10
+bro_nodes:
+  - localhost
 #bro_nodes:
 #   - 10.0.0.11
 #   - 10.0.0.12
-#bro_nodes_if: eth0
+bro_nodes_if: eth0
+
+bro_email_notification: true
 
 ## Only available for Ubuntu 12.04 (EOL Apr 2017), has pfring
+## TODO test trusty
 use_securityonion_deb: false
 ## pfring/high network performance = build source
 bro_w_pfring: false
 ## for source install
-force_source_build: false
-bro_v: 2.4.1
-bro_archive_sha256: d8b99673a5024630f6bae820c4f8c3ca9029f1167f9e5729c914c66e1fc7c8f6
+bro_force_source_build: false
+#bro_v: 2.4.1
+#bro_archive_sha256: d8b99673a5024630f6bae820c4f8c3ca9029f1167f9e5729c914c66e1fc7c8f6
+#bro_src_url: "https://www.bro.org/downloads/release/bro-{{ bro_v }}.tar.gz"
+bro_v: 2.5
+bro_archive_sha256: 1502a290d3663fa67a44ff6c1c8e8e9434b8ae5e76be5c2a02b06a0e391dc080
+bro_src_url: "https://www.bro.org/downloads/bro-{{ bro_v }}.tar.gz"
 
 ## install critical stack (need to register to get API key, https://intel.criticalstack.com/)
-#bro_cs_enable: true
-#bro_cs_apikey:
+bro_cs_enable: false
+bro_cs_apikey: ''
+bro_cs_proxy: ''
 #bro_cs_proxy: 'http://username:password@hostname:port'
+
+## http://blog.bro.org/2014/01/intelligence-data-and-bro_4980.html
+broids_intels: []
 
 ## mysql setup for passivedns
 mysql_user: root
@@ -38,8 +43,25 @@ mysql_old_root_password:
 mysql_pdns_user: pdns
 mysql_pdns_pass: pdns_pass_to_change_or_get_lost
 
-## if using misp
-#broids_misp_url:
-#broids_misp_apikey:
-#broids_misp_output:
+## if using misp, either python script or curl/MISP API since sep 2016
+#broids_misp_agent: 'misp2bro'
+broids_misp_agent: 'curl'
+broids_misp_url: ''
+## it's advised to create a dedicated user with read-only access
+broids_misp_apikey: ''
+## Note: that will make 'broctl check' noticebly slower
+broids_misp_output:
+  - /usr/share/bro/intel/ip.intel
+  - /usr/share/bro/intel/url.intel
+  - /usr/share/bro/intel/domain.intel
+  - /usr/share/bro/intel/email.intel
+  - /usr/share/bro/intel/filename.intel
+  - /usr/share/bro/intel/filehash.intel
+  - /usr/share/bro/intel/certhash.intel
+  - /usr/share/bro/intel/software.intel
+broids_misp_sensors: "{{ bro_nodes }}"
+#broids_misp_url: 'http://misp.example/'
+#broids_misp_apikey: '1234'
+#broids_misp_output: '/usr/share/bro/intel/misp-intel.dat'
+#broids_misp_sensors: [ 'example.bro' ]
 

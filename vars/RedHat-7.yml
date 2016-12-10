@@ -1,18 +1,36 @@
 ---
 
-broids_redhat_packages:
+## bro fedora pkg
+broids_packages:
     - bro
     - bro-core
     - broctl
+
+broids_packages_deps:
     - GeoIP-devel
     - mariadb
     - mariadb-server
     - MySQL-python
     - python-pip
     - git
+## to review network card offloading settings
+    - ethtool
+    - pyOpenSSL
+    - crontabs
 
 mysql_svc: mariadb
 mysql_confdir: /etc/my.cnf.d
+
+bro_prefix: '/usr'
+broids_etc: '/etc/bro'
+broids_site: '/var/lib/bro/site/'
+broids_group: 'bro'
+broids_broctl: '/usr/bin/broctl'
+broids_spool: "/var/spool/bro"
+bro_extractedfiles: "/var/log/bro/extracted"
+broids_log: "/var/log/bro"
+broids_libdir: /usr/lib/python2.7/site-packages/BroControl
+broids_plugindir: /usr/lib/python2.7/site-packages/BroControl/plugins
 
 monitrc: /etc/monitrc
 monitconfd: /etc/monit.d

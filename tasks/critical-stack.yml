@@ -4,42 +4,75 @@
 - name: package - debian - i386
   set_fact:
     bro_cs_pkg: https://intel.criticalstack.com/client/critical-stack-intel-i386.deb
+    bro_cs_sha256: aaaa
   when: ansible_architecture == 'i386' and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
 - name: package - debian - amd64
   set_fact:
     bro_cs_pkg: https://intel.criticalstack.com/client/critical-stack-intel-amd64.deb
+    bro_cs_sha256: 32e9922ed0e5cdb556d94346badbe29b6ceba1dacee936bdc5dd51ed682e43c7
   when: ansible_architecture == 'x86_64' and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
 
 - name: package - redhat - i386
   set_fact:
     bro_cs_pkg: https://intel.criticalstack.com/client/critical-stack-intel-i386.rpm
+    bro_cs_sha256: aaaa
   when: ansible_architecture == 'i386' and (ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
 - name: package - redhat - amd64
   set_fact:
     bro_cs_pkg: https://intel.criticalstack.com/client/critical-stack-intel-amd64.rpm
+    bro_cs_sha256: 9bcf1d1741b118429aa98ec4915490961f0e2ed4f1ae5a21203a445b4de8a7f7
   when: ansible_architecture == 'x86_64' and (ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
 
+## FIXME! v2.2 on xenial/python2.7.12: FAILED! => {"changed": false, "failed": true, "msg": "Failed to validate the SSL certificate for intel.criticalstack.com:443. Make sure your managed systems have a valid CA certificate installed. You can use validate_certs=False if you do not need to confirm the servers identity but this is unsafe and not recommended. Paths checked for this platform: /etc/ssl/certs, /etc/pki/ca-trust/extracted/pem, /etc/pki/tls/certs, /usr/share/ca-certificates/cacert.org, /etc/ansible"}
 - name: download critical stack package
-  get_url: url={{ bro_cs_pkg }} dest=/tmp/{{ bro_cs_pkg | basename }} mode=0644
+#  get_url: url={{ bro_cs_pkg }} dest=/tmp/{{ bro_cs_pkg | basename }} mode=0644 
+  get_url: url={{ bro_cs_pkg }} dest=/tmp/{{ bro_cs_pkg | basename }} mode=0644 validate_certs=False checksum="sha256:{{ bro_cs_sha256 }}"
 - set_fact:
     bro_cs_pkg: "/tmp/{{ bro_cs_pkg | basename }}"
 
-## FIXME! No package matching 'https://intel.criticalstack.com/client/critical-stack-intel-amd64.deb' is available = same if get_url before???
-- name: apt | install critical stack
-#  apt: name={{ bro_cs_pkg }} state=present
-  command: "dpkg -i {{ bro_cs_pkg }}"
-  become: yes
+- block:
+    - name: check if critical stack present
+      command: "dpkg -s critical-stack-intel"
+      register: dpkg
+      ignore_errors: true
+      changed_when: false
+    ## FIXME! (still in v2.2) No package matching 'https://intel.criticalstack.com/client/critical-stack-intel-amd64.deb' is available = same if get_url before???
+    - name: apt | install critical stack
+    #  apt: name={{ bro_cs_pkg }} state=present
+      command: "dpkg -i {{ bro_cs_pkg }}"
+      become: yes
+      when: dpkg.stdout == ''
   when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
-- name: yum | install critical stack
-  yum: name={{ bro_cs_pkg }} state=present
-  become: yes
+- block:
+    - name: check if critical stack present
+      command: "rpm -q critical-stack-intel"
+      register: rpm
+      ignore_errors: true
+      changed_when: false
+    - name: yum | install critical stack
+      yum: name={{ bro_cs_pkg }} state=present
+      become: yes
+      when: rpm.stdout == 'package critical-stack-intel is not installed'
   when: (ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
 
 - name: register critical stack API key
-  command: "critical-stack-intel api {{ bro_cs_apikey }}"
+  command: "critical-stack-intel api {{ bro_cs_apikey }} creates=/opt/critical-stack/configs/critical-stack-intel.db"
   become: yes
   when: bro_cs_apikey is defined and bro_cs_apikey != ''
 - name: set a proxy for critical stack
   command: "critical-stack-intel config --set proxy.url=\"{{ bro_cs_proxy }}\""
   become: yes
   when: bro_cs_proxy is defined and bro_cs_proxy != ''
+
+- name: check current settings in critical-stack
+  command: "critical-stack-intel config --list-set"
+  register: csconfig
+  changed_when: false
+- name: update bro setup in critical-stack
+  command: "{{ item }}"
+  with_items:
+    - "critical-stack-intel config --set bro.path={{ bro_prefix }}"
+    - "critical-stack-intel config --set bro.include.path={{ broids_site }}"
+    - "critical-stack-intel config --set bro.broctl.path={{ broids_broctl }}"
+  when: csconfig.stdout == ''
+

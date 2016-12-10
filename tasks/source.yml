@@ -18,6 +18,7 @@
     - git
     - curl
     - libgoogle-perftools-dev
+    - "{{ broids_packages_deps }}"
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 - name: Redhat | Install Bro dependencies
   yum: name={{item}} state=present update_cache=yes
@@ -34,6 +35,7 @@
     - swig
     - zlib-devel
     - file-devel
+    - "{{ broids_packages_deps }}"
   when: ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
 - stat: path=/root/bro-{{ bro_v }}.tar.gz
@@ -41,7 +43,7 @@
 - name: Download BRO archive
 ## github archive doesn't contain submodules/not recursive
   #get_url: url=https://github.com/bro/bro/archive/v{{ bro_v }}.tar.gz
-  get_url: url=https://www.bro.org/downloads/release/bro-{{ bro_v }}.tar.gz
+  get_url: url={{ bro_src_url }}
     dest=/root/bro-{{ bro_v }}.tar.gz
     mode=0400
     checksum=sha256:{{ bro_archive_sha256 }}
@@ -49,12 +51,15 @@
 - stat: path={{ bro_prefix }}/bin/bro
   register: brobin
 - name: compile and install bro
-  command: "{{ item.command }} chdir={{ item.chdir }}"
+  command: "{{ item.command }} chdir={{ item.chdir }} creates={{ item.c }}"
   with_items:
 ## https://github.com/ansible/ansible/issues/8260
-    - { command: 'tar xzf /root/bro-{{ bro_v }}.tar.gz', chdir: '/root' }
-    - { command: './configure --prefix={{ bro_prefix }}', chdir: '/root/bro-{{ bro_v }}' }
-    - { command: 'make', chdir: '/root/bro-{{ bro_v }}' }
-    - { command: 'make install', chdir: '/root/bro-{{ bro_v }}' }
+    - { command: 'tar xzf /root/bro-{{ bro_v }}.tar.gz', chdir: '/root', c: '/root/bro-{{ bro_v }}/configure' }
+    - { command: './configure --prefix={{ bro_prefix }} --spooldir={{ broids_spool }} --logdir={{ broids_log }} --conf-files-dir={{ broids_etc }}', chdir: '/root/bro-{{ bro_v }}', c: '/root/bro-{{ bro_v }}/build/Makefile' }
+    - { command: 'make', chdir: '/root/bro-{{ bro_v }}', c: '/root/bro-{{ bro_v }}/build/src/bro' }
+    - { command: 'make install', chdir: '/root/bro-{{ bro_v }}', c: "{{ bro_prefix }}/bin/bro" }
   when: not brobin.stat.exists
+
+- name: ensure bro group exists
+  group: name=bro state=present
 

@@ -1,16 +1,37 @@
 ---
 
-broids_ubuntu_packages:
+broids_packages:
     - bro
+
+broids_packages_deps:
     - mysql-server
     - libapache2-mod-auth-mysql
     - php5-mysql
     - python-pip
     - python-sqlalchemy
     - python-mysqldb
+    - ca-certificates
+    - python-openssl
+## bro-pdns
+#    - python-pymysql   ## Not available
+## trace-summary
+    - python-subnettree
+## pip upgrade
+    - libmysqlclient-dev
 
 mysql_svc: mysql
 mysql_confdir: /etc/mysql
+
+bro_prefix: '/opt/bro'
+broids_etc: '/opt/bro/etc'
+broids_site: '/opt/bro/share/bro/site'
+broids_group: 'bro'
+broids_broctl: '/opt/bro/bin/broctl'
+broids_spool: "{{ bro_prefix }}/spool"
+bro_extractedfiles: "/var/log/bro/extracted"
+broids_log: "/var/log/bro"
+broids_libdir: /opt/bro/lib/broctl/BroControl
+broids_plugindir: /opt/bro/lib/broctl/BroControl/plugins
 
 monitrc: /etc/monit/monitrc
 

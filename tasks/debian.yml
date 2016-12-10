@@ -12,39 +12,67 @@
     - name: Debian | Add bro repository
       apt_repository: repo='deb http://download.opensuse.org/repositories/network:/bro/Debian_{{ ansible_distribution_version }}/ /' state=present
   when: ansible_distribution == 'Debian' and not use_securityonion_deb
+## https://github.com/Security-Onion-Solutions/security-onion/wiki/InstallingOnUbuntu   Only Ubuntu 12.04
+- block:
+    - name: Ubuntu | using securityonion repository
+      apt_repository: repo='ppa:securityonion/stable' update_cache=yes
+  when: use_securityonion_deb and (ansible_distribution_release == "precise" or ansible_distribution_release == "trusty")
+
 
 ## WARNING: The following packages cannot be authenticated! = force
 - name: Debian/Ubuntu | Install Bro and dependencies
   apt: name={{item}} state=present update_cache=yes cache_valid_time=3600 force=yes
-  with_items: "{{ broids_ubuntu_packages }}"
-  when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+  with_items: "{{ broids_packages + broids_packages_deps }}"
 
-- stat: path=/etc/init.d/bro-ids
-  register: initbro
-- name: download startup script for bro
-  get_url:
-    url: https://raw.githubusercontent.com/lruppert/bro-scripts/master/shell/bro-ids
-    dest: /etc/init.d/bro-ids
-    mode: '0755'
-    sha256sum: 'cafc0b8eebae434c4600bc71a4a3448e0e3a59ff306f5ef8408a838f58e33860'
-  when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and not initbro.stat.exists
-- name: update bro path in init.d/bro-ids
-  replace: dest=/etc/init.d/bro-ids regexp='^DAEMON=.*' replace="DAEMON={{ broids_broctl }}" backup=yes
-  when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
-
-## https://github.com/Security-Onion-Solutions/security-onion/wiki/InstallingOnUbuntu   Only Ubuntu 12.04
 - block:
-    - name: Ubuntu | using securityonion repository
-      apt_repository: repo='ppa:securityonion/stable'
-    - name: Ubuntu | Install Bro from securityonion
-      apt: name={{item}} state=present update_cache=yes cache_valid_time=3600
+    - stat: path=/etc/init.d/bro-ids
+      register: initbro
+    - name: download startup script for bro
+      get_url:
+        url: https://raw.githubusercontent.com/lruppert/bro-scripts/master/shell/bro-ids
+        dest: /etc/init.d/bro-ids
+        mode: '0755'
+        sha256sum: 'cafc0b8eebae434c4600bc71a4a3448e0e3a59ff306f5ef8408a838f58e33860'
+      when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and not initbro.stat.exists
+    - name: update bro path in init.d/bro-ids
+      replace: dest=/etc/init.d/bro-ids regexp='^DAEMON=.*' replace="DAEMON={{ broids_broctl }}" backup=yes
+      when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+  when: ansible_service_mgr != 'systemd'
+
+- name: install startup script for bro - systemd
+  template:
+    src: systemd-bro.service.j2
+    dest: /lib/systemd/system/bro.service
+    mode: '0644'
+    backup: yes
+  when: ansible_service_mgr == 'systemd'
+
+- block:
+    - name: update broctl LogDir
+      replace:
+        dest: "{{ broids_etc }}/broctl.cfg"
+        regexp: "{{ item.re }}"
+        replace: "{{ item.rep }}"
+        backup: yes
       with_items:
-        - securityonion-bro
-        - securityonion-bro-scripts
-        - securityonion-pfring-devel
-        - securityonion-pfring-ld
-        - securityonion-pfring-module
-  when: use_securityonion_deb and ansible_distribution_release == "precise"
+        - { re: '^LogDir = .*', rep: "LogDir = {{ broids_log }}" } 
+  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_version.split('.')[0]|int < 16) and not use_securityonion_deb
+
+## bro 2.1+
+- name: enable broctl MailConnectionSummary
+  replace:
+    dest: "{{ broids_etc }}/broctl.cfg"
+    regexp: "^MailConnectionSummary = .*"
+    replace: "MailConnectionSummary = 1"
+    backup: yes
+  when: bro_email_notification
+- name: disable broctl MailConnectionSummary
+  replace:
+    dest: "{{ broids_etc }}/broctl.cfg"
+    regexp: "^MailConnectionSummary = .*"
+    replace: "MailConnectionSummary = 0"
+    backup: yes
+  when: not bro_email_notification
 
 - name: ensure aide hids directory exists
   file: dest=/etc/aide/aide.conf.d state=directory mode=0755

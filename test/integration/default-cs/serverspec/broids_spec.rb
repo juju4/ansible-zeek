@@ -19,15 +19,11 @@ describe process('bro') do
 end
 
 describe file('/var/log/bro/current/stderr.log') do
-  its(:size) { should > 0 }
   its(:content) { should match /listening on/ }
 end
 describe file('/var/log/bro/current/conn.log') do
   its(:size) { should > 0 }
 end
-#describe file('/var/log/bro/current/notice.log') do
-#  its(:content) { should_not match /PacketFilter::Dropped_Packets/ }
-#end
 ## Note: some logs might take time to fill...
 #describe file('/var/log/bro/current/dns.log') do
 #  its(:size) { should > 0 }

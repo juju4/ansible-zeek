@@ -1,0 +1,11 @@
+[Unit]
+Description=Bro Network Intrusion Detection System (NIDS)
+After=network.target
+
+[Service]
+Type=forking
+Environment=HOME=/
+ExecStart=/usr/bin/broctl start
+
+[Install]
+WantedBy=multi-user.target

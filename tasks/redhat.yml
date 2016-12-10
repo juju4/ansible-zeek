@@ -6,12 +6,13 @@
 ## force to gather facts again because of redhat-lsb
 - action: setup
 - debug: var=ansible_lsb
-- name: Install Bro yum repository
+
+- name: RHEL | Install Bro yum repository
   get_url: url="http://download.opensuse.org/repositories/network:bro/CentOS_{{ ansible_lsb.major_release|int }}/network:bro.repo"
         dest=/etc/yum.repos.d/bro.repo
         owner=root group=root mode=0644
   when: ansible_distribution == 'CentOS' or ansible_os_family == "RedHat"
-- name: Install Bro yum repository
+- name: Fedora | Install Bro yum repository
   get_url: url="http://download.opensuse.org/repositories/network:bro/Fedora_{{ ansible_lsb.major_release|int }}/network:bro.repo"
         dest=/etc/yum.repos.d/bro.repo
         owner=root group=root mode=0644
@@ -20,7 +21,27 @@
 ## FIXME! travis: skipping + "[Errno 30] Read-only file system"
 - name: Redhat | Install Bro and dependencies
   yum: name={{item}} state=present update_cache=yes
-  with_items: "{{ broids_redhat_packages }}"
+  with_items: "{{ broids_packages + broids_packages_deps }}"
+
+- name: update broctl LogDir
+  replace:
+    dest: "{{ broids_etc }}/broctl.cfg"
+    regexp: "{{ item.re }}"
+    replace: "{{ item.rep }}"
+    backup: yes
+  with_items:
+    - { re: '^LogDir = .*', rep: "LogDir = {{ broids_log }}" } 
+    - { re: '^SpoolDir = .*', rep: "SpoolDir = {{ broids_spool }}" } 
+
+- name: update broctl LogDir - missing line
+  lineinfile:
+    dest: "{{ broids_etc }}/broctl.cfg"
+    regexp: "{{ item.re }}"
+    line: "{{ item.rep }}"
+    backup: yes
+  with_items:
+    - { re: '^LibDirInternal = .*', rep: "LibDirInternal = {{ broids_libdir }}" } 
+    - { re: '^PluginDir = .*', rep: "PluginDir = {{ broids_plugindir }}" } 
 
 - name: Redhat | Ensure Mysql/Mariadb is running and enabled on boot.
   service: "name={{ mysql_svc }} state=started enabled=yes"
