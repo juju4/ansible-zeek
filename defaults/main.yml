@@ -60,8 +60,7 @@ broids_misp_output:
   - /usr/share/bro/intel/certhash.intel
   - /usr/share/bro/intel/software.intel
 broids_misp_sensors: "{{ bro_nodes }}"
-#broids_misp_url: 'http://misp.example/'
-#broids_misp_apikey: '1234'
-#broids_misp_output: '/usr/share/bro/intel/misp-intel.dat'
-#broids_misp_sensors: [ 'example.bro' ]
+## misp2bro
+broids_misp_output: '/usr/share/bro/intel/misp-intel.dat'
+broids_misp_sensors: [ 'example.bro' ]
 
