@@ -3,10 +3,11 @@
 sudo: required
 
 env:
-  - distribution: centos
-    version: 6
-    init: /sbin/init
-    run_opts: ""
+## no opensuse bro repository for precise or centos6
+#  - distribution: centos
+#    version: 6
+#    init: /sbin/init
+#    run_opts: ""
   - distribution: centos
     version: 7
     init: /usr/lib/systemd/systemd
@@ -20,10 +21,10 @@ env:
     version: 14.04
     init: /sbin/init
     run_opts: ""
-  - distribution: ubuntu
-    version: 12.04
-    init: /sbin/init
-    run_opts: ""
+#  - distribution: ubuntu
+#    version: 12.04
+#    init: /sbin/init
+#    run_opts: ""
 #  - distribution: alpine
 #    version: 3.4
 #    init: /sbin/init
