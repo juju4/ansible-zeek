@@ -18,6 +18,8 @@ broids_packages_deps:
     - python-subnettree
 ## pip upgrade
     - libmysqlclient-dev
+## offloading
+    - ethtool
 
 mysql_svc: mysql
 mysql_confdir: /etc/mysql

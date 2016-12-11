@@ -12,6 +12,8 @@ broids_packages_deps:
     - MySQL-python
     - python-pip
     - git
+## to review network card offloading settings
+    - ethtool
     - pyOpenSSL
     - crontabs
 

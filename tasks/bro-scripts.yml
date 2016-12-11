@@ -62,8 +62,8 @@
       with_items:
         - { re: '^MISP_HOST=".*"', rep: "MISP_HOST=\"{{ broids_misp_url }}\"" }
         - { re: '^API_KEY=".*"', rep: "API_KEY=\"{{ broids_misp_apikey }}\"" }
-        - { re: '^BRO_FILENAME=".*"', rep: "BRO_FILENAME=\"{{ broids_misp_output | basename }}\"" }
-        - { re: '^BRO_PATH=".*"', rep: "BRO_PATH=\"{{ broids_misp_output | dirname }}\"" }
+        - { re: '^BRO_FILENAME=".*"', rep: "BRO_FILENAME=\"{{ broids_misp2bro_output | basename }}\"" }
+        - { re: '^BRO_PATH=".*"', rep: "BRO_PATH=\"{{ broids_misp2bro_output | dirname }}\"" }
         - { re: 'logging.basicConfig\(filename=".*"', rep: "logging.basicConfig(filename=\"{{ broids_log }}/misp2bro.log\"" }
         - { re: '"tmp/', rep: "\"{{ broids_spool }}/misp2bro/" }
 ## https://github.com/thnyheim/misp2bro/pull/1
@@ -78,7 +78,7 @@
 ## Note: if Killed, probably lacking memory (check oom in kern.log)
 ##  OR UnicodeEncodeError: 'ascii' codec can't encode character u'\\u201c' in position 143: ordinal not in range(128)
     - name: run misp2bro once
-      command: "python {{ broids_site }}/misp2bro/misp2bro.py creates={{ broids_misp_output }}"
+      command: "python {{ broids_site }}/misp2bro/misp2bro.py creates={{ broids_misp2bro_output }}"
       ignore_errors: true
     - cron: name="misp2bro refresh" minute=0 hour=12
         user="root" job="python {{ broids_site }}/misp2bro/misp2bro.py > /tmp/misp2bro-cron.out"
