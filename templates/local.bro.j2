@@ -14,8 +14,7 @@ redef ignore_checksums = T;
 # Load the scan detection script.
 @load misc/scan
 
-{# why??? 2.5? #}
-{% if not bro_force_source_build or ansible_distribution_release != 'trusty' %}
+{% if not bro_force_source_build and bro_v != '2.5' %}
 # Log some information about web applications being used by users 
 # on your network.
 @load misc/app-stats
@@ -139,7 +138,7 @@ redef Intel::read_files += {
 {% endif %}
 @load apt1
 
-{% if not bro_force_source_build or ansible_distribution_release != 'trusty' %}
+{% if not bro_force_source_build and bro_v != '2.5' %}
 @load {{ broids_site }}/cs-bro/bro-scripts/dce-rpc
 {% endif %}
 @load {{ broids_site }}/cs-bro/bro-scripts/extensions

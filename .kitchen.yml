@@ -24,11 +24,11 @@ platforms:
   - name: ubuntu-14.04
 #  - name: ubuntu-12.04
   - name: centos-7
-  - name: centos-6
+#  - name: centos-6
 ## FIXME! workaround Ansible 2.2+/cryptography: https://github.com/ansible/ansible/issues/276
-    provisioner:
+#    provisioner:
 ## Desired version, only affects apt-get installs
-      ansible_version: 2.1.2.0
+#      ansible_version: 2.1.2.0
 ## not supported by kitchen/chef install
 #  - name: alpine-3.4
 

@@ -5,15 +5,21 @@
 Ansible role to setup Bro IDS
 https://www.bro.org
 
+Installation from
+* Opensuse repository - 2.5 (rpm or deb)(default)
+* SecurityOnion repository (precise or trusty only)
+* source - 2.5
+
 ## Requirements & Dependencies
 
 ### Ansible
 It was tested on the following versions:
  * 2.0
+ * 2.2
 
 ### Operating systems
 
-Verified with kitchen against ubuntu14 and centos7
+Ubuntu 14.04, 16.04 and Centos7
 
 ## Example Playbook
 
@@ -23,7 +29,7 @@ For example
 ```
 - hosts: server
   roles:
-    - bro-ids
+    - juju4.bro-ids
 
 ```
 

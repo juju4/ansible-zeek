@@ -5,7 +5,9 @@
       apt_key: url=http://download.opensuse.org/repositories/network:bro/xUbuntu_{{ ansible_distribution_version }}/Release.key state=present
     - name: Ubuntu | Add bro repository
       apt_repository: repo='deb http://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/ /' state=present
-  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_version.split('.')[0]|int < 16) and not use_securityonion_deb
+## upstream xenial has 2.4.1, opensuse repo 2.5
+#  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_version.split('.')[0]|int < 16) and not use_securityonion_deb
+  when: ansible_distribution == 'Ubuntu' and not use_securityonion_deb
 - block:
     - name: Debian | Add bro repository key
       apt_key: url=http://download.opensuse.org/repositories/network:bro/Debian_{{ ansible_distribution_version }}/Release.key state=present

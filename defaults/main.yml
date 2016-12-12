@@ -13,17 +13,17 @@ bro_nodes_if: eth0
 
 bro_email_notification: true
 
-## Only available for Ubuntu 12.04 (EOL Apr 2017), has pfring
+## Only available for Ubuntu 12.04 (EOL Apr 2017) + trusty, has pfring
 ## TODO test trusty
 use_securityonion_deb: false
 ## pfring/high network performance = build source
 bro_w_pfring: false
 ## for source install
 bro_force_source_build: false
-#bro_v: 2.4.1
+#bro_v: '2.4.1'
 #bro_archive_sha256: d8b99673a5024630f6bae820c4f8c3ca9029f1167f9e5729c914c66e1fc7c8f6
 #bro_src_url: "https://www.bro.org/downloads/release/bro-{{ bro_v }}.tar.gz"
-bro_v: 2.5
+bro_v: '2.5'
 bro_archive_sha256: 1502a290d3663fa67a44ff6c1c8e8e9434b8ae5e76be5c2a02b06a0e391dc080
 bro_src_url: "https://www.bro.org/downloads/bro-{{ bro_v }}.tar.gz"
 
