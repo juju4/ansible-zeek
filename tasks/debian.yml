@@ -58,7 +58,7 @@
         backup: yes
       with_items:
         - { re: '^LogDir = .*', rep: "LogDir = {{ broids_log }}" } 
-  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_version.split('.')[0]|int < 16) and not use_securityonion_deb
+  when: not use_securityonion_deb
 
 ## bro 2.1+
 - name: enable broctl MailConnectionSummary
