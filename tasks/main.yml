@@ -122,5 +122,6 @@
 # Test
 # curl http://localhost:8081/dns/www.youtube.com
 
+- include: aide-hids.yml
 - include: monit.yml
 

@@ -1,3 +1,4 @@
+## {{ ansible_managed }}
 [Unit]
 Description=Bro Network Intrusion Detection System (NIDS)
 After=network.target
@@ -5,7 +6,7 @@ After=network.target
 [Service]
 Type=forking
 Environment=HOME=/
-ExecStart=/usr/bin/broctl start
+ExecStart={{ broids_broctl }} start
 
 [Install]
 WantedBy=multi-user.target
