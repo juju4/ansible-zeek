@@ -5,7 +5,7 @@ node {
     try{
         currentBuild.result = "SUCCESS"
         def workspace = pwd()
-        def directory = "bro-ids"
+        def directory = "juju4.bro-ids"
 
         stage 'Clean Workspace'
             deleteDir()
