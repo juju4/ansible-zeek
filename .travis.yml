@@ -41,7 +41,6 @@ before_install:
   - env
   - pwd
   - find -ls
-  - ln -s ansible-bro-ids ../bro-ids
   - ./get-dependencies.sh
   - cp test/travis/initctl_faker test/
   # Customize container
