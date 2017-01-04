@@ -9,5 +9,5 @@
   vars:
      - use_securityonion_deb: true
   roles:
-    - bro-ids
+    - juju4.bro-ids
 

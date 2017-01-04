@@ -9,5 +9,5 @@
   vars:
     - bro_force_source_build: true
   roles:
-    - bro-ids
+    - juju4.bro-ids
 
