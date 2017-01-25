@@ -47,6 +47,7 @@
   action: mysql_user user="" state="absent" login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
 - name: remove the MySQL test database
   action: mysql_db db=test state=absent login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
+
 - name: Install Pdns requirements
   pip: name=bottle state=present
 

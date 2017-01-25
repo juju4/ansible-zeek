@@ -11,7 +11,7 @@ broids_packages_deps:
     - mariadb
     - mariadb-server
     - MySQL-python
-    - python-pip
+#    - python-pip
     - git
 ## to review network card offloading settings
     - ethtool
