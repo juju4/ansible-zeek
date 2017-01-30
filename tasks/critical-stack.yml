@@ -72,7 +72,19 @@
   command: "{{ item }}"
   with_items:
     - "critical-stack-intel config --set bro.path={{ bro_prefix }}"
-    - "critical-stack-intel config --set bro.include.path={{ broids_site }}"
+    - "critical-stack-intel config --set bro.include.path={{ broids_site }}/local.bro"
     - "critical-stack-intel config --set bro.broctl.path={{ broids_broctl }}"
   when: csconfig.stdout == ''
+  register: csconfig2
+
+- name: fetch feeds if config changed
+  command: critical-stack-intel pull
+  when: csconfig2.changed
+  notify:
+    - restart bro
+
+- name: allow critical-stack to auto-restart bro
+  command: "critical-stack-intel config --set bro.restart=true"
+  when: bro_cs_autorestart
+
 

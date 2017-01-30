@@ -32,6 +32,7 @@ bro_cs_enable: false
 bro_cs_apikey: ''
 bro_cs_proxy: ''
 #bro_cs_proxy: 'http://username:password@hostname:port'
+bro_cs_autorestart: false
 
 ## http://blog.bro.org/2014/01/intelligence-data-and-bro_4980.html
 broids_intels: []
