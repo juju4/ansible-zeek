@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/juju4/ansible-bro-ids.svg?branch=master)](https://travis-ci.org/juju4/ansible-bro-ids)
+[![Build Status - Master](https://travis-ci.org/juju4/ansible-bro-ids.svg?branch=master)](https://travis-ci.org/juju4/ansible-bro-ids)
+[![Build Status - Devel](https://travis-ci.org/juju4/ansible-bro-ids.svg?branch=devel)](https://travis-ci.org/juju4/ansible-bro-ids/branches)
 
 # Bro-ids ansible role
 
