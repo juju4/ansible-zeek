@@ -37,6 +37,12 @@ bro_cs_autorestart: false
 ## http://blog.bro.org/2014/01/intelligence-data-and-bro_4980.html
 broids_intels: []
 
+broids_plugins_templates:
+  - smb-detect-malicious-files
+  - smb-hidden-shares
+  - smb-rogue-hostname
+  - tls_finger
+
 ## mysql setup for passivedns
 mysql_user: root
 mysql_root_password: mysql_root_pass_to_change_or_get_lost

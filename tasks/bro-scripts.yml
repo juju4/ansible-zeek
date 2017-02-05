@@ -90,6 +90,13 @@
 - include: misp-integration.yml
   when: broids_misp_url is defined and broids_misp_url != '' and broids_misp_agent == 'curl'
 
+- name: copy bro plugins from templates
+  template:
+    src: "bro-{{ item }}.bro.j2"
+    dest: "{{ broids_site }}/{{ item }}.bro"
+    mode: '0644'
+    backup: yes
+  with_items: "{{ broids_plugins_templates }}"
 
 ## Anything to recover?
 ##  https://github.com/Security-Onion-Solutions/securityonion-bro-scripts
@@ -97,5 +104,4 @@
 ## https://github.com/sethhall/bro-scripts
 ## https://github.com/TravisFSmith/MyBroElk
 ## https://gist.github.com/mavam/5028034
-
 
