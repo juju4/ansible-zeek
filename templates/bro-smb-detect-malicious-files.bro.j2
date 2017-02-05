@@ -1,4 +1,4 @@
-## from https://www.sans.org/reading-room/whitepapers/detection/detecting-malicious-smb-activity-bro-37472
+# from https://www.sans.org/reading-room/whitepapers/detection/detecting-malicious-smb-activity-bro-37472
 
 @load base/frameworks/files
 @load base/frameworks/notice
@@ -6,7 +6,7 @@
 
 export {
  redef enum Notice::Type += {
- SMB
+   SMB
  };
 
  global trustedIPs: set[addr] = {192.168.1.22,192.168.1.20} &redef;
@@ -22,8 +22,7 @@ export {
 
 event file_hash(f: fa_file, kind: string, hash: string)
 {
-    # If the file "f" for the event has a source type, and if the source type equals
-    SMB, check file hash against VirusTotal
+    # If the file "f" for the event has a source type, and if the source type equals SMB, check file hash against VirusTotal
     if ( f?$source && f$source == "SMB")
     {
         local data = fmt("resource=%s", hash);
@@ -46,8 +45,7 @@ event file_hash(f: fa_file, kind: string, hash: string)
                         local pos = split_string(stuff[9],/\:/);
                         # converting the string from variable pos into a integer
                         local notic = to_int(pos[1]);
-                        # If the number of positives (number stored in
-                        variable notic) equals or exceeds the threshold, generate a notice
+                        # If the number of positives (number stored in variable notic) equals or exceeds the threshold, generate a notice
                         if (notic >= notice_threshold )
                         {
                             local msg = fmt("%s,%s,%s","Potentially Malicious File Transfered via SMB",stuff[9],stuff[4]);
