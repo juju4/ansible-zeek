@@ -42,6 +42,11 @@ broids_plugins_templates:
   - smb-hidden-shares
   - smb-rogue-hostname
   - tls_finger
+## if virustotal api key?
+#  - virus-total
+#  - vt-hashing
+
+broids_vt_api_key: ''
 
 ## mysql setup for passivedns
 mysql_user: root
