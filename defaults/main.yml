@@ -27,6 +27,9 @@ bro_v: '2.5'
 bro_archive_sha256: 1502a290d3663fa67a44ff6c1c8e8e9434b8ae5e76be5c2a02b06a0e391dc080
 bro_src_url: "https://www.bro.org/downloads/bro-{{ bro_v }}.tar.gz"
 
+## local disk logs limit in days
+broids_logexpire_interval: 90
+
 ## install critical stack (need to register to get API key, https://intel.criticalstack.com/)
 bro_cs_enable: false
 bro_cs_apikey: ''

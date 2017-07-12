@@ -65,18 +65,36 @@
 ## Note: file is created by broctl: install and {{ broids_spool }}/broctl-config.sh -> {{ bro_prefix }}/share/broctl/scripts/broctl-config.sh
 - stat: path={{ broids_spool }}/broctl-config.sh
   register: st
-- name: Reset send-mail config (not used by default)
-  lineinfile: 'dest={{ broids_spool }}/broctl-config.sh regexp="{{ item.regexp }}" line="{{ item.line }}" state=present'
-  with_items:
+- block:
+    - name: Reset send-mail config (not used by default)
+      lineinfile: 'dest={{ broids_spool }}/broctl-config.sh regexp="{{ item.regexp }}" line="{{ item.line }}" state=present'
+      with_items:
 ## FIXME! not working/not idempotent ??? changed all time. other task filling w /usr/sbin/sendmail
-    - { regexp: '^sendmail=.*', line: 'sendmail=\"\"' }
-  when: st.stat.exists
-#  notify:
-#    - restart bro
+        - { regexp: '^sendmail=.*', line: 'sendmail=\"\"' }
+#     notify:
+#       - restart bro
 
-- cron: name="bro maintainance" minute="0-59/5"
-        user="root" job="{{ bro_prefix }}/bin/broctl cron"
-        cron_file=ansible_bro
+    - name: Configure broctl-config.sh
+      lineinfile:
+        dest: "{{ broids_spool }}/broctl-config.sh"
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+        backup: yes
+      with_items:
+## log retention in days
+        - { regexp: '^logexpireinterval=.*', line: "logexpireinterval={{ broids_logexpire_interval }}" }
+      notify:
+        - restart bro
+  when: st.stat.exists
+
+- name: configure bro maintenance script as scheduled task
+  cron:
+    name: "bro maintainance"
+    minute: "0-59/5"
+    user: "root"
+    job: "{{ bro_prefix }}/bin/broctl cron"
+    cron_file: "ansible_bro"
 
 - name: Configure node.cfg
   template: src=node.cfg.j2 dest={{ broids_etc }}/node.cfg mode=0664 owner=root group={{ broids_group }}
