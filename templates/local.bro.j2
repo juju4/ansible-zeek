@@ -139,6 +139,10 @@ redef Intel::read_files += {
 {% endif %}
 @load apt1
 
+{% if broids_ja3_enable %}
+@load {{ broids_site }}/ja3
+
+{% endif %}
 {% if not bro_force_source_build and bro_v != '2.5' %}
 @load {{ broids_site }}/cs-bro/bro-scripts/dce-rpc
 {% endif %}

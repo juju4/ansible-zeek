@@ -1,0 +1,19 @@
+---
+## https://engineering.salesforce.com/open-sourcing-ja3-92c9e53c3c41
+## https://github.com/salesforce/ja3/tree/master/bro
+
+- name: Create ja3 directory in bro site
+  file:
+    dest: "{{ broids_site }}/ja3"
+    state: directory
+    mode: '0755'
+
+- name: Download ja3 bro scripts
+  get_url:
+    url: "{{ item.u }}"
+    dest: "{{ broids_site }}/ja3/{{ item.u | basename }}"
+    checksum: "{{ item.c }}"
+    backup: yes
+  with_items:
+    - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/intel_ja3.bro', c: 'sha256:968e45a6a3dafaf1421e1dcd801d3d70eaf06c41cab72cd4d597f54117d28169' }
+    - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/ja3.bro', c: 'sha256:243ad438fec63171603017e67be7b3626a46a158c0ee760bb1fede12c7f22dae' }

@@ -51,6 +51,8 @@ broids_plugins_templates:
 
 broids_vt_api_key: ''
 
+broids_ja3_enable: true
+
 ## mysql setup for passivedns
 mysql_user: root
 mysql_root_password: mysql_root_pass_to_change_or_get_lost
