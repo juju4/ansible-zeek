@@ -1,7 +1,8 @@
 ---
 driver:
-  name: vagrant
-  provider: <%= ENV['KITCHEN_PROVIDER'] || 'virtualbox' %>
+  name: docker
+## https://github.com/test-kitchen/kitchen-docker/issues/54
+  use_sudo: false
 
 transport:
   name: sftp
@@ -14,11 +15,24 @@ provisioner:
   ansible_verbose: false
   ansible_verbosity: 3
   ansible_extra_flags: <%= ENV['ANSIBLE_EXTRA_FLAGS'] %>
+#  require_chef_omnibus: false
+  require_ansible_omnibus: true
+#  require_chef_for_busser: false
+  enable_yum_epel: true
+  ansible_connection: ssh
 
 platforms:
   - name: ubuntu-16.04
   - name: ubuntu-14.04
-  - name: centos-7.1
+#  - name: ubuntu-12.04
+  - name: centos-7
+### epel mirror issue. see readme
+#  - name: centos-6
+### Ansible 2.2+/cryptography: https://github.com/ansible/ansible/issues/276
+#    provisioner:
+#      ansible_version: 2.1.2.0
+## tool chain kitchen and image need customization... nok currently
+#  - name: alpine-3.6
 
 suites:
   - name: default
