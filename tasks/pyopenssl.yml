@@ -6,7 +6,7 @@
     - name: PyOpenSSL 16.2+
       pip:
         name: "{{ item }}"
-        version: latest
+        version: 17.2.0
         state: present
       with_items:
         - pyopenssl
