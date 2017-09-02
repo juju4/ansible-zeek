@@ -1,0 +1,44 @@
+---
+
+## ubuntu xenial: 8.1, trusty: 1.5, centos7:
+## trusty gets:
+## https://github.com/Toblerity/Shapely/issues/305      ImportError: No module named packaging.version
+## https://github.com/pypa/setuptools/issues/937        
+- name: check current pip version
+  shell: 'pip --version | sed "s/pip \(.*\) from .*/\1/"'
+  changed_when: false
+  register: pipv
+
+- debug: var=pipv.stdout
+
+## does not seem to be handled well by ansible pip module
+- block:
+
+    - name: upgrade pip to latest
+      command: pip install --upgrade pip
+      when: ansible_os_family != "Debian"
+
+## FIXME! debian/ubuntu prevent that, https://github.com/pypa/pip/issues/2964
+#    - block:
+#        ## dependencies issues...
+#        - name: ensure pip+setuptools packages are not present
+#          apt: name={{ item }} state=absent
+#          with_items:
+#            - python-pip
+#            - python-setuptools
+#    
+### or with hash+gpg signature, https://pypi.python.org/pypi/pip
+### or python -m ensurepip
+#        - name: download pip installer
+#          get_url:
+#            url: https://bootstrap.pypa.io/get-pip.py
+#            dest: /root/get-pip.py
+#            mode: '0644'
+#            backup: yes
+#            checksum: 'sha256:19dae841a150c86e2a09d475b5eb0602861f2a5b7761ec268049a662dbd2bd0c'
+#        - name: install pip from get-pip.py
+#          command: "python /root/get-pip.py creates=/usr/bin/pip"
+#      when: ansible_os_family == "Debian"
+
+  when: pipv.stdout | version_compare( '8.1', '<')
+

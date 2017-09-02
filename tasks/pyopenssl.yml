@@ -1,0 +1,12 @@
+---
+
+- block:
+    - include: pip-upgrade.yml
+## AttributeError: 'module' object has no attribute 'SSL_ST_INIT'
+    - name: PyOpenSSL 16.2+
+      pip: name={{ item }} state=present
+      with_items:
+        - pyopenssl
+  when: ansible_distribution_release == 'xenial'
+#  when: ansible_distribution_release == 'xenial' or ansible_distribution_major_version|int <= 7
+
