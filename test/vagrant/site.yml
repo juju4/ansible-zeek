@@ -2,5 +2,5 @@
 
 - hosts: all
   roles:
-    - bro-ids
+    - juju4.bro-ids
 
