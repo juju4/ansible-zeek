@@ -29,8 +29,6 @@
   include: source.yml
   when: bro_force_source_build
 
-- include: pyopenssl.yml
-
 ## Extra configuration
 - name: Add BROPATH to /etc/profile
   lineinfile: 'dest=/etc/profile regexp="{{ item.regexp }}" line="{{ item.line }}" state=present create=yes'
