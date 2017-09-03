@@ -15,7 +15,10 @@
   with_items:
     - git
     - gdb
+    - python-pip
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- include: pyopenssl.yml
 
 - name: Debian-based | install bro
   include: debian.yml
@@ -28,8 +31,6 @@
 - name: install bro from source
   include: source.yml
   when: bro_force_source_build
-
-- include: pyopenssl.yml
 
 ## Extra configuration
 - name: Add BROPATH to /etc/profile
