@@ -25,7 +25,7 @@
 
 ## FIXME! v2.2 on xenial/python2.7.12: FAILED! => {"changed": false, "failed": true, "msg": "Failed to validate the SSL certificate for intel.criticalstack.com:443. Make sure your managed systems have a valid CA certificate installed. You can use validate_certs=False if you do not need to confirm the servers identity but this is unsafe and not recommended. Paths checked for this platform: /etc/ssl/certs, /etc/pki/ca-trust/extracted/pem, /etc/pki/tls/certs, /usr/share/ca-certificates/cacert.org, /etc/ansible"}
 - name: download critical stack package
-#  get_url: url={{ bro_cs_pkg }} dest=/tmp/{{ bro_cs_pkg | basename }} mode=0644 
+#  get_url: url={{ bro_cs_pkg }} dest=/tmp/{{ bro_cs_pkg | basename }} mode=0644
   get_url: url={{ bro_cs_pkg }} dest=/tmp/{{ bro_cs_pkg | basename }} mode=0644 validate_certs=False checksum="sha256:{{ bro_cs_sha256 }}"
 - set_fact:
     bro_cs_pkg: "/tmp/{{ bro_cs_pkg | basename }}"

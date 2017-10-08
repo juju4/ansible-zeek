@@ -3,7 +3,7 @@
 ## ubuntu xenial: 8.1, trusty: 1.5, centos7:
 ## trusty gets:
 ## https://github.com/Toblerity/Shapely/issues/305      ImportError: No module named packaging.version
-## https://github.com/pypa/setuptools/issues/937        
+## https://github.com/pypa/setuptools/issues/937
 - name: check current pip version
   shell: 'pip --version | sed "s/pip \(.*\) from .*/\1/"'
   changed_when: false
@@ -26,7 +26,7 @@
 #          with_items:
 #            - python-pip
 #            - python-setuptools
-#    
+#
 ### or with hash+gpg signature, https://pypi.python.org/pypi/pip
 ### or python -m ensurepip
 #        - name: download pip installer

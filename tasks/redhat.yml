@@ -30,8 +30,8 @@
     replace: "{{ item.rep }}"
     backup: yes
   with_items:
-    - { re: '^LogDir = .*', rep: "LogDir = {{ broids_log }}" } 
-    - { re: '^SpoolDir = .*', rep: "SpoolDir = {{ broids_spool }}" } 
+    - { re: '^LogDir = .*', rep: "LogDir = {{ broids_log }}" }
+    - { re: '^SpoolDir = .*', rep: "SpoolDir = {{ broids_spool }}" }
 
 - name: update broctl LogDir - missing line
   lineinfile:
@@ -40,8 +40,8 @@
     line: "{{ item.rep }}"
     backup: yes
   with_items:
-    - { re: '^LibDirInternal = .*', rep: "LibDirInternal = {{ broids_libdir }}" } 
-    - { re: '^PluginDir = .*', rep: "PluginDir = {{ broids_plugindir }}" } 
+    - { re: '^LibDirInternal = .*', rep: "LibDirInternal = {{ broids_libdir }}" }
+    - { re: '^PluginDir = .*', rep: "PluginDir = {{ broids_plugindir }}" }
 
 - name: Redhat | Ensure Mysql/Mariadb is running and enabled on boot.
   service: "name={{ mysql_svc }} state=started enabled=yes"

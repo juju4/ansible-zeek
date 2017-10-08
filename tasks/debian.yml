@@ -57,7 +57,7 @@
         replace: "{{ item.rep }}"
         backup: yes
       with_items:
-        - { re: '^LogDir = .*', rep: "LogDir = {{ broids_log }}" } 
+        - { re: '^LogDir = .*', rep: "LogDir = {{ broids_log }}" }
   when: not use_securityonion_deb
 
 ## bro 2.1+
