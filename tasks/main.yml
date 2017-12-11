@@ -77,14 +77,16 @@
 
     - name: Configure broctl-config.sh
       lineinfile:
-        dest: "{{ broids_spool }}/broctl-config.sh"
+        dest: "{{ broids_etc }}/broctl.cfg"
+#        dest: "{{ broids_spool }}/broctl-config.sh"
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
         state: present
         backup: yes
       with_items:
 ## log retention in days
-        - { regexp: '^logexpireinterval=.*', line: "logexpireinterval={{ broids_logexpire_interval }}" }
+#        - { regexp: '^logexpireinterval=.*', line: "logexpireinterval={{ broids_logexpire_interval }}" }
+        - { regexp: '^LogExpireInterval = .*', line: "LogExpireInterval = {{ broids_logexpire_interval }}" }
       notify:
         - restart bro
   when: st.stat.exists
