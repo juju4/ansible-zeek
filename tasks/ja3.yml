@@ -16,5 +16,5 @@
     backup: yes
   with_items:
     - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/intel_ja3.bro', c: 'sha256:968e45a6a3dafaf1421e1dcd801d3d70eaf06c41cab72cd4d597f54117d28169' }
-    - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/ja3.bro', c: 'sha256:243ad438fec63171603017e67be7b3626a46a158c0ee760bb1fede12c7f22dae' }
+    - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/ja3.bro', c: 'sha256:7be372f2189cd9a0b1aed692fdf0822b405b4b7ce70b4a21f99aa99862e34367' }
     - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/__load__.bro', c: 'sha256:2a0fd74c7682344a223f366e7e3338d159b81728b918f6337c76ac996c677490' }
