@@ -18,6 +18,23 @@
         owner=root group=root mode=0644
   when: ansible_os_family == "Fedora"
 
+# opensuse mirror has issue sometimes
+# https://central.owncloud.org/t/client-install-redhat-repository-download-fails/9459/6
+# https://bugzilla.redhat.com/show_bug.cgi?id=1055478
+- name: opensuse mirror workaround | lower yum minrate
+  lineinfile:
+    dest: /etc/yum.conf
+    regexp: '^minrate=.*'
+    line: 'minrate=100'
+    backup: yes
+# repositories does not seem to be mirrored as much as distribution (subset of https://mirrors.opensuse.org/)
+- name: opensuse mirror workaround | review mirror
+  replace:
+    dest: /etc/yum.repos.d/bro.repo
+    regexp: "^baseurl=.*/repositories/network:/bro/"
+    replace: "baseurl={{ bro_opensuse_rpm_mirror }}"
+    backup: yes
+
 ## FIXME! travis: skipping + "[Errno 30] Read-only file system"
 - name: Redhat | Install Bro and dependencies
   yum: name={{item}} state=present update_cache=yes
