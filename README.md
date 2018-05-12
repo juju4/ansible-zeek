@@ -17,10 +17,11 @@ Installation from
 It was tested on the following versions:
  * 2.0
  * 2.2
+ * 2.5
 
 ### Operating systems
 
-Ubuntu 14.04, 16.04 and Centos7
+Ubuntu 14.04, 16.04, 18.04 and Centos7
 
 ## Example Playbook
 
@@ -82,13 +83,13 @@ This role has a travis basic test (for github), more advanced with kitchen and a
 
 Once you ensured all necessary roles are present, You can test with:
 ```
-$ cd /path/to/roles/mig
+$ cd /path/to/roles/juju.bro-ids
 $ kitchen verify
 $ kitchen login
 ```
 or
 ```
-$ cd /path/to/roles/mig/test/vagrant
+$ cd /path/to/roles/juju4.bro-ids/test/vagrant
 $ vagrant up
 $ vagrant ssh
 ```

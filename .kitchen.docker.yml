@@ -22,6 +22,10 @@ provisioner:
   ansible_connection: ssh
 
 platforms:
+  - name: ubuntu-18.04
+    driver_config:
+# https://github.com/test-kitchen/kitchen-docker/issues/285
+      provision_command: mkdir -p /run/sshd
   - name: ubuntu-16.04
 #  - name: ubuntu-14.04
 #  - name: ubuntu-12.04
