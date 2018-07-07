@@ -87,6 +87,7 @@
 ## log retention in days
 #        - { regexp: '^logexpireinterval=.*', line: "logexpireinterval={{ broids_logexpire_interval }}" }
         - { regexp: '^LogExpireInterval = .*', line: "LogExpireInterval = {{ broids_logexpire_interval }}" }
+        - { regexp: '^StatsLogExpireInterval = .*', line: "StatsLogExpireInterval = {{ broids_logexpire_interval }}" }
       notify:
         - restart bro
   when: st.stat.exists
