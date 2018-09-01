@@ -36,3 +36,6 @@ suites:
     includes:
 #      - ubuntu-16.04
       - ubuntu-14.04
+  - name: default-ja3
+    run_list:
+    attributes:

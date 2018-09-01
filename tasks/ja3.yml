@@ -14,8 +14,4 @@
     dest: "{{ broids_site }}/ja3/{{ item.u | basename }}"
     checksum: "{{ item.c }}"
     backup: yes
-  with_items:
-    - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/intel_ja3.bro', c: 'sha256:968e45a6a3dafaf1421e1dcd801d3d70eaf06c41cab72cd4d597f54117d28169' }
-    - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/ja3.bro', c: 'sha256:7be372f2189cd9a0b1aed692fdf0822b405b4b7ce70b4a21f99aa99862e34367' }
-    - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/__load__.bro', c: 'sha256:0c3237b9cabdc4a65bdc96ea99bf67ae3c158c73f771b99f21f73a4b4eee0c3c' }
-    - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/ja3s.bro', c: 'sha256:c4815b07fd2adf5af0fadd54315d7d7137fdfca8a1d2f15f70ccb64a81f768f3' }
+  with_items: "{{ broids_ja3_files }}"
