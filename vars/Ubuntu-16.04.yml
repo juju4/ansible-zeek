@@ -6,7 +6,6 @@ broids_packages:
     - broctl
 
 broids_packages_deps:
-    - apt-transport-https
     - mysql-server
     - php-mysql
     - python-pip
