@@ -1,5 +1,10 @@
 ---
 
+- name: Debian | Ensure apt-transport-https is present
+  package:
+    name: apt-transport-https
+    state: present
+
 - block:
     - name: Ubuntu | Add bro repository key
       apt_key: url=https://download.opensuse.org/repositories/network:bro/xUbuntu_{{ ansible_distribution_version }}/Release.key state=present
