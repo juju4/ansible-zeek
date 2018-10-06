@@ -2,17 +2,17 @@
 
 - block:
     - name: Ubuntu | Add bro repository key
-      apt_key: url=http://download.opensuse.org/repositories/network:bro/xUbuntu_{{ ansible_distribution_version }}/Release.key state=present
+      apt_key: url=https://download.opensuse.org/repositories/network:bro/xUbuntu_{{ ansible_distribution_version }}/Release.key state=present
     - name: Ubuntu | Add bro repository
-      apt_repository: repo='deb http://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/ /' state=present
+      apt_repository: repo='deb https://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/ /' state=present
 ## upstream xenial has 2.4.1, opensuse repo 2.5, bionic 2.5.3
   when: (ansible_distribution == 'Ubuntu' and ansible_distribution_version.split('.')[0]|int < 18) and not use_securityonion_deb
 #  when: ansible_distribution == 'Ubuntu' and not use_securityonion_deb
 - block:
     - name: Debian | Add bro repository key
-      apt_key: url=http://download.opensuse.org/repositories/network:bro/Debian_{{ ansible_distribution_version }}/Release.key state=present
+      apt_key: url=https://download.opensuse.org/repositories/network:bro/Debian_{{ ansible_distribution_version }}/Release.key state=present
     - name: Debian | Add bro repository
-      apt_repository: repo='deb http://download.opensuse.org/repositories/network:/bro/Debian_{{ ansible_distribution_version }}/ /' state=present
+      apt_repository: repo='deb https://download.opensuse.org/repositories/network:/bro/Debian_{{ ansible_distribution_version }}/ /' state=present
   when: ansible_distribution == 'Debian' and not use_securityonion_deb
 ## https://github.com/Security-Onion-Solutions/security-onion/wiki/InstallingOnUbuntu   Only Ubuntu 12.04
 - block:
