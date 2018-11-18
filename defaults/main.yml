@@ -57,8 +57,8 @@ broids_vt_api_key: ''
 
 broids_ja3_enable: false
 broids_ja3_files:
-  - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/intel_ja3.bro', c: 'sha256:968e45a6a3dafaf1421e1dcd801d3d70eaf06c41cab72cd4d597f54117d28169' }
-  - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/ja3.bro', c: 'sha256:7c527734a787a57a9f8ed920495819220aaf7df15a9816f2f5855ac826935afc' }
+  - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/intel_ja3.bro', c: 'sha256:2e436d3049fd3e2f1dcd3fd26f39dbb933111f7cf19e538414e3f3a7a32dde5d' }
+  - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/ja3.bro', c: 'sha256:f79c3c88234586677d875da531bf5b0cbf0cd982ae0fb344b347545c4d6a9fcd' }
   - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/__load__.bro', c: 'sha256:0c3237b9cabdc4a65bdc96ea99bf67ae3c158c73f771b99f21f73a4b4eee0c3c' }
   - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/ja3s.bro', c: 'sha256:a4bf19d9cfe0a2a304e8da62a87004d7a11f77c80d3bf075acee075c0a5f8907' }
 
