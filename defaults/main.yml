@@ -60,7 +60,7 @@ broids_ja3_files:
   - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/intel_ja3.bro', c: 'sha256:968e45a6a3dafaf1421e1dcd801d3d70eaf06c41cab72cd4d597f54117d28169' }
   - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/ja3.bro', c: 'sha256:7c527734a787a57a9f8ed920495819220aaf7df15a9816f2f5855ac826935afc' }
   - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/__load__.bro', c: 'sha256:0c3237b9cabdc4a65bdc96ea99bf67ae3c158c73f771b99f21f73a4b4eee0c3c' }
-  - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/ja3s.bro', c: 'sha256:c4815b07fd2adf5af0fadd54315d7d7137fdfca8a1d2f15f70ccb64a81f768f3' }
+  - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/ja3s.bro', c: 'sha256:a4bf19d9cfe0a2a304e8da62a87004d7a11f77c80d3bf075acee075c0a5f8907' }
 
 ## mysql setup for passivedns
 mysql_user: root
