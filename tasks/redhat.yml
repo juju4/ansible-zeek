@@ -8,7 +8,7 @@
 #- debug: var=ansible_lsb
 
 - name: RHEL | Install Bro yum repository
-  get_url: >
+  get_url:
     url: >
       https://download.opensuse.org/repositories/network:bro/CentOS_{{ ansible_distribution_major_version }}/network:bro.repo
     dest: /etc/yum.repos.d/bro.repo
@@ -17,7 +17,7 @@
     mode: '0644'
   when: ansible_os_family == "RedHat"
 - name: Fedora | Install Bro yum repository
-  get_url: >
+  get_url:
     url: >
       https://download.opensuse.org/repositories/network:bro/Fedora_{{ ansible_distribution_major_version }}/network:bro.repo
     dest: /etc/yum.repos.d/bro.repo
