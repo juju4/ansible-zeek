@@ -2,4 +2,4 @@
 
 - hosts: all
   roles:
-    - juju4.bro-ids
+    - juju4.broids

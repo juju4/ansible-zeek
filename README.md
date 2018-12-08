@@ -31,7 +31,7 @@ For example
 ```
 - hosts: server
   roles:
-    - juju4.bro-ids
+    - juju4.broids
 
 ```
 
@@ -89,7 +89,7 @@ $ kitchen login
 ```
 or
 ```
-$ cd /path/to/roles/juju4.bro-ids/test/vagrant
+$ cd /path/to/roles/juju4.broids/test/vagrant
 $ vagrant up
 $ vagrant ssh
 ```

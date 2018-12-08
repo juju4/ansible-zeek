@@ -9,5 +9,4 @@
   vars:
     - broids_ja3_enable: true
   roles:
-    - juju4.bro-ids
-
+    - juju4.broids

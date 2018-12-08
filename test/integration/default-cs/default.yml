@@ -9,5 +9,4 @@
   vars:
     - bro_cs_enable: true
   roles:
-    - juju4.bro-ids
-
+    - juju4.broids
