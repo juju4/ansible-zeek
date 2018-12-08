@@ -36,4 +36,3 @@ broids_libdir: /opt/bro/lib/broctl/BroControl
 broids_plugindir: /opt/bro/lib/broctl/BroControl/plugins
 
 monitrc: /etc/monit/monitrc
-

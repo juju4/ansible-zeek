@@ -5,13 +5,18 @@
   when: ansible_distribution == 'Ubuntu'
 - name: Include version-specific variables for RedHat
   include_vars: "RedHat-{{ ansible_distribution_version.split('.')[0] }}.yml"
-  when: ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  when: ansible_os_family == "RedHat"
 - name: Include securityonion variables
   include_vars: securityonion.yml
-  when: use_securityonion_deb and (ansible_distribution_release == "precise" or ansible_distribution_release == "trusty")
+  when: >
+    use_securityonion_deb and
+    (ansible_distribution_release == "precise" or ansible_distribution_release == "trusty")
 
 - name: Debian | Install Bro dependencies
-  apt: name={{item}} state=present update_cache=yes
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
   with_items:
     - git
     - gdb
@@ -26,7 +31,7 @@
 
 - name: Redhat-based | install bro
   include: redhat.yml
-  when: not bro_force_source_build and (ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+  when: not bro_force_source_build and ansible_os_family == "RedHat"
 
 - name: install bro from source
   include: source.yml
@@ -34,7 +39,12 @@
 
 ## Extra configuration
 - name: Add BROPATH to /etc/profile
-  lineinfile: 'dest=/etc/profile regexp="{{ item.regexp }}" line="{{ item.line }}" state=present create=yes'
+  lineinfile:
+    dest: /etc/profile
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+    create: yes
   with_items:
     - { regexp: '^export BROPATH=', line: 'export BROPATH={{ bro_prefix }}' }
     - { regexp: '^export PATH=', line: 'export PATH=$PATH:$BROPATH/bin' }
@@ -63,12 +73,17 @@
   notify:
     - restart bro
 
-## Note: file is created by broctl: install and {{ broids_spool }}/broctl-config.sh -> {{ bro_prefix }}/share/broctl/scripts/broctl-config.sh
+## Note: file is created by broctl: install and {{ broids_spool }}/broctl-config.sh
+##  -> {{ bro_prefix }}/share/broctl/scripts/broctl-config.sh
 - stat: path={{ broids_spool }}/broctl-config.sh
   register: st
 - block:
     - name: Reset send-mail config (not used by default)
-      lineinfile: 'dest={{ broids_spool }}/broctl-config.sh regexp="{{ item.regexp }}" line="{{ item.line }}" state=present'
+      lineinfile:
+        dest: "{{ broids_spool }}/broctl-config.sh"
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
       with_items:
 ## FIXME! not working/not idempotent ??? changed all time. other task filling w /usr/sbin/sendmail
         - { regexp: '^sendmail=.*', line: 'sendmail=\"\"' }
@@ -146,4 +161,3 @@
 
 - include: aide-hids.yml
 - include: monit.yml
-

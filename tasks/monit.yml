@@ -31,10 +31,10 @@
 
 - block:
     - name: yum | monit package
-      yum: name={{item}} state=present
+      yum: name={{ item }} state=present
       with_items:
         - monit
-  when: ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  when: ansible_os_family == "RedHat"
 
 - name: allow monit status/summary from localhost
   replace: dest={{ monitrc }} regexp={{ item.re }} replace={{ item.rep }}

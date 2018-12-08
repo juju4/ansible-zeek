@@ -3,38 +3,46 @@
 
 - name: git clone seth hall APT1
   git:
-    repo=https://github.com/sethhall/bro-apt1
-    dest={{ broids_site }}/apt1
+    repo: https://github.com/sethhall/bro-apt1
+    dest: "{{ broids_site }}/apt1"
+    version: HEAD
 - name: git clone Crowdstrike bro scripts
   git:
-    repo=https://github.com/CrowdStrike/cs-bro.git
-    dest={{ broids_site }}/cs-bro
-    update=no
+    repo: https://github.com/CrowdStrike/cs-bro.git
+    dest: "{{ broids_site }}/cs-bro"
+    version: HEAD
+    update: no
 - name: git clone jonschipp bro scripts
   git:
-    repo=https://github.com/jonschipp/bro-scripts.git
-    dest={{ broids_site }}/jonschipp-bro
+    repo: https://github.com/jonschipp/bro-scripts.git
+    dest: "{{ broids_site }}/jonschipp-bro"
+    version: HEAD
 - name: git clone securitykitten bro scripts
   git:
-    repo=https://github.com/securitykitten/bro_scripts.git
-    dest={{ broids_site }}/securitykitten-bro
-    update=no
+    repo: https://github.com/securitykitten/bro_scripts.git
+    dest: "{{ broids_site }}/securitykitten-bro"
+    version: HEAD
+    update: no
 - name: git clone fox-it bro scripts
   git:
-    repo=https://github.com/fox-it/bro-scripts.git
-    dest={{ broids_site }}/foxit-bro
+    repo: https://github.com/fox-it/bro-scripts.git
+    dest: "{{ broids_site }}/foxit-bro"
+    version: HEAD
 - name: git clone criticalstack bro scripts
   git:
-    repo=https://github.com/criticalstack/bro-scripts.git
-    dest={{ broids_site }}/criticalstack
+    repo: https://github.com/criticalstack/bro-scripts.git
+    dest: "{{ broids_site }}/criticalstack"
+    version: HEAD
 - name: git clone sooshie bro scripts
   git:
-    repo=https://github.com/sooshie/bro-scripts.git
-    dest={{ broids_site }}/sooshie-bro
+    repo: https://github.com/sooshie/bro-scripts.git
+    dest: "{{ broids_site }}/sooshie-bro"
+    version: HEAD
 - name: git clone dovehawk bro scripts - MISP
   git:
-    repo=https://github.com/tylabs/dovehawk.git
-    dest={{ broids_site }}/dovehawk
+    repo: https://github.com/tylabs/dovehawk.git
+    dest: "{{ broids_site }}/dovehawk"
+    version: HEAD
 
 ## from https://www.bro.org/download/CHANGES.bro.txt, 2.3-404
 - name: update script s/split_all/string_split/all in detect-shellshock.bro
@@ -58,9 +66,10 @@
 - block:
     - name: git clone misp2bro
       git:
-        repo=https://github.com/thnyheim/misp2bro.git
-        dest={{ broids_site }}/misp2bro
-        update=no
+        repo: https://github.com/thnyheim/misp2bro.git
+        dest: "{{ broids_site }}/misp2bro"
+        version: HEAD
+        update: no
     - name: update misp2bro config
       replace: "dest={{ broids_site }}/misp2bro/misp2bro.py regexp={{ item.re }} replace={{ item.rep }} backup=yes"
       with_items:
@@ -68,10 +77,14 @@
         - { re: '^API_KEY=".*"', rep: "API_KEY=\"{{ broids_misp_apikey }}\"" }
         - { re: '^BRO_FILENAME=".*"', rep: "BRO_FILENAME=\"{{ broids_misp2bro_output | basename }}\"" }
         - { re: '^BRO_PATH=".*"', rep: "BRO_PATH=\"{{ broids_misp2bro_output | dirname }}\"" }
-        - { re: 'logging.basicConfig\(filename=".*"', rep: "logging.basicConfig(filename=\"{{ broids_log }}/misp2bro.log\"" }
+        - { re: 'logging.basicConfig\(filename=".*"',
+            rep: "logging.basicConfig(filename=\"{{ broids_log }}/misp2bro.log\""
+          }
         - { re: '"tmp/', rep: "\"{{ broids_spool }}/misp2bro/" }
 ## https://github.com/thnyheim/misp2bro/pull/1
-        - { re: " if int\\(event.find\\('attribute_count'\\).text\\)", rep: " #if int(event.find('attribute_count').text)" }
+        - { re: " if int\\(event.find\\('attribute_count'\\).text\\)",
+            rep: " #if int(event.find('attribute_count').text)"
+          }
 #      no_log: true
     - name: update misp2bro sensors.txt
       template:
@@ -110,4 +123,3 @@
 ## https://github.com/sethhall/bro-scripts
 ## https://github.com/TravisFSmith/MyBroElk
 ## https://gist.github.com/mavam/5028034
-

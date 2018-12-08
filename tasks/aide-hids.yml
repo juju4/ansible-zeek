@@ -6,4 +6,3 @@
     - name: add additional aide HIDS configuration
       template: src=99_aide_local_broids.j2 dest=/etc/aide/aide.conf.d/99_aide_local_broids mode=0644
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-

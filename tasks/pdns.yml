@@ -25,13 +25,14 @@
 #- debug: var=myconf.stdout_lines
 
 - name: Set mysql root user password
-  mysql_user: name=root
-              host="{{ item }}"
-              password="{{ mysql_root_password }}"
-              check_implicit_admin=yes
-              login_user="{{ mysql_user }}"
-              login_password="{{ mysql_old_root_password }}"
-              state=present
+  mysql_user:
+    name: root
+    host="{{ item }}"
+    password: "{{ mysql_root_password }}"
+    check_implicit_admin: yes
+    login_user: "{{ mysql_user }}"
+    login_password: "{{ mysql_old_root_password }}"
+    state: present
   with_items:
         - "{{ ansible_hostname }}"
         - 127.0.0.1
@@ -39,9 +40,19 @@
         - localhost
   ignore_errors: true
 - name: ensure pdns database exists
-  mysql_db: name=pdns state=present login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
+  mysql_db:
+    name: pdns
+    state: present
+    login_user: "{{ mysql_user }}"
+    login_password: "{{ mysql_root_password }}"
 - name: ensure pdns db user exists
-  mysql_user: name={{ mysql_pdns_user }} password={{ mysql_pdns_pass }} priv=pdns.*:ALL state=present login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
+  mysql_user:
+    name: "{{ mysql_pdns_user }}"
+    password: "{{ mysql_pdns_pass }}"
+    priv: pdns.*:ALL
+    state: present
+    login_user: "{{ mysql_user }}"
+    login_password: "{{ mysql_root_password }}"
 
 - name: delete anonymous MySQL server user for localhost
   action: mysql_user user="" state="absent" login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
@@ -58,4 +69,3 @@
     dest={{ broids_site }}/bro-pdns
     version=master
 #    version=4d94969386186b879a17c5f40dfbb12d2ecaa21e
-

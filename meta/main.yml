@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: broids
   author: juju4
   description: setup Bro IDS
   license: BSD
@@ -31,7 +32,6 @@ dependencies:
   # Be sure to remove the '[]' above if you add dependencies
   # to this list.
   - juju4.maxmind
-  - juju4.redhat-epel
+  - juju4.redhat_epel
 ## not really required except for mail summary
   - juju4.ipsumdump
-

@@ -7,17 +7,30 @@
 
 - block:
     - name: Ubuntu | Add bro repository key
-      apt_key: url=https://download.opensuse.org/repositories/network:bro/xUbuntu_{{ ansible_distribution_version }}/Release.key state=present
+      apt_key:
+        url: >
+          https://download.opensuse.org/repositories/network:bro/xUbuntu_{{ ansible_distribution_version }}/Release.key
+        state: present
     - name: Ubuntu | Add bro repository
-      apt_repository: repo='deb https://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/ /' state=present
+      apt_repository:
+        repo: >
+          deb https://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/ /
+        state: present
 ## upstream xenial has 2.4.1, opensuse repo 2.5, bionic 2.5.3
-  when: (ansible_distribution == 'Ubuntu' and ansible_distribution_version.split('.')[0]|int < 18) and not use_securityonion_deb
-#  when: ansible_distribution == 'Ubuntu' and not use_securityonion_deb
+  when: >
+    (ansible_distribution == 'Ubuntu' and ansible_distribution_version.split('.')[0]|int < 18) and
+    not use_securityonion_deb
 - block:
     - name: Debian | Add bro repository key
-      apt_key: url=https://download.opensuse.org/repositories/network:bro/Debian_{{ ansible_distribution_version }}/Release.key state=present
+      apt_key:
+        url: >
+          https://download.opensuse.org/repositories/network:bro/Debian_{{ ansible_distribution_version }}/Release.key
+        state: present
     - name: Debian | Add bro repository
-      apt_repository: repo='deb https://download.opensuse.org/repositories/network:/bro/Debian_{{ ansible_distribution_version }}/ /' state=present
+      apt_repository:
+        repo: >
+          deb https://download.opensuse.org/repositories/network:/bro/Debian_{{ ansible_distribution_version }}/ /
+        state: present
   when: ansible_distribution == 'Debian' and not use_securityonion_deb
 ## https://github.com/Security-Onion-Solutions/security-onion/wiki/InstallingOnUbuntu   Only Ubuntu 12.04
 - block:
@@ -40,9 +53,16 @@
         dest: /etc/init.d/bro-ids
         mode: '0755'
         sha256sum: 'cafc0b8eebae434c4600bc71a4a3448e0e3a59ff306f5ef8408a838f58e33860'
-      when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and not initbro.stat.exists
+      when: >
+        not use_securityonion_deb and
+        (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and
+        not initbro.stat.exists
     - name: update bro path in init.d/bro-ids
-      replace: dest=/etc/init.d/bro-ids regexp='^DAEMON=.*' replace="DAEMON={{ broids_broctl }}" backup=yes
+      replace:
+        dest: /etc/init.d/bro-ids
+        regexp: '^DAEMON=.*'
+        replace: "DAEMON={{ broids_broctl }}"
+        backup: yes
       when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
   when: ansible_service_mgr != 'systemd'
 
@@ -106,4 +126,3 @@
 - name: Restart the AppArmor if necessary.
   service: name=apparmor state=restarted
   when: travisci is defined and travisci and mysql_apparmor.changed
-

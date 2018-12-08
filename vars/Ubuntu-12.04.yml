@@ -26,4 +26,3 @@ mysql_svc: mysql
 mysql_confdir: /etc/mysql
 
 monitrc: /etc/monit/monitrc
-

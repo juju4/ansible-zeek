@@ -16,18 +16,23 @@
   set_fact:
     bro_cs_pkg: https://intel.criticalstack.com/client/critical-stack-intel-i386.rpm
     bro_cs_sha256: aaaa
-  when: ansible_architecture == 'i386' and (ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+  when: ansible_architecture == 'i386' and ansible_os_family == "RedHat"
 - name: package - redhat - amd64
   set_fact:
     bro_cs_pkg: https://intel.criticalstack.com/client/critical-stack-intel-amd64.rpm
     bro_cs_sha256: 9bcf1d1741b118429aa98ec4915490961f0e2ed4f1ae5a21203a445b4de8a7f7
-  when: ansible_architecture == 'x86_64' and (ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+  when: ansible_architecture == 'x86_64' and ansible_os_family == "RedHat"
 
-## FIXME! v2.2 on xenial/python2.7.12: FAILED! => {"changed": false, "failed": true, "msg": "Failed to validate the SSL certificate for intel.criticalstack.com:443. Make sure your managed systems have a valid CA certificate installed. You can use validate_certs=False if you do not need to confirm the servers identity but this is unsafe and not recommended. Paths checked for this platform: /etc/ssl/certs, /etc/pki/ca-trust/extracted/pem, /etc/pki/tls/certs, /usr/share/ca-certificates/cacert.org, /etc/ansible"}
 - name: download critical stack package
 #  get_url: url={{ bro_cs_pkg }} dest=/tmp/{{ bro_cs_pkg | basename }} mode=0644
-  get_url: url={{ bro_cs_pkg }} dest=/tmp/{{ bro_cs_pkg | basename }} mode=0644 validate_certs=False checksum="sha256:{{ bro_cs_sha256 }}"
-- set_fact:
+  get_url:
+    url: "{{ bro_cs_pkg }}"
+    dest: "/tmp/{{ bro_cs_pkg | basename }}"
+    mode: '0644'
+    validate_certs: False
+    checksum: "sha256:{{ bro_cs_sha256 }}"
+- name: Set variable bro_cs_pkg
+  set_fact:
     bro_cs_pkg: "/tmp/{{ bro_cs_pkg | basename }}"
 
 - block:
@@ -53,7 +58,7 @@
       yum: name={{ bro_cs_pkg }} state=present
       become: yes
       when: rpm.stdout == 'package critical-stack-intel is not installed'
-  when: (ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+  when: ansible_os_family == "RedHat"
 
 - name: register critical stack API key
   command: "critical-stack-intel api {{ bro_cs_apikey }} creates=/opt/critical-stack/configs/critical-stack-intel.db"
@@ -86,5 +91,3 @@
 - name: allow critical-stack to auto-restart bro
   command: "critical-stack-intel config --set bro.restart=true"
   when: bro_cs_autorestart
-
-

@@ -1,6 +1,6 @@
 ---
 - name: Debian | Install Bro dependencies
-  apt: name={{item}} state=present update_cache=yes
+  apt: name={{ item }} state=present update_cache=yes
   with_items:
     - cmake
     - make
@@ -21,7 +21,7 @@
     - "{{ broids_packages_deps }}"
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 - name: Redhat | Install Bro dependencies
-  yum: name={{item}} state=present update_cache=yes
+  yum: name={{ item }} state=present update_cache=yes
   with_items:
     - cmake
     - make
@@ -43,19 +43,26 @@
 - name: Download BRO archive
 ## github archive doesn't contain submodules/not recursive
   #get_url: url=https://github.com/bro/bro/archive/v{{ bro_v }}.tar.gz
-  get_url: url={{ bro_src_url }}
-    dest=/root/bro-{{ bro_v }}.tar.gz
-    mode=0400
-    checksum=sha256:{{ bro_archive_sha256 }}
+  get_url:
+    url: "{{ bro_src_url }}"
+    dest: "/root/bro-{{ bro_v }}.tar.gz"
+    mode: '0400'
+    checksum: "sha256:{{ bro_archive_sha256 }}"
   when: not broarchive.stat.exists
 - stat: path={{ bro_prefix }}/bin/bro
   register: brobin
 - name: compile and install bro
-  command: "{{ item.command }} chdir={{ item.chdir }} creates={{ item.c }}"
+  command: "{{ item.command }}"
+  args:
+    chdir: "{{ item.chdir }}"
+    creates: "{{ item.c }}"
   with_items:
 ## https://github.com/ansible/ansible/issues/8260
     - { command: 'tar xzf /root/bro-{{ bro_v }}.tar.gz', chdir: '/root', c: '/root/bro-{{ bro_v }}/configure' }
-    - { command: './configure --prefix={{ bro_prefix }} --spooldir={{ broids_spool }} --logdir={{ broids_log }} --conf-files-dir={{ broids_etc }}', chdir: '/root/bro-{{ bro_v }}', c: '/root/bro-{{ bro_v }}/build/Makefile' }
+    - { command: './configure --prefix={{ bro_prefix }} --spooldir={{ broids_spool }} --logdir={{ broids_log }} --conf-files-dir={{ broids_etc }}',
+        chdir: '/root/bro-{{ bro_v }}',
+        c: '/root/bro-{{ bro_v }}/build/Makefile'
+      }
     - { command: 'make', chdir: '/root/bro-{{ bro_v }}', c: '/root/bro-{{ bro_v }}/build/src/bro' }
     - { command: 'make install', chdir: '/root/bro-{{ bro_v }}', c: "{{ bro_prefix }}/bin/bro" }
   when: not brobin.stat.exists

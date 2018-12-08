@@ -8,5 +8,4 @@
 - set_fact:
     mysql_svc: mariadb
     mysql_confdir: /etc/my.cnf.d
-  when: ansible_os_family == "RedHat" or ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-
+  when: ansible_os_family == "RedHat"

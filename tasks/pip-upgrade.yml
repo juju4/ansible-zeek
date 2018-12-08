@@ -44,5 +44,4 @@
 #          command: "python /root/get-pip.py creates=/usr/bin/pip"
 #      when: ansible_os_family == "Debian"
 
-  when: pipv.stdout | version_compare( '10.1', '<')
-
+  when: pipv.stdout|int is version_compare( '10.1', '<')
