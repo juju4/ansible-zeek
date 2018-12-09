@@ -6,3 +6,9 @@
 - name: restart monit
   service: name=monit state=restarted
 
+- name: fetch critical-stack-intel feeds
+  command: critical-stack-intel pull
+
+- name: Restart apparmor
+  service: name=apparmor state=restarted
+  when: travisci is defined and travisci

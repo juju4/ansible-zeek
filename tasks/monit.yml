@@ -1,10 +1,11 @@
 ---
-- set_fact:
+- name: Set daemon fact
+  set_fact:
     daemon: bro
 
 - block:
     - name: apt | monit package
-      apt: name={{item}} state=present
+      apt: name={{ item }} state=present
       with_items:
         - monit
     - block:
@@ -43,4 +44,3 @@
     - { re: '^#     use address localhost', rep: '     use address localhost' }
     - { re: '^#     allow localhost', rep: '     allow localhost' }
 #    - { re: '^#     allow admin:monit', rep: '     allow admin:monit' }
-

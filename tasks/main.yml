@@ -65,7 +65,9 @@
 ## https://github.com/JustinAzoff/bro_scripts
 - name: Extra bro script
   copy:
-    src={{ item }} dest={{ broids_site }}/{{ item }} mode=644
+    src: "{{ item }}"
+    dest: "{{ broids_site }}/{{ item }}"
+    mode: '0644'
   with_items:
     - file_analysis_02.bro
 - name: add bro local configuration
@@ -75,7 +77,8 @@
 
 ## Note: file is created by broctl: install and {{ broids_spool }}/broctl-config.sh
 ##  -> {{ bro_prefix }}/share/broctl/scripts/broctl-config.sh
-- stat: path={{ broids_spool }}/broctl-config.sh
+- name: Check if broctl-config.sh is present
+  stat: path={{ broids_spool }}/broctl-config.sh
   register: st
 - block:
     - name: Reset send-mail config (not used by default)
@@ -154,7 +157,10 @@
   ignore_errors: true
 
 #- name: start BRO_PDNS API service
-#  command: "BRO_PDNS_DB=mysql://{{ mysql_pdns_user }}::{{ mysql_pdns_pass }}@localhost/pdns {{ broids_site }}/bro-pdns/bro_pdns.py serve"
+#  command: >
+#    {{ broids_site }}/bro-pdns/bro_pdns.py serve
+#  environment:
+#    BRO_PDNS_DB: "mysql://{{ mysql_pdns_user }}::{{ mysql_pdns_pass }}@localhost/pdns"
 
 # Test
 # curl http://localhost:8081/dns/www.youtube.com

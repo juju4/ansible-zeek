@@ -97,15 +97,16 @@
     - name: run misp2bro once
       command: "python {{ broids_site }}/misp2bro/misp2bro.py creates={{ broids_misp2bro_output }}"
       ignore_errors: true
-    - cron: name="misp2bro refresh" minute=0 hour=12
+    - name: Ensure misp2bro cron task is present
+      cron: name="misp2bro refresh" minute=0 hour=12
         user="root" job="python {{ broids_site }}/misp2bro/misp2bro.py > /tmp/misp2bro-cron.out"
         cron_file=ansible_misp2bro-refresh
-  when: broids_misp_url is defined and broids_misp_url != '' and broids_misp_agent == 'misp2bro'
+  when: broids_misp_url is defined and broids_misp_url and broids_misp_agent == 'misp2bro'
 
 ## http://feathub.com/MISP/MISP/+21
 ## or curl ? http://10.252.116.20/events/downloadExport/bro
 - include: misp-integration.yml
-  when: broids_misp_url is defined and broids_misp_url != '' and broids_misp_agent == 'curl'
+  when: broids_misp_url is defined and broids_misp_url and broids_misp_agent == 'curl'
 
 - name: copy bro plugins from templates
   template:

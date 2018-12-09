@@ -1,5 +1,7 @@
 ---
-## setup var is set during setup phase. means we always fail on first run if not already install... was only necessary ansible_lsb var. now using ansible_distribution_major_version
+
+## setup var is set during setup phase. means we always fail on first run if not already install...
+##  was only necessary ansible_lsb var. now using ansible_distribution_major_version
 #- name: Redhat | Install lsb-core
 #  yum: name=redhat-lsb state=present
 

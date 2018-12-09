@@ -41,12 +41,13 @@
       register: dpkg
       ignore_errors: true
       changed_when: false
-    ## FIXME! (still in v2.2) No package matching 'https://intel.criticalstack.com/client/critical-stack-intel-amd64.deb' is available = same if get_url before???
+## FIXME! (still in v2.2) No package matching
+## 'https://intel.criticalstack.com/client/critical-stack-intel-amd64.deb' is available = same if get_url before???
     - name: apt | install critical stack
     #  apt: name={{ bro_cs_pkg }} state=present
       command: "dpkg -i {{ bro_cs_pkg }}"
       become: yes
-      when: dpkg.stdout == ''
+      when: not dpkg.stdout
   when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
 - block:
     - name: check if critical stack present
@@ -63,11 +64,11 @@
 - name: register critical stack API key
   command: "critical-stack-intel api {{ bro_cs_apikey }} creates=/opt/critical-stack/configs/critical-stack-intel.db"
   become: yes
-  when: bro_cs_apikey is defined and bro_cs_apikey != ''
+  when: bro_cs_apikey is defined and bro_cs_apikey
 - name: set a proxy for critical stack
   command: "critical-stack-intel config --set proxy.url=\"{{ bro_cs_proxy }}\""
   become: yes
-  when: bro_cs_proxy is defined and bro_cs_proxy != ''
+  when: bro_cs_proxy is defined and bro_cs_proxy
 
 - name: check current settings in critical-stack
   command: "critical-stack-intel config --list-set"
@@ -79,13 +80,9 @@
     - "critical-stack-intel config --set bro.path={{ bro_prefix }}"
     - "critical-stack-intel config --set bro.include.path={{ broids_site }}/local.bro"
     - "critical-stack-intel config --set bro.broctl.path={{ broids_broctl }}"
-  when: csconfig.stdout == ''
-  register: csconfig2
-
-- name: fetch feeds if config changed
-  command: critical-stack-intel pull
-  when: csconfig2.changed
+  when: not csconfig.stdout
   notify:
+    - fetch critical-stack-intel feeds
     - restart bro
 
 - name: allow critical-stack to auto-restart bro
