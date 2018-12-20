@@ -3,13 +3,12 @@
   set_fact:
     daemon: bro
 
+- name: monit package
+  package: name=monit state=present
+  register: pkg_result
+  until: pkg_result is success
+
 - block:
-    - name: apt | monit package
-      apt: name={{ item }} state=present
-      with_items:
-        - monit
-      register: pkg_result
-      until: pkg_result is success
     - block:
         - name: set monit configuration for {{ daemon }}
           template: src={{ daemon }}-monit.j2 dest=/etc/monit/monitrc.d/{{ daemon }} mode=0644 backup=yes
@@ -31,15 +30,6 @@
             - restart monit
       when: ansible_distribution_release == 'xenial'
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-
-- block:
-    - name: yum | monit package
-      yum: name={{ item }} state=present
-      with_items:
-        - monit
-      register: pkg_result
-      until: pkg_result is success
-  when: ansible_os_family == "RedHat"
 
 - name: allow monit status/summary from localhost
   replace: dest={{ monitrc }} regexp={{ item.re }} replace={{ item.rep }}

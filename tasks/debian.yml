@@ -49,8 +49,7 @@
 
 ## WARNING: The following packages cannot be authenticated! = force
 - name: Debian/Ubuntu | Install Bro and dependencies
-  apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600 force=yes
-  with_items: "{{ broids_packages + broids_packages_deps }}"
+  apt: name={{ broids_packages + broids_packages_deps }} state=present update_cache=yes cache_valid_time=3600 force=yes
   register: pkg_result
   until: pkg_result is success
 

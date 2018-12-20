@@ -5,11 +5,9 @@
 ## AttributeError: 'module' object has no attribute 'SSL_ST_INIT'
     - name: PyOpenSSL 16.2+
       pip:
-        name: "{{ item }}"
+        name: pyopenssl
         version: 17.2.0
         state: present
-      with_items:
-        - pyopenssl
       register: pkg_result
       until: pkg_result is success
   when: ansible_distribution_release == 'xenial'

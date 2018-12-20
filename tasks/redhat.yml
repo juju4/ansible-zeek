@@ -47,8 +47,7 @@
 
 ## FIXME! travis: skipping + "[Errno 30] Read-only file system"
 - name: Redhat | Install Bro and dependencies
-  yum: name={{item}} state=present update_cache=yes
-  with_items: "{{ broids_packages + broids_packages_deps }}"
+  yum: name={{ broids_packages + broids_packages_deps }} state=present update_cache=yes
   register: pkg_result
   until: pkg_result is success
 
