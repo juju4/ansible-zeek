@@ -61,6 +61,8 @@
 
 - name: Install Pdns requirements
   pip: name=bottle state=present
+  register: pkg_result
+  until: pkg_result is success
 
 ## 2016-2017 ongoing: rewrite in go without bro module
 - name: git clone bro-pdns
