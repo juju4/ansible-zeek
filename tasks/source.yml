@@ -20,6 +20,8 @@
     - libgoogle-perftools-dev
     - "{{ broids_packages_deps }}"
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  register: pkg_result
+  until: pkg_result is success
 - name: Redhat | Install Bro dependencies
   yum: name={{ item }} state=present update_cache=yes
   with_items:
@@ -37,6 +39,8 @@
     - file-devel
     - "{{ broids_packages_deps }}"
   when: ansible_os_family == "RedHat"
+  register: pkg_result
+  until: pkg_result is success
 
 - name: Check if bro archive already exists
   stat: path=/root/bro-{{ bro_v }}.tar.gz

@@ -49,6 +49,8 @@
 - name: Redhat | Install Bro and dependencies
   yum: name={{item}} state=present update_cache=yes
   with_items: "{{ broids_packages + broids_packages_deps }}"
+  register: pkg_result
+  until: pkg_result is success
 
 - name: update broctl LogDir
   replace:

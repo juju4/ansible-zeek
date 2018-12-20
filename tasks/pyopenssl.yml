@@ -10,5 +10,7 @@
         state: present
       with_items:
         - pyopenssl
+      register: pkg_result
+      until: pkg_result is success
   when: ansible_distribution_release == 'xenial'
 #  when: ansible_distribution_release == 'xenial' or ansible_distribution_major_version|int <= 7

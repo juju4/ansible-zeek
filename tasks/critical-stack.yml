@@ -59,6 +59,8 @@
       yum: name={{ bro_cs_pkg }} state=present
       become: yes
       when: rpm.stdout == 'package critical-stack-intel is not installed'
+      register: pkg_result
+      until: pkg_result is success
   when: ansible_os_family == "RedHat"
 
 - name: register critical stack API key

@@ -4,6 +4,8 @@
   package:
     name: apt-transport-https
     state: present
+  register: pkg_result
+  until: pkg_result is success
 
 - block:
     - name: Ubuntu | Add bro repository key
@@ -11,6 +13,8 @@
         url: >
           https://download.opensuse.org/repositories/network:bro/xUbuntu_{{ ansible_distribution_version }}/Release.key
         state: present
+      register: pkg_result
+      until: pkg_result is success
     - name: Ubuntu | Add bro repository
       apt_repository:
         repo: >
@@ -26,6 +30,8 @@
         url: >
           https://download.opensuse.org/repositories/network:bro/Debian_{{ ansible_distribution_version }}/Release.key
         state: present
+      register: pkg_result
+      until: pkg_result is success
     - name: Debian | Add bro repository
       apt_repository:
         repo: >
@@ -45,6 +51,8 @@
 - name: Debian/Ubuntu | Install Bro and dependencies
   apt: name={{ item }} state=present update_cache=yes cache_valid_time=3600 force=yes
   with_items: "{{ broids_packages + broids_packages_deps }}"
+  register: pkg_result
+  until: pkg_result is success
 
 - block:
     - name: Check if /etc/init.d/bro-ids is present
