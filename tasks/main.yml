@@ -155,7 +155,7 @@
 ## FIXME! not working on digitalocean droplet: got: 'rx-checksumming: on [fixed] tx-checksumming: off' and can't change
 - name: Disable network card offloading for eth0
   command: ethtool --offload eth0 rx off tx off
-  when: ethtool.stdout is defined and ethtool.stdout.find("-checksumming{{ ':' }} on") != -1
+  when: "ethtool.stdout is defined and '-checksumming{{ ":" }} on' in ethtool.stdout"
   ignore_errors: true
 
 #- name: start BRO_PDNS API service
