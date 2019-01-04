@@ -155,16 +155,16 @@ redef Intel::read_files += {
 @load {{ broids_site }}/cs-bro/bro-scripts/tor
 @load {{ broids_site }}/cs-bro/bro-scripts/tracked-providers
 @load {{ broids_site }}/jonschipp-bro/ipmi.bro
-@load {{ broids_site }}/securitykitten-bro/bro_beacons.bro
-@load {{ broids_site }}/securitykitten-bro/bro_typosquatting.bro
-@load {{ broids_site }}/securitykitten-bro/bro_typosquatting_email.bro
+#@load {{ broids_site }}/securitykitten-bro/bro_beacons.bro
+#@load {{ broids_site }}/securitykitten-bro/bro_typosquatting.bro
+#@load {{ broids_site }}/securitykitten-bro/bro_typosquatting_email.bro
 ## fast-flux, non-standard port dns
 ## errors?
 #@load {{ broids_site }}/sooshie-bro/2.4-scripts/ffluxDNS.bro
 #@load {{ broids_site }}/sooshie-bro/2.4-scripts/dns-bad_behavior.bro
-@load {{ broids_site }}/sooshie-bro/2.4-scripts/largeUpload.bro
+#@load {{ broids_site }}/sooshie-bro/2.4-scripts/largeUpload.bro
 #@load {{ broids_site }}/sooshie-bro/exploitkit/exploitkit.bro
-@load {{ broids_site }}/sooshie-bro/misc/multi-user-agent.bro
+#@load {{ broids_site }}/sooshie-bro/misc/multi-user-agent.bro
 
 {% for f in broids_plugins_templates %}
 @load {{ broids_site }}/{{ f }}.bro
