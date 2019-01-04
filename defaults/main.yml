@@ -48,7 +48,7 @@ broids_plugins_templates:
   - smb-detect-malicious-files
   - smb-hidden-shares
   - smb-rogue-hostname
-  - tls_finger
+#  - tls_finger
 ## if virustotal api key?
 #  - virus-total
 #  - vt-hashing
