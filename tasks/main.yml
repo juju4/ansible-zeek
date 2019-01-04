@@ -22,6 +22,8 @@
     - gdb
     - python-pip
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  register: pkg_result
+  until: pkg_result is success
 
 - include: pyopenssl.yml
 

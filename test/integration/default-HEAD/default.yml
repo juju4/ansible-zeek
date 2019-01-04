@@ -1,0 +1,11 @@
+---
+
+## https://github.com/ansible/ansible/issues/9260
+- hosts: all
+  tasks: []
+
+- hosts: all
+  vars:
+    - broids_scripts_version: HEAD
+  roles:
+    - juju4.broids

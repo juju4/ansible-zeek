@@ -89,3 +89,5 @@ broids_misp_sensors: "{{ bro_nodes }}"
 ## misp2bro
 broids_misp2bro_output: '/usr/share/bro/intel/misp-intel.dat'
 broids_misp2bro_sensors: [ 'example.bro' ]
+
+#broids_scripts_version: HEAD
