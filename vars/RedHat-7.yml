@@ -17,6 +17,8 @@ broids_packages_deps:
     - ethtool
     - pyOpenSSL
     - crontabs
+# ifconfig for bro-scripts
+    - net-tools
 
 mysql_svc: mariadb
 mysql_confdir: /etc/my.cnf.d
