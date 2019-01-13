@@ -1,4 +1,4 @@
-## {{ ansible_managed }}
+{{ ansible_managed | comment }}
 [Unit]
 Description=Bro Network Intrusion Detection System (NIDS)
 After=network.target
