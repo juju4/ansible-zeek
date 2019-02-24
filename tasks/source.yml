@@ -1,6 +1,9 @@
 ---
 - name: Debian | Install Bro dependencies
-  apt: name={{ item }} state=present update_cache=yes
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
   with_items:
     - cmake
     - make

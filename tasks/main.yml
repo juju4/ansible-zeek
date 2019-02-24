@@ -14,13 +14,9 @@
 
 - name: Debian | Install Bro dependencies
   apt:
-    name: "{{ item }}"
+    name: ['git', 'gdb', 'python-pip']
     state: present
     update_cache: yes
-  with_items:
-    - git
-    - gdb
-    - python-pip
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
   register: pkg_result
   until: pkg_result is success
