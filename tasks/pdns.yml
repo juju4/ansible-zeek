@@ -31,7 +31,7 @@
     password: "{{ mysql_root_password }}"
     check_implicit_admin: yes
     login_user: "{{ mysql_user }}"
-    login_password: "{{ mysql_old_root_password }}"
+    login_password: "{{ mysql_old_root_password | default(omit) }}"
     state: present
   with_items:
         - "{{ ansible_hostname }}"
