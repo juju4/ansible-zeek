@@ -84,6 +84,15 @@ script:
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && cat /tmp/idempotency.log && exit 0)
 
+after_failure:
+  # Check what happened on system.
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm systemctl -l --no-pager status mysql.service'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm systemctl -l --no-pager status bro.service'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm journalctl -xe --no-pager'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm ps axu'
+  - 'sudo docker exec --tty "$(cat ${container_id})" awk "/temporary password/ { print \$NF }" /var/log/mysqld.log'
+
+after_script:
   # Clean up
   - 'sudo docker stop "$(cat ${container_id})"'
 
