@@ -21,7 +21,7 @@ It was tested on the following versions:
 
 ### Operating systems
 
-Ubuntu 14.04, 16.04, 18.04 and Centos7
+Tested on Ubuntu 14.04, 16.04, 18.04, Centos 7. Kitchen test vagrant or lxd, Travis.
 
 ## Example Playbook
 
@@ -83,9 +83,10 @@ This role has a travis basic test (for github), more advanced with kitchen and a
 
 Once you ensured all necessary roles are present, You can test with:
 ```
-$ cd /path/to/roles/juju.bro-ids
+$ cd /path/to/roles/juju.broids
 $ kitchen verify
 $ kitchen login
+$ KITCHEN_YAML=".kitchen.vagrant.yml" kitchen verify
 ```
 or
 ```
