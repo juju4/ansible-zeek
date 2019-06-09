@@ -5,7 +5,6 @@
   tasks: []
 
 - hosts: all
-#- hosts: test-kitchen
   vars:
     - bro_force_source_build: true
   roles:

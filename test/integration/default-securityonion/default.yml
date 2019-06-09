@@ -5,7 +5,6 @@
   tasks: []
 
 - hosts: all
-#- hosts: test-kitchen
   vars:
      - use_securityonion_deb: true
   roles:

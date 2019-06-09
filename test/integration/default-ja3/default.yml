@@ -5,7 +5,6 @@
   tasks: []
 
 - hosts: all
-#- hosts: test-kitchen
   vars:
     - broids_ja3_enable: true
   roles:
