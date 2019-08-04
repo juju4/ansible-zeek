@@ -5,7 +5,11 @@
 ## https://github.com/Toblerity/Shapely/issues/305      ImportError: No module named packaging.version
 ## https://github.com/pypa/setuptools/issues/937
 - name: check current pip version
-  shell: 'pip --version | sed "s/pip \(.*\) from .*/\1/"'
+  shell: |
+    set -o pipefail
+    pip --version | sed "s/pip \(.*\) from .*/\1/"
+  args:
+    executable: /bin/bash
   changed_when: false
   register: pipv
 
