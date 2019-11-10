@@ -5,5 +5,7 @@
   tasks: []
 
 - hosts: all
+  vars:
+    broids_testing: true
   roles:
     - juju4.broids

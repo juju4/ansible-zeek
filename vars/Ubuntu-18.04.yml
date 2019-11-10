@@ -49,3 +49,6 @@ broids_libdir: /usr/lib/broctl/BroControl
 broids_plugindir: /usr/lib/broctl/plugins
 
 monitrc: /etc/monit/monitrc
+
+broids_testing_pkgs:
+  - iproute2

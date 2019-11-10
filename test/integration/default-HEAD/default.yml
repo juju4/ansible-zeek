@@ -7,5 +7,6 @@
 - hosts: all
   vars:
     - broids_scripts_version: HEAD
+    - broids_testing: true
   roles:
     - juju4.broids

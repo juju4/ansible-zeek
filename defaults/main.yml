@@ -92,3 +92,5 @@ broids_misp2bro_output: '/usr/share/bro/intel/misp-intel.dat'
 broids_misp2bro_sensors: [ 'example.bro' ]
 
 #broids_scripts_version: HEAD
+
+broids_testing: false

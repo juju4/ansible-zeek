@@ -34,3 +34,6 @@ broids_log: "/var/log/bro"
 #monitrc: /etc/monitrc
 monitrc: /etc/monit.conf
 monitconfd: /etc/monit.d
+
+broids_testing_pkgs:
+  - iproute

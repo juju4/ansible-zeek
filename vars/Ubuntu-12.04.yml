@@ -26,3 +26,6 @@ mysql_svc: mysql
 mysql_confdir: /etc/mysql
 
 monitrc: /etc/monit/monitrc
+
+broids_testing_pkgs:
+  - iproute2

@@ -166,3 +166,9 @@
 
 - include: aide-hids.yml
 - include: monit.yml
+
+- name: Install testing tools
+  package:
+    name: "{{ broids_testing_pkgs }}"
+    state: present
+  when: broids_testing
