@@ -96,6 +96,10 @@ after_failure:
 after_script:
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm systemctl -l --no-pager status mysql.service'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm systemctl -l --no-pager status bro.service'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm ls -la /var/log/'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm ls -la /var/log/mysql /var/log/mariadb'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm cat /var/log/mysql/mysql.log /var/log/mariadb/mariadb.log'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm ls -la /var/lib/mysql'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm ls -la /var/log/bro/current /var/spool/bro/bro /opt/bro/logs/current/'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm cat /var/log/bro/current/stderr.log'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm netstat -anp'
