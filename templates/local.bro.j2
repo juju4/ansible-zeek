@@ -114,8 +114,10 @@ redef SSL::extract_certs_pem = ALL_HOSTS;
 @load policy/protocols/ssl/expiring-certs.bro
 redef SSL::notify_certs_expiration = ALL_HOSTS;
 @load policy/frameworks/files/detect-MHR.bro
+{% if broids_pdns_enable %}
 @load {{ broids_site }}/bro-pdns
 redef PDNS::uri = "mysql://{{ mysql_pdns_user }}:{{ mysql_pdns_pass }}@localhost/pdns";
+{% endif %}
 
 #### Intel ####
 
