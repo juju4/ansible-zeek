@@ -56,3 +56,8 @@ suites:
   - name: default-ja3
     run_list:
     attributes:
+  - name: default-pdns
+    run_list:
+    attributes:
+    includes:
+      - ubuntu-18.04

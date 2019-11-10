@@ -1,0 +1,11 @@
+---
+
+## https://github.com/ansible/ansible/issues/9260
+- hosts: all
+  tasks: []
+
+- hosts: all
+  vars:
+    broids_pdns_enable: true
+  roles:
+    - juju4.broids
