@@ -86,13 +86,19 @@ script:
 
 after_failure:
   # Check what happened on system.
-  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm systemctl -l --no-pager status mysql.service'
-  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm systemctl -l --no-pager status bro.service'
-  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm journalctl -xe --no-pager'
-  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm ps axu'
   - 'sudo docker exec --tty "$(cat ${container_id})" awk "/temporary password/ { print \$NF }" /var/log/mysqld.log'
 
 after_script:
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm systemctl -l --no-pager status mysql.service'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm systemctl -l --no-pager status bro.service'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm ls -la /var/log/bro/current /opt/bro/logs/current/'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm cat /var/log/bro/current/stderr.log'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm netstat -anp'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm ss -nlp'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm ps auxw'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm systemctl -l --no-pager status'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm journalctl -xe --no-pager'
+
   # Clean up
   - 'sudo docker stop "$(cat ${container_id})"'
 
