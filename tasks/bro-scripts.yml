@@ -117,6 +117,7 @@
   with_items: "{{ broids_plugins_templates }}"
 
 - include: ja3.yml
+  when: broids_ja3_enable
 
 ## Anything to recover?
 ##  https://github.com/Security-Onion-Solutions/securityonion-bro-scripts
