@@ -67,7 +67,7 @@
 ## 2016-2017 ongoing: rewrite in go without bro module
 - name: git clone bro-pdns
   git:
-    repo=https://github.com/JustinAzoff/bro-pdns.git
-    dest={{ broids_site }}/bro-pdns
-    version=master
+    repo: https://github.com/JustinAzoff/bro-pdns.git
+    dest: "{{ broids_site }}/bro-pdns"
+    version: master
 #    version=4d94969386186b879a17c5f40dfbb12d2ecaa21e

@@ -122,6 +122,7 @@
     - restart bro
 
 - include: pdns.yml
+  when: broids_pdns_enable
 
 - name: create directory for extracted files
   file: dest="{{ item }}" state=directory mode=0755

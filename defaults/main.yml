@@ -63,6 +63,7 @@ broids_ja3_files:
   - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/ja3s.bro', c: 'sha256:22e92eec4137d30a85e90c8361e54b4764346c682e3aa7ce63c7a5bc00a15a84' }
 
 ## mysql setup for passivedns
+broids_pdns_enable: false
 mysql_user: root
 mysql_root_password: mysql_root_pass_to_change_or_get_lost
 mysql_old_root_password:
