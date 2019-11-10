@@ -103,7 +103,7 @@ after_script:
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm ls -la /var/lib/mysql'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm cat /root/.my.cnf'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm find /etc/mysql/ -iname "*.cnf" -exec cat {} \;'
-  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm mysqladmin -u root -p status'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm mysqladmin -u root status'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm ls -la /var/log/bro/current /var/spool/bro/bro /opt/bro/logs/current/'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm cat /var/log/bro/current/stdout.log'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm cat /var/log/bro/current/stderr.log'
