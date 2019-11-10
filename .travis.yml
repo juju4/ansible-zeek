@@ -101,6 +101,7 @@ after_script:
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm cat /var/log/mysql/mysql.log /var/log/mariadb/mariadb.log'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm cat /var/log/mysql/error.log'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm ls -la /var/lib/mysql'
+  - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm mysqladmin -u root -p status'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm ls -la /var/log/bro/current /var/spool/bro/bro /opt/bro/logs/current/'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm cat /var/log/bro/current/stdout.log'
   - 'docker exec --tty "$(cat ${container_id})" env TERM=xterm cat /var/log/bro/current/stderr.log'
