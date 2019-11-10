@@ -1,46 +1,47 @@
 ---
 - name: Debian | Install Bro dependencies
   apt:
-    name: "{{ item }}"
+    name:
+      - cmake
+      - make
+      - gcc
+      - g++
+      - flex
+      - bison
+      - libpcap-dev
+      - libgeoip-dev
+      - libssl-dev
+      - python-dev
+      - zlib1g-dev
+      - libmagic-dev
+      - swig2.0
+      - git
+      - curl
+      - libgoogle-perftools-dev
+      - "{{ broids_packages_deps }}"
     state: present
     update_cache: yes
-  with_items:
-    - cmake
-    - make
-    - gcc
-    - g++
-    - flex
-    - bison
-    - libpcap-dev
-    - libgeoip-dev
-    - libssl-dev
-    - python-dev
-    - zlib1g-dev
-    - libmagic-dev
-    - swig2.0
-    - git
-    - curl
-    - libgoogle-perftools-dev
-    - "{{ broids_packages_deps }}"
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
   register: pkg_result
   until: pkg_result is success
 - name: Redhat | Install Bro dependencies
-  yum: name={{ item }} state=present update_cache=yes
-  with_items:
-    - cmake
-    - make
-    - gcc
-    - gcc-c++
-    - flex
-    - bison
-    - libpcap-devel
-    - openssl-devel
-    - python-devel
-    - swig
-    - zlib-devel
-    - file-devel
-    - "{{ broids_packages_deps }}"
+  yum:
+    name:
+      - cmake
+      - make
+      - gcc
+      - gcc-c++
+      - flex
+      - bison
+      - libpcap-devel
+      - openssl-devel
+      - python-devel
+      - swig
+      - zlib-devel
+      - file-devel
+      - "{{ broids_packages_deps }}"
+    state: present
+    update_cache: yes
   when: ansible_os_family == "RedHat"
   register: pkg_result
   until: pkg_result is success
