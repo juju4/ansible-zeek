@@ -66,7 +66,7 @@ broids_ja3_files:
 broids_pdns_enable: false
 mysql_user: root
 mysql_root_password: mysql_root_pass_to_change_or_get_lost
-mysql_old_root_password:
+#mysql_old_root_password:
 mysql_pdns_user: pdns
 mysql_pdns_pass: pdns_pass_to_change_or_get_lost
 
