@@ -11,27 +11,29 @@
 
 - name: check that mysql is running
   service: "name={{ mysql_svc }} state=started"
-#- stat: path=/root/.my.cnf
-#  register: mycnf
-#- debug: var=mycnf
-#- stat: path=/var/run/mysqld/mysqld.sock
-#  register: mysock
-#- debug: var=mysock
-#- name: check mysql socket configuration
-#  shell: "grep -rin sock {{ mysql_confdir }}/* /etc/my.cnf"
-#  register: myconf
-#  changed_when: false
-#  ignore_errors: true
-#- debug: var=myconf.stdout_lines
+
+- name: check if root my.cnf file
+  stat: path=/root/.my.cnf
+  register: mycnf
+
+- name: Ensure root my.cnf is set
+  ini_file:
+    path: /root/.my.cnf
+    section: client
+    option: "{{ item.o }}"
+    value: "{{ item.v }}"
+    mode: '0600'
+    backup: yes
+  with_items:
+   - { o: user, v: root }
+   - { o: password, v: "{{ mysql_old_root_password | default('') }}" }
+  when: not mycnf.stat.exists
 
 - name: Set mysql root user password
   mysql_user:
     name: root
     host: "{{ item }}"
     password: "{{ mysql_root_password }}"
-    check_implicit_admin: yes
-    login_user: "{{ mysql_user }}"
-    login_password: "{{ mysql_old_root_password | default(omit) }}"
     state: present
   with_items:
         - "{{ ansible_hostname }}"
