@@ -57,10 +57,10 @@ broids_vt_api_key: ''
 
 broids_ja3_enable: false
 broids_ja3_files:
-  - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/intel_ja3.bro', c: 'sha256:2e436d3049fd3e2f1dcd3fd26f39dbb933111f7cf19e538414e3f3a7a32dde5d' }
-  - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/ja3.bro', c: 'sha256:fa297f27f2469f9ead4a42a9d7d35e39fef2372c59c9696af75a620961099072' }
-  - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/__load__.bro', c: 'sha256:0c3237b9cabdc4a65bdc96ea99bf67ae3c158c73f771b99f21f73a4b4eee0c3c' }
-  - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/bro/ja3s.bro', c: 'sha256:22e92eec4137d30a85e90c8361e54b4764346c682e3aa7ce63c7a5bc00a15a84' }
+  - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/zeek/intel_ja3.zeek', c: 'sha256:f170763c8055a2213193062b73d115798d1aa649724f82ebfce069034722e2e0' }
+  - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/zeek/ja3.zeek', c: 'sha256:6c25081fc95881384dd381700d73b26a8ca93191867f2fdce2fdd89cef30fcd0' }
+  - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/zeek/__load__.zeek', c: 'sha256:7aa97a38a2be359f6ecd9be58322aeb03193a7c0a348f23c6943276b6ef61433' }
+  - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/zeek/ja3s.zeek', c: 'sha256:7ab6a6b8d74e416ced6a225217637f63a5c6c1c1593b5d5f8414becc14bd0832' }
 
 ## mysql setup for passivedns
 broids_pdns_enable: false
