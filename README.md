@@ -1,15 +1,14 @@
-[![Build Status - Master](https://travis-ci.org/juju4/ansible-bro-ids.svg?branch=master)](https://travis-ci.org/juju4/ansible-bro-ids)
-[![Build Status - Devel](https://travis-ci.org/juju4/ansible-bro-ids.svg?branch=devel)](https://travis-ci.org/juju4/ansible-bro-ids/branches)
+[![Build Status - Master](https://travis-ci.org/juju4/ansible-zeek.svg?branch=master)](https://travis-ci.org/juju4/ansible-zeek)
+[![Build Status - Devel](https://travis-ci.org/juju4/ansible-zeek.svg?branch=devel)](https://travis-ci.org/juju4/ansible-zeek/branches)
 
-# Bro-ids ansible role
+# Zeek ansible role
 
-Ansible role to setup Bro IDS
-https://www.bro.org
+Ansible role to setup [Zeek](https://www.zeek.org/), previously Bro IDS
 
 Installation from
-* Opensuse repository - 2.5 (rpm or deb)(default)
+* [Opensuse repository](https://software.opensuse.org/download.html?project=security%3Azeek&package=zeek) (rpm or deb)(default)
 * SecurityOnion repository (precise or trusty only)
-* source - 2.5
+* source
 
 ## Requirements & Dependencies
 
@@ -18,6 +17,7 @@ It was tested on the following versions:
  * 2.0
  * 2.2
  * 2.5
+ * 2.9
 
 ### Operating systems
 
@@ -31,7 +31,7 @@ For example
 ```
 - hosts: server
   roles:
-    - juju4.broids
+    - juju4.zeek
 
 ```
 
@@ -83,14 +83,14 @@ This role has a travis basic test (for github), more advanced with kitchen and a
 
 Once you ensured all necessary roles are present, You can test with:
 ```
-$ cd /path/to/roles/juju.broids
+$ cd /path/to/roles/juju.zeek
 $ kitchen verify
 $ kitchen login
 $ KITCHEN_YAML=".kitchen.vagrant.yml" kitchen verify
 ```
 or
 ```
-$ cd /path/to/roles/juju4.broids/test/vagrant
+$ cd /path/to/roles/juju4.zeek/test/vagrant
 $ vagrant up
 $ vagrant ssh
 ```
