@@ -9,4 +9,4 @@
     - broids_ja3_enable: true
     - broids_testing: true
   roles:
-    - juju4.broids
+    - juju4.zeek

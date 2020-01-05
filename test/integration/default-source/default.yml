@@ -9,4 +9,4 @@
     - bro_force_source_build: true
     - broids_testing: true
   roles:
-    - juju4.broids
+    - juju4.zeek
