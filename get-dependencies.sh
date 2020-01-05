@@ -10,7 +10,7 @@ rolesdir=$(dirname $0)/..
 [ ! -d $rolesdir/juju4.ipsumdump ] && git clone https://github.com/juju4/ansible-ipsumdump $rolesdir/juju4.ipsumdump
 ## galaxy naming: kitchen fails to transfer symlink folder
 #[ ! -e $rolesdir/juju4.bro-ids ] && ln -s ansible-bro-ids $rolesdir/juju4.bro-ids
-[ ! -e $rolesdir/juju4.broids ] && cp -R $rolesdir/ansible-bro-ids $rolesdir/juju4.broids
+[ ! -e $rolesdir/juju4.zeek ] && cp -R $rolesdir/ansible-zeek $rolesdir/juju4.zeek
 
 ## don't stop build on this script return code
 true
