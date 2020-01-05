@@ -11,14 +11,14 @@
     - name: Ubuntu | Add bro repository key
       apt_key:
         url: >
-          https://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/Release.key
+          https://download.opensuse.org/repositories/security:/zeek/xUbuntu_{{ ansible_distribution_version }}/Release.key
         state: present
       register: pkg_result
       until: pkg_result is success
     - name: Ubuntu | Add bro repository
       apt_repository:
         repo: >
-          deb https://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/ /
+          deb https://download.opensuse.org/repositories/security:/zeek/xUbuntu_{{ ansible_distribution_version }}/ /
         state: present
 ## upstream xenial has 2.4.1, opensuse repo 2.5, bionic 2.5.3
   when: >
@@ -28,14 +28,14 @@
     - name: Debian | Add bro repository key
       apt_key:
         url: >
-          https://download.opensuse.org/repositories/network:/bro/Debian_{{ ansible_distribution_version }}/Release.key
+          https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_distribution_version }}/Release.key
         state: present
       register: pkg_result
       until: pkg_result is success
     - name: Debian | Add bro repository
       apt_repository:
         repo: >
-          deb https://download.opensuse.org/repositories/network:/bro/Debian_{{ ansible_distribution_version }}/ /
+          deb https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_distribution_version }}/ /
         state: present
   when: ansible_distribution == 'Debian' and not use_securityonion_deb
 ## https://github.com/Security-Onion-Solutions/security-onion/wiki/InstallingOnUbuntu   Only Ubuntu 12.04
