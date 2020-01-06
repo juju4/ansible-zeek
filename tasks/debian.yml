@@ -11,16 +11,16 @@
     - name: Ubuntu | Add bro repository key
       apt_key:
         url: >
-          https://download.opensuse.org/repositories/security:/zeek/xUbuntu_{{ ansible_distribution_version }}/Release.key
+          https://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/Release.key
         state: present
       register: pkg_result
       until: pkg_result is success
     - name: Ubuntu | Add bro repository
       apt_repository:
         repo: >
-          deb https://download.opensuse.org/repositories/security:/zeek/xUbuntu_{{ ansible_distribution_version }}/ /
+          deb https://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/ /
         state: present
-## upstream xenial has 2.4.1, opensuse repo 2.5, bionic 2.5.3
+## upstream focal 2.5.5/bionic 2.5.3/xenial 2.4.1, opensuse repo zeek/3.0.1 (not available for 16.04) or 2.5.5
   when: >
     (ansible_distribution == 'Ubuntu' and ansible_distribution_version.split('.')[0]|int < 18) and
     not use_securityonion_deb
