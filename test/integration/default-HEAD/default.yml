@@ -6,6 +6,7 @@
 
 - hosts: all
   vars:
+    - use_zeek_opensuse_repo: true
     - broids_scripts_version: HEAD
     - broids_testing: true
   roles:
