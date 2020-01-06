@@ -23,16 +23,16 @@ broids_packages_deps:
 mysql_svc: mariadb
 mysql_confdir: /etc/my.cnf.d
 
-bro_prefix: '/opt/bro'
-broids_etc: '/opt/bro/etc'
-broids_site: '/opt/bro/share/bro/site'
-broids_group: 'bro'
-broids_broctl: '/opt/bro/bin/broctl'
+bro_prefix: '/opt/zeek'
+broids_etc: '/opt/zeek/etc'
+broids_site: '/opt/zeek/share/zeek/site'
+broids_group: 'zeek'
+broids_broctl: '/opt/zeek/bin/zeekctl'
 broids_spool: "{{ bro_prefix }}/spool"
-broids_libdir: /opt/bro/lib/broctl/BroControl
-broids_plugindir: /opt/bro/lib/broctl/plugins
-bro_extractedfiles: "/var/log/bro/extracted"
-broids_log: "/var/log/bro"
+broids_libdir: /opt/zeek/lib/zeekctl/ZeekControl
+broids_plugindir: /opt/zeek/lib/zeekctl/plugins
+bro_extractedfiles: "/var/log/zeek/extracted"
+broids_log: "/var/log/zeek"
 
 monitrc: /etc/monitrc
 monitconfd: /etc/monit.d

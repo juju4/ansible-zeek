@@ -9,20 +9,20 @@
 #- action: setup
 #- debug: var=ansible_lsb
 
-- name: RHEL | Install Bro yum repository
+- name: RHEL | Install Zeek yum repository
   get_url:
     url: >
       https://download.opensuse.org/repositories/security:zeek/CentOS_{{ ansible_distribution_major_version }}/security:zeek.repo
-    dest: /etc/yum.repos.d/bro.repo
+    dest: /etc/yum.repos.d/zeek.repo
     owner: root
     group: root
     mode: '0644'
   when: ansible_os_family == "RedHat"
-- name: Fedora | Install Bro yum repository
+- name: Fedora | Install Zeek yum repository
   get_url:
     url: >
       https://download.opensuse.org/repositories/security:zeek/Fedora_{{ ansible_distribution_major_version }}/security:zeek.repo
-    dest: /etc/yum.repos.d/bro.repo
+    dest: /etc/yum.repos.d/zeek.repo
     owner: root
     group: root
     mode: 0644
@@ -40,13 +40,13 @@
 # repositories does not seem to be mirrored as much as distribution (subset of https://mirrors.opensuse.org/)
 - name: opensuse mirror workaround | review mirror
   replace:
-    dest: /etc/yum.repos.d/bro.repo
-    regexp: "^baseurl=.*/repositories/network:/bro/"
+    dest: /etc/yum.repos.d/zeek.repo
+    regexp: "^baseurl=.*/repositories/security:/zeek/"
     replace: "baseurl={{ bro_opensuse_rpm_mirror }}"
     backup: yes
 
 ## FIXME! travis: skipping + "[Errno 30] Read-only file system"
-- name: Redhat | Install Bro and dependencies
+- name: Redhat | Install Zeek and dependencies
   yum: name={{ broids_packages + broids_packages_deps }} state=present update_cache=yes
   register: pkg_result
   until: pkg_result is success
