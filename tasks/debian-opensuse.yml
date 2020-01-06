@@ -1,0 +1,79 @@
+---
+
+- name: Debian | Ensure apt-transport-https is present
+  package:
+    name: apt-transport-https
+    state: present
+  register: pkg_result
+  until: pkg_result is success
+
+- block:
+    - name: Debian | Add bro repository key
+      apt_key:
+        url: >
+          https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_distribution_version }}/Release.key
+        state: present
+      register: pkg_result
+      until: pkg_result is success
+    - name: Debian | Add bro repository
+      apt_repository:
+        repo: >
+          deb https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_distribution_version }}/ /
+        state: present
+    - name: Use Zeek opensuse variable
+      include_vars: opensuse.yml
+  when: not use_securityonion_deb
+
+## WARNING: The following packages cannot be authenticated! = force
+- name: Debian/Ubuntu | Install Bro and dependencies
+  apt: name={{ broids_packages + broids_packages_deps }} state=present update_cache=yes cache_valid_time=3600 force=yes
+  register: pkg_result
+  until: pkg_result is success
+
+- name: update broctl LogDir
+  replace:
+    dest: "{{ broids_etc }}/zeekctl.cfg"
+    regexp: "{{ item.re }}"
+    replace: "{{ item.rep }}"
+    backup: yes
+  with_items:
+    - { re: '^LogDir = .*', rep: "LogDir = {{ broids_log }}" }
+
+## bro 2.1+
+- name: enable broctl MailConnectionSummary
+  replace:
+    dest: "{{ broids_etc }}/broctl.cfg"
+    regexp: "^MailConnectionSummary = .*"
+    replace: "MailConnectionSummary = 1"
+    backup: yes
+  when: bro_email_notification
+- name: disable broctl MailConnectionSummary
+  replace:
+    dest: "{{ broids_etc }}/broctl.cfg"
+    regexp: "^MailConnectionSummary = .*"
+    replace: "MailConnectionSummary = 0"
+    backup: yes
+  when: not bro_email_notification
+
+- name: ensure aide hids directory exists
+  file: dest=/etc/aide/aide.conf.d state=directory mode=0755
+- name: Add custom configuration for aide HIDS
+  copy: "src={{ item }} dest=/etc/aide/aide.conf.d owner=root mode=0644"
+  with_items:
+    - aide-criticalstack
+
+## from https://github.com/geerlingguy/drupal-vm/pull/456/files#diff-b1546b21a9366075f1e1245d7551eee6R11
+- name: Detect if AppArmor is installed.
+  stat:
+    path: /etc/init.d/apparmor
+  register: apparmor_installed
+  when: travisci is defined and travisci
+
+- name: Ensure MySQL AppArmor profile is disabled (for slow query log).
+  file:
+    path: /etc/apparmor.d/disable/usr.sbin.mysqld
+    src: /etc/apparmor.d/usr.sbin.mysqld
+    state: link
+  when: travisci is defined and travisci and apparmor_installed.stat.exists
+  notify:
+    - Restart apparmor

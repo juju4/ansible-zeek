@@ -1,0 +1,43 @@
+---
+## opensuse zeek repository
+
+broids_packages:
+    - zeek
+    - zeek-core
+    - zeekctl
+
+broids_packages_deps:
+    - mysql-server
+    - php-mysql
+    - python-pip
+    - python-sqlalchemy
+    - python-mysqldb
+    - ca-certificates
+    - python-openssl
+## bro-pdns
+    - python-pymysql
+## trace-summary
+    - python-subnettree
+## pip upgrade
+    - libmysqlclient-dev
+## offloading
+    - ethtool
+
+mysql_svc: mysql
+mysql_confdir: /etc/mysql
+
+bro_prefix: '/opt/zeek'
+broids_etc: '/opt/zeek/etc'
+broids_site: '/opt/zeek/share/zeek/site'
+broids_group: 'zeek'
+broids_broctl: '/opt/zeek/bin/zeekctl'
+broids_spool: "{{ bro_prefix }}/spool"
+broids_libdir: /opt/zeek/lib/zeekctl/ZeekControl
+broids_plugindir: /opt/zeek/lib/zeekctl/plugins
+bro_extractedfiles: "/var/log/zeek/extracted"
+broids_log: "/var/log/zeek"
+
+monitrc: /etc/monit/monitrc
+
+broids_testing_pkgs:
+  - iproute2
