@@ -7,18 +7,28 @@
   register: pkg_result
   until: pkg_result is success
 
+- name: Debian | Set opensuse repo url
+  set_fact:
+    opensuse_url: "https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_distribution_version }}"
+  when: ansible_distribution == 'Debian'
+
+- name: Ubuntu | Set opensuse repo url
+  set_fact:
+    opensuse_url: "https://download.opensuse.org/repositories/security:/zeek/xUbuntu_{{ ansible_distribution_version }}"
+  when: ansible_distribution == 'Ubuntu'
+
 - block:
     - name: Debian | Add bro repository key
       apt_key:
         url: >
-          https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_distribution_version }}/Release.key
+          {{ opensuse_url }}/Release.key
         state: present
       register: pkg_result
       until: pkg_result is success
     - name: Debian | Add bro repository
       apt_repository:
         repo: >
-          deb https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_distribution_version }}/ /
+          deb {{ opensuse_url }}/ /
         state: present
     - name: Use Zeek opensuse variable
       include_vars: opensuse.yml
