@@ -53,7 +53,7 @@
 
 - name: update broctl LogDir
   replace:
-    dest: "{{ broids_etc }}/broctl.cfg"
+    dest: "{{ broids_etc }}/zeekctl.cfg"
     regexp: "{{ item.re }}"
     replace: "{{ item.rep }}"
     backup: yes
@@ -63,7 +63,7 @@
 
 - name: update broctl LogDir - missing line
   lineinfile:
-    dest: "{{ broids_etc }}/broctl.cfg"
+    dest: "{{ broids_etc }}/zeekctl.cfg"
     regexp: "{{ item.re }}"
     line: "{{ item.rep }}"
     backup: yes
