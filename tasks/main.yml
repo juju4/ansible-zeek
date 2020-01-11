@@ -152,20 +152,20 @@
   when: bro_cs_enable is defined and bro_cs_enable
 
 - name: Check zeekctl-config.sh
-  command: "cat {{ broids_spool }}/zeekctl-config.sh"
+  command: "cat {{ broids_config }}"
   changed_when: false
   ignore_errors: true
   register: zeekctlcfg
 - name: Remove placeholder zeekctl-config.sh
   file:
-    path: "{{ broids_spool }}/zeekctl-config.sh"
+    path: "{{ broids_config }}"
     state: absent
   when: zeekctlcfg.stdout is defined and zeekctlcfg.stdout == '# Automatically generated. Do not edit.'
 
 - name: Ending bro configuration
   command: "{{ broids_broctl }} install"
   args:
-    creates: "{{ broids_spool }}/zeekctl-config.sh"
+    creates: "{{ broids_config }}"
   notify:
     - check bro
     - deploy zeek

@@ -32,6 +32,7 @@ broids_etc: '/opt/bro/etc'
 broids_site: '/opt/bro/share/bro/site'
 broids_group: 'bro'
 broids_broctl: '/opt/bro/bin/broctl'
+broids_config: "{{ broids_spool }}/broctl-config.sh"
 broids_spool: "{{ bro_prefix }}/spool"
 bro_extractedfiles: "/var/log/bro/extracted"
 broids_log: "/var/log/bro"
