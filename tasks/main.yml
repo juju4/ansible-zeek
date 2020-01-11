@@ -160,7 +160,11 @@
   file:
     path: "{{ broids_config }}"
     state: absent
-  when: zeekctlcfg.stdout is defined and zeekctlcfg.stdout == '# Automatically generated. Do not edit.'
+  when: >
+    zeekctlcfg.stdout is defined and
+    (zeekctlcfg.stdout == '# Automatically generated. Do not edit.' or
+      zeekctlcfg.stdout == '# Automatically generated. Do not edit.\nsendmail=\\\"\\\"'
+    )
 
 - name: Ending bro configuration
   command: "{{ broids_broctl }} install"
