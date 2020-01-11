@@ -15,3 +15,7 @@
     checksum: "{{ item.c }}"
     backup: yes
   with_items: "{{ broids_ja3_files }}"
+  notify:
+    - check bro
+    - deploy zeek
+    - restart bro
