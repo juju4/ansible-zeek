@@ -157,6 +157,7 @@
     creates: "{{ broids_spool }}/zeekctl-config.sh"
   notify:
     - check bro
+    - deploy zeek
     - restart bro
 
 ## OR http://serverfault.com/questions/421995/disable-tcp-offloading-completely-generically-and-easily

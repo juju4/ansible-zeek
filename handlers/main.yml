@@ -3,6 +3,10 @@
 - name: check bro
   command: "{{ broids_broctl }} check"
 
+- name: deploy zeek
+  command: "{{ broids_broctl }} zeek"
+  when: use_zeek_opensuse_repo
+
 - name: restart bro
   command: "{{ broids_broctl }} restart"
 
