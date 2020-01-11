@@ -151,15 +151,21 @@
 - include: critical-stack.yml
   when: bro_cs_enable is defined and bro_cs_enable
 
-- name: DEBUG
+- name: Check zeekctl-config.sh
   command: "cat {{ broids_spool }}/zeekctl-config.sh"
   changed_when: false
   ignore_errors: true
+  register: zeekctlcfg
+- name: Remove placeholder zeekctl-config.sh
+  file:
+    path: "{{ broids_spool }}/zeekctl-config.sh"
+    state: absent
+  when: zeekctlcfg.stdout is defined and zeekctlcfg.stdout == '# Automatically generated. Do not edit.'
 
 - name: Ending bro configuration
   command: "{{ broids_broctl }} install"
-#  args:
-#    creates: "{{ broids_spool }}/zeekctl-config.sh"
+  args:
+    creates: "{{ broids_spool }}/zeekctl-config.sh"
   notify:
     - check bro
     - deploy zeek
