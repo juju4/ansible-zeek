@@ -5,7 +5,6 @@
 
 - name: deploy zeek
   command: "{{ broids_broctl }} deploy"
-  when: use_zeek_opensuse_repo or ansible_os_family == "RedHat"
 
 - name: restart bro
   command: "{{ broids_broctl }} restart"
