@@ -151,6 +151,11 @@
 - include: critical-stack.yml
   when: bro_cs_enable is defined and bro_cs_enable
 
+- name: DEBUG
+  command: "cat {{ broids_spool }}/zeekctl-config.sh"
+  changed_when: false
+  ignore_errors: true
+
 - name: Ending bro configuration
   command: "{{ broids_broctl }} install"
 #  args:
