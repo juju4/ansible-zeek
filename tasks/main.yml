@@ -90,18 +90,6 @@
   stat: path={{ broids_spool }}/broctl-config.sh
   register: st
 - block:
-    - name: Reset send-mail config (not used by default)
-      lineinfile:
-        dest: "{{ broids_spool }}/broctl-config.sh"
-        regexp: "{{ item.regexp }}"
-        line: "{{ item.line }}"
-        state: present
-      with_items:
-## FIXME! not working/not idempotent ??? changed all time. other task filling w /usr/sbin/sendmail
-        - { regexp: '^sendmail=.*', line: 'sendmail=\"\"' }
-#     notify:
-#       - restart bro
-
     - name: Configure broctl-config.sh
       lineinfile:
         dest: "{{ broids_etc }}/broctl.cfg"
@@ -162,9 +150,7 @@
     state: absent
   when: >
     zeekctlcfg.stdout is defined and
-    (zeekctlcfg.stdout == '# Automatically generated. Do not edit.' or
-      zeekctlcfg.stdout == '# Automatically generated. Do not edit.\nsendmail=\\\"\\\"'
-    )
+    zeekctlcfg.stdout == '# Automatically generated. Do not edit.'
 
 - name: Ending bro configuration
   command: "{{ broids_broctl }} install"
