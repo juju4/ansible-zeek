@@ -153,8 +153,8 @@
 
 - name: Ending bro configuration
   command: "{{ broids_broctl }} install"
-  args:
-    creates: "{{ broids_spool }}/zeekctl-config.sh"
+#  args:
+#    creates: "{{ broids_spool }}/zeekctl-config.sh"
   notify:
     - check bro
     - deploy zeek
