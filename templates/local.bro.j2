@@ -12,6 +12,8 @@ redef ignore_checksums = T;
 # Apply the default tuning scripts for common tuning settings.
 @load tuning/defaults
 
+@load tuning/json-logs
+
 # Load the scan detection script.
 @load misc/scan
 
@@ -100,6 +102,10 @@ redef HTTP::default_capture_password = T;
 
 #### Network File Handling ####
 
+@load base/protocols/smb
+@load policy/protocols/conn/vlan-logging
+@load policy/protocols/conn/mac-logging
+
 # Enable MD5 and SHA1 hashing for all files.
 @load frameworks/files/hash-all-files
 
@@ -130,7 +136,10 @@ redef Intel::read_files += {
     "{{ intel }}",
 {% endfor %}
      };
+@load policy/integration/collective-intel
 @load policy/frameworks/intel/seen
+@load policy/frameworks/intel/do_notice
+@load frameworks/intel/seen
 @load frameworks/intel/do_notice
 
 {% endif %}
