@@ -23,7 +23,7 @@ bro_force_source_build: false
 bro_v: '3.0.1'
 bro_archive_sha256: 79f4f3efd883c9c2960295778dc290372d10874380fd88450271652e829811d2
 bro_src_url: "https://www.zeek.org/downloads/zeek-{{ bro_v }}.tar.gz"
-use_zeek_opensuse_repo: false
+use_zeek_opensuse_repo: true
 # opensuse mirror has issue sometimes
 # repositories does not seem to be mirrored as much as distribution (subset of https://mirrors.opensuse.org/)
 bro_opensuse_rpm_mirror: http://download.opensuse.org/repositories/security:/zeek/
