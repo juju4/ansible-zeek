@@ -27,14 +27,14 @@
   include: debian.yml
   when: >
     not bro_force_source_build and
-    not use_zeek_opensuse_repo and
+    (not use_zeek_opensuse_repo or ansible_distribution_release == "xenial") and
     (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
 
 - name: Debian opensuse repo-based | install zeek
   include: debian-opensuse.yml
   when: >
     not bro_force_source_build and
-    use_zeek_opensuse_repo and
+    (use_zeek_opensuse_repo and ansible_distribution_release != "xenial") and
     (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
 
 - name: Redhat-based | install bro
