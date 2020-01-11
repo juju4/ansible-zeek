@@ -7,6 +7,7 @@
 - hosts: all
   vars:
     - use_zeek_opensuse_repo: true
+    - bro_intel: "/opt/zeek/intel"
     - broids_scripts_version: HEAD
     - broids_testing: true
   roles:

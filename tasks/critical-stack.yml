@@ -85,6 +85,7 @@
   when: not csconfig.stdout
   notify:
     - fetch critical-stack-intel feeds
+    - check bro
     - restart bro
 
 - name: allow critical-stack to auto-restart bro

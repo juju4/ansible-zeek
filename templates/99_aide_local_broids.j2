@@ -1,5 +1,5 @@
 {{ ansible_managed | comment }}
 ## /etc/aide/aide.conf.d/
 !{{ broids_spool }}
-/usr/share/bro/intel$ VarDir
-/usr/share/bro/intel/.*\.intel$ VarFile
+{{ bro_intel }}$ VarDir
+{{ bro_intel }}/.*\.intel$ VarFile

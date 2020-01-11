@@ -13,6 +13,7 @@ broids_packages_deps:
     - python-mysqldb
     - ca-certificates
     - python-openssl
+    - cron
 ## bro-pdns
     - python-pymysql
 ## trace-summary

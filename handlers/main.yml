@@ -1,5 +1,8 @@
 ---
 
+- name: check bro
+  command: "{{ broids_broctl }} check"
+
 - name: restart bro
   command: "{{ broids_broctl }} restart"
 

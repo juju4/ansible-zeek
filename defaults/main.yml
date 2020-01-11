@@ -74,18 +74,20 @@ broids_misp_url: ''
 ## it's advised to create a dedicated user with read-only access
 broids_misp_apikey: ''
 ## Note: that will make 'broctl check' noticebly slower
+bro_intel: "/usr/share/bro/intel"
+#bro_intel: "/opt/zeek/intel"
 broids_misp_output:
-  - /usr/share/bro/intel/ip.intel
-  - /usr/share/bro/intel/url.intel
-  - /usr/share/bro/intel/domain.intel
-  - /usr/share/bro/intel/email.intel
-  - /usr/share/bro/intel/filename.intel
-  - /usr/share/bro/intel/filehash.intel
-  - /usr/share/bro/intel/certhash.intel
-  - /usr/share/bro/intel/software.intel
+  - "{{ bro_intel }}/ip.intel"
+  - "{{ bro_intel }}/intel/url.intel"
+  - "{{ bro_intel }}/intel/domain.intel"
+  - "{{ bro_intel }}/intel/email.intel"
+  - "{{ bro_intel }}/intel/filename.intel"
+  - "{{ bro_intel }}/intel/filehash.intel"
+  - "{{ bro_intel }}/intel/certhash.intel"
+  - "{{ bro_intel }}/intel/software.intel"
 broids_misp_sensors: "{{ bro_nodes }}"
 ## misp2bro
-broids_misp2bro_output: '/usr/share/bro/intel/misp-intel.dat'
+broids_misp2bro_output: "{{ bro_intel }}/misp-intel.dat"
 broids_misp2bro_sensors: [ 'example.bro' ]
 
 #broids_scripts_version: HEAD

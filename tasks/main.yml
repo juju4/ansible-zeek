@@ -65,7 +65,7 @@
     - "{{ broids_log }}/stats"
     - "{{ broids_spool }}"
     - "{{ broids_spool }}/misp2bro"
-    - "/usr/share/bro/intel"
+    - "{{ bro_intel }}"
 
 #- name: young-ssl bro script
 #  copy:
@@ -81,6 +81,7 @@
 - name: add bro local configuration
   template: src=local.bro.j2 dest="{{ broids_site }}/local.bro" mode=0644 backup=yes
   notify:
+    - check bro
     - restart bro
 
 ## Note: file is created by broctl: install and {{ broids_spool }}/broctl-config.sh
@@ -115,6 +116,7 @@
         - { regexp: '^LogExpireInterval = .*', line: "LogExpireInterval = {{ broids_logexpire_interval }}" }
         - { regexp: '^StatsLogExpireInterval = .*', line: "StatsLogExpireInterval = {{ broids_logexpire_interval }}" }
       notify:
+        - check bro
         - restart bro
   when: st.stat.exists
 
@@ -129,13 +131,17 @@
 - name: Configure node.cfg
   template: src=node.cfg.j2 dest={{ broids_etc }}/node.cfg mode=0664 owner=root group={{ broids_group }}
   notify:
+    - check bro
     - restart bro
 
 - include: pdns.yml
   when: broids_pdns_enable
 
 - name: create directory for extracted files
-  file: dest="{{ item }}" state=directory mode=0755
+  file:
+    dest: "{{ item }}"
+    state: directory
+    mode: '0755'
   with_items:
     - "{{ bro_extractedfiles }}/http"
     - "{{ bro_extractedfiles }}/ftp"
@@ -145,13 +151,12 @@
 - include: critical-stack.yml
   when: bro_cs_enable is defined and bro_cs_enable
 
-## FIXME! idempotency
 - name: Ending bro configuration
-  command: "{{ item }}"
-  with_items:
-    - "{{ broids_broctl }} install"
-    - "{{ broids_broctl }} check"
+  command: "{{ broids_broctl }} install"
+  args:
+    creates: "{{ broids_spool }}/zeekctl-config.sh"
   notify:
+    - check bro
     - restart bro
 
 ## OR http://serverfault.com/questions/421995/disable-tcp-offloading-completely-generically-and-easily

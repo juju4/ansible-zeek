@@ -14,6 +14,7 @@ broids_packages_deps:
     - python-mysqldb
     - ca-certificates
     - python-openssl
+    - cron
 ## bro-pdns
     - python-pymysql
 ## trace-summary
@@ -36,6 +37,7 @@ broids_libdir: /opt/zeek/lib/zeekctl/ZeekControl
 broids_plugindir: /opt/zeek/lib/zeekctl/plugins
 bro_extractedfiles: "/var/log/zeek/extracted"
 broids_log: "/var/log/zeek"
+bro_intel: "{{ bro_prefix }}/intel"
 
 monitrc: /etc/monit/monitrc
 

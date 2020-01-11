@@ -18,14 +18,14 @@
   when: ansible_distribution == 'Ubuntu'
 
 - block:
-    - name: Debian | Add bro repository key
+    - name: Debian | Add zeek repository key
       apt_key:
         url: >
           {{ opensuse_url }}/Release.key
         state: present
       register: pkg_result
       until: pkg_result is success
-    - name: Debian | Add bro repository
+    - name: Debian | Add zeek repository
       apt_repository:
         repo: >
           deb {{ opensuse_url }}/ /
@@ -35,12 +35,14 @@
   when: not use_securityonion_deb
 
 ## WARNING: The following packages cannot be authenticated! = force
-- name: Debian/Ubuntu | Install Bro and dependencies
+- debug: var=broids_packages
+- debug: var=broids_packages_deps
+- name: Debian/Ubuntu | Install Zeek and dependencies
   apt: name={{ broids_packages + broids_packages_deps }} state=present update_cache=yes cache_valid_time=3600 force=yes
   register: pkg_result
   until: pkg_result is success
 
-- name: update broctl LogDir
+- name: update zeekctl LogDir
   replace:
     dest: "{{ broids_etc }}/zeekctl.cfg"
     regexp: "{{ item.re }}"
@@ -49,17 +51,16 @@
   with_items:
     - { re: '^LogDir = .*', rep: "LogDir = {{ broids_log }}" }
 
-## bro 2.1+
-- name: enable broctl MailConnectionSummary
+- name: enable zeekctl MailConnectionSummary
   replace:
-    dest: "{{ broids_etc }}/broctl.cfg"
+    dest: "{{ broids_etc }}/zeekctl.cfg"
     regexp: "^MailConnectionSummary = .*"
     replace: "MailConnectionSummary = 1"
     backup: yes
   when: bro_email_notification
-- name: disable broctl MailConnectionSummary
+- name: disable zeekctl MailConnectionSummary
   replace:
-    dest: "{{ broids_etc }}/broctl.cfg"
+    dest: "{{ broids_etc }}/zeekctl.cfg"
     regexp: "^MailConnectionSummary = .*"
     replace: "MailConnectionSummary = 0"
     backup: yes
