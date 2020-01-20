@@ -17,7 +17,7 @@ redef ignore_checksums = T;
 # Load the scan detection script.
 @load misc/scan
 
-{% if not bro_force_source_build and bro_v|string != '2.5' %}
+{% if not bro_force_source_build and bro_v|string != '2.5' and ansible_distribution_release != 'xenial' %}
 # Log some information about web applications being used by users 
 # on your network.
 @load misc/app-stats
