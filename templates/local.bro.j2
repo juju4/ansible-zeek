@@ -154,7 +154,7 @@ redef Intel::read_files += {
 @load {{ broids_site }}/ja3
 
 {% endif %}
-{% if not bro_force_source_build and bro_v|string != '2.5' %}
+{% if not bro_force_source_build and bro_v|string != '2.5' and ansible_distribution_release != 'xenial' %}
 @load {{ broids_site }}/cs-bro/bro-scripts/dce-rpc
 {% endif %}
 @load {{ broids_site }}/cs-bro/bro-scripts/extensions
