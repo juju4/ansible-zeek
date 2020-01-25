@@ -86,6 +86,7 @@
   notify:
     - fetch critical-stack-intel feeds
     - check bro
+    - deploy zeek
     - restart bro
 
 - name: allow critical-stack to auto-restart bro
