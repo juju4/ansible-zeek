@@ -20,17 +20,7 @@ provisioner:
 
 platforms:
   - name: ubuntu-18.04
-  - name: ubuntu-16.04
-#  - name: ubuntu-14.04
-#  - name: ubuntu-12.04
   - name: centos-7
-#  - name: centos-6
-## FIXME! workaround Ansible 2.2+/cryptography: https://github.com/ansible/ansible/issues/276 no attribute 'HAVE_DECL_MPZ_POWM_SEC'
-#    provisioner:
-## Desired version, only affects apt-get installs
-#      ansible_version: 2.1.2.0
-## not supported by kitchen/chef install
-#  - name: alpine-3.6
 
 suites:
   - name: default
@@ -45,8 +35,7 @@ suites:
   - name: default-securityonion
     run_list:
     includes:
-#      - ubuntu-16.04
-      - ubuntu-14.04
+      - ubuntu-18.04
   - name: default-ja3
     run_list:
     attributes:
