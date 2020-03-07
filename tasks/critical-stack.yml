@@ -51,7 +51,7 @@
   when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
 - block:
     - name: check if critical stack present
-      command: "rpm -q critical-stack-intel"
+      command: "rpm -q critical-stack-intel" # noqa 303
       register: rpm
       ignore_errors: true
       changed_when: false
