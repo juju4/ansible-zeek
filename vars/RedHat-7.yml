@@ -2,9 +2,9 @@
 
 ## bro fedora pkg
 broids_packages:
-    - zeek
-    - zeek-core
-    - zeekctl
+    - zeek-lts
+    - zeek-lts-core
+    - zeekctl-lts
 
 broids_packages_deps:
     - GeoIP-devel
