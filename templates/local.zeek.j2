@@ -26,12 +26,6 @@ redef ignore_checksums = T;
 # it often causes performance issues.
 #@load misc/scan
 
-{% if not bro_force_source_build and bro_v|string != '2.5' and ansible_distribution_release != 'xenial' %}
-# Log some information about web applications being used by users 
-# on your network.
-@load misc/app-stats
-
-{% endif %}
 # Detect traceroute being run on the network. This could possibly cause
 # performance trouble when there are a lot of traceroutes on your network.
 # Enable cautiously.
@@ -142,11 +136,16 @@ redef HTTP::default_capture_password = T;
 @load policy/protocols/conn/mac-logging
 
 {% endif %}
-@load protocols/ssl/extract-certs-pem
+{% if broids_jsonlog_enable is defined and broids_jsonlog_enable %}
+@load policy/tuning/json-logs.zeek
+
+{% endif %}
+@load policy/protocols/ssl/extract-certs-pem
 redef SSL::extract_certs_pem = ALL_HOSTS;
-@load policy/protocols/ssl/expiring-certs.bro
+@load policy/protocols/ssl/expiring-certs
 redef SSL::notify_certs_expiration = ALL_HOSTS;
-@load policy/frameworks/files/detect-MHR.bro
+@load policy/frameworks/files/detect-MHR
+
 {% if broids_pdns_enable %}
 @load {{ broids_site }}/bro-pdns
 redef PDNS::uri = "mysql://{{ mysql_pdns_user }}:{{ mysql_pdns_pass }}@localhost/pdns";
@@ -181,17 +180,13 @@ redef Intel::read_files += {
 @load {{ broids_site }}/ja3
 
 {% endif %}
-{% if not bro_force_source_build and bro_v|string != '2.5' and ansible_distribution_release != 'xenial' %}
-@load {{ broids_site }}/cs-bro/bro-scripts/dce-rpc
-{% endif %}
 @load {{ broids_site }}/cs-bro/bro-scripts/extensions
-@load {{ broids_site }}/cs-bro/bro-scripts/msb
 @load {{ broids_site }}/cs-bro/bro-scripts/rfd/detect-rfd.bro
 #@load {{ broids_site }}/cs-bro/bro-scripts/shellshock/detect-shellshock.bro
 #@load {{ broids_site }}/cs-bro/bro-scripts/sinkholes
-@load {{ broids_site }}/cs-bro/bro-scripts/ssdp
-@load {{ broids_site }}/cs-bro/bro-scripts/tor
-@load {{ broids_site }}/cs-bro/bro-scripts/tracked-providers
+#@load {{ broids_site }}/cs-bro/bro-scripts/ssdp
+#@load {{ broids_site }}/cs-bro/bro-scripts/tor
+#@load {{ broids_site }}/cs-bro/bro-scripts/tracked-providers
 @load {{ broids_site }}/jonschipp-bro/ipmi.bro
 #@load {{ broids_site }}/securitykitten-bro/bro_beacons.bro
 #@load {{ broids_site }}/securitykitten-bro/bro_typosquatting.bro
