@@ -79,9 +79,9 @@
   when: not csconfig.stdout
   notify:
     - fetch critical-stack-intel feeds
-    - check bro
+    - check zeek
     - deploy zeek
-    - restart bro
+    - restart zeek
 
 - name: allow critical-stack to auto-restart bro
   command: "critical-stack-intel config --set bro.restart=true"

@@ -8,7 +8,7 @@
     state: directory
     mode: '0755'
 
-- name: Download ja3 bro scripts
+- name: Download ja3 zeek scripts
   get_url:
     url: "{{ item.u }}"
     dest: "{{ broids_site }}/ja3/{{ item.u | basename }}"
@@ -16,6 +16,6 @@
     backup: yes
   with_items: "{{ broids_ja3_files }}"
   notify:
-    - check bro
+    - check zeek
     - deploy zeek
-    - restart bro
+    - restart zeek

@@ -23,7 +23,7 @@
 
 - include: pyopenssl.yml
 
-- name: Debian-based | install bro
+- name: Debian | install zeek
   include: debian.yml
   when: >
     not bro_force_source_build and
@@ -37,11 +37,11 @@
     (use_zeek_opensuse_repo and ansible_distribution_release != "xenial") and
     (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
 
-- name: Redhat-based | install bro
+- name: Redhat | install zeek
   include: redhat.yml
   when: not bro_force_source_build and ansible_os_family == "RedHat"
 
-- name: install bro from source
+- name: install zeek from source
   include: source.yml
   when: bro_force_source_build and not use_zeek_opensuse_repo
 
@@ -57,7 +57,7 @@
     - { regexp: '^export BROPATH=', line: 'export BROPATH={{ bro_prefix }}' }
     - { regexp: '^export PATH=', line: 'export PATH=$PATH:$BROPATH/bin' }
 
-- name: ensure bro directories exist
+- name: ensure zeek directories exist
   file: dest={{ item }} state=directory mode=0775 group={{ broids_group }}
   with_items:
     - "{{ broids_site }}"
@@ -71,34 +71,34 @@
 #  copy:
 #    src=young-ssl.bro dest={{ broids_site }}/young-ssl.bro mode=644
 ## https://github.com/JustinAzoff/bro_scripts
-- name: Extra bro script
+- name: Extra zeek script
   copy:
     src: "{{ item }}"
     dest: "{{ broids_site }}/{{ item }}"
     mode: '0644'
   with_items:
     - file_analysis_02.bro
-- name: add bro local configuration
+- name: add zeek local configuration
   template:
     src: local.zeek.j2
     dest: "{{ broids_site }}/local.zeek"
     mode: '0644'
     backup: yes
   notify:
-    - check bro
+    - check zeek
     - deploy zeek
-    - restart bro
+    - restart zeek
 
 ## Note: file is created by broctl: install and {{ broids_spool }}/broctl-config.sh
 ##  -> {{ bro_prefix }}/share/broctl/scripts/broctl-config.sh
-- name: Check if broctl-config.sh is present
-  stat: path={{ broids_spool }}/broctl-config.sh
+- name: Check if zeekctl-config.sh is present
+  stat: path={{ broids_spool }}/zeekctl-config.sh
   register: st
 - block:
-    - name: Configure broctl-config.sh
+    - name: Configure zeekctl-config.sh
       lineinfile:
-        dest: "{{ broids_etc }}/broctl.cfg"
-#        dest: "{{ broids_spool }}/broctl-config.sh"
+#        dest: "{{ broids_etc }}/broctl.cfg"
+        dest: "{{ broids_spool }}/zeekctl-config.sh"
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
         state: present
@@ -109,14 +109,14 @@
         - { regexp: '^LogExpireInterval = .*', line: "LogExpireInterval = {{ broids_logexpire_interval }}" }
         - { regexp: '^StatsLogExpireInterval = .*', line: "StatsLogExpireInterval = {{ broids_logexpire_interval }}" }
       notify:
-        - check bro
+        - check zeek
         - deploy zeek
-        - restart bro
+        - restart zeek
   when: st.stat.exists
 
-- name: configure bro maintenance script as scheduled task
+- name: configure zeek maintenance script as scheduled task
   cron:
-    name: "bro maintainance"
+    name: "zeek maintainance"
     minute: "0-59/5"
     user: "root"
     job: "{{ broids_broctl }} cron"
@@ -125,9 +125,9 @@
 - name: Configure node.cfg
   template: src=node.cfg.j2 dest={{ broids_etc }}/node.cfg mode=0664 owner=root group={{ broids_group }}
   notify:
-    - check bro
+    - check zeek
     - deploy zeek
-    - restart bro
+    - restart zeek
 
 - include: pdns.yml
   when: broids_pdns_enable
@@ -159,14 +159,14 @@
     zeekctlcfg.stdout is defined and
     zeekctlcfg.stdout == '# Automatically generated. Do not edit.'
 
-- name: Ending bro configuration
+- name: Ending zeek configuration
   command: "{{ broids_broctl }} install"
   args:
     creates: "{{ broids_config }}"
   notify:
-    - check bro
+    - check zeek
     - deploy zeek
-    - restart bro
+    - restart zeek
 
 ## OR http://serverfault.com/questions/421995/disable-tcp-offloading-completely-generically-and-easily
 - name: check network card checksum offloading state
