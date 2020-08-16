@@ -79,7 +79,11 @@
   with_items:
     - file_analysis_02.bro
 - name: add bro local configuration
-  template: src=local.bro.j2 dest="{{ broids_site }}/local.bro" mode=0644 backup=yes
+  template:
+    src: local.zeek.j2
+    dest: "{{ broids_site }}/local.zeek"
+    mode: '0644'
+    backup: yes
   notify:
     - check bro
     - deploy zeek
@@ -166,12 +170,12 @@
 
 ## OR http://serverfault.com/questions/421995/disable-tcp-offloading-completely-generically-and-easily
 - name: check network card checksum offloading state
-  command: ethtool --show-offload eth0
+  command: "ethtool --show-offload {{ bro_nodes_if }}"
   register: ethtool
   changed_when: false
 ## FIXME! not working on digitalocean droplet: got: 'rx-checksumming: on [fixed] tx-checksumming: off' and can't change
 - name: Disable network card offloading for eth0
-  command: ethtool --offload eth0 rx off tx off
+  command: "ethtool --offload {{ bro_nodes_if }} rx off tx off"
   when: "ethtool.stdout is defined and '-checksumming: on' in ethtool.stdout"
   ignore_errors: true
 
