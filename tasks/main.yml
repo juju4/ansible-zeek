@@ -103,7 +103,7 @@
         line: "{{ item.line }}"
         state: present
         backup: yes
-        creates: yes
+        create: yes
       with_items:
 ## log retention in days
         - { regexp: '^logexpireinterval=.*', line: "logexpireinterval=\"{{ broids_logexpire_interval }}\"" }
