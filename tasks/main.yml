@@ -105,9 +105,8 @@
         backup: yes
       with_items:
 ## log retention in days
-#        - { regexp: '^logexpireinterval=.*', line: "logexpireinterval={{ broids_logexpire_interval }}" }
-        - { regexp: '^LogExpireInterval = .*', line: "LogExpireInterval = {{ broids_logexpire_interval }}" }
-        - { regexp: '^StatsLogExpireInterval = .*', line: "StatsLogExpireInterval = {{ broids_logexpire_interval }}" }
+        - { regexp: '^logexpireinterval=.*', line: "logexpireinterval=\"{{ broids_logexpire_interval }}\"" }
+        - { regexp: '^statslogexpireinterval=.*', line: "statslogexpireinterval=\"{{ broids_logexpire_interval }}\"" }
       notify:
         - check zeek
         - deploy zeek
