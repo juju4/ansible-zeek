@@ -13,16 +13,19 @@ env:
     init: /usr/lib/systemd/systemd
     run_opts: "'--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro'"
     suite: default
+    idempotence_fail_exit: 0
   - distribution: ubuntu
     version: 18.04
     init: /lib/systemd/systemd
     run_opts: "'--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro'"
     suite: default
+    idempotence_fail_exit: 0
   - distribution: ubuntu
     version: 18.04
     init: /lib/systemd/systemd
     run_opts: "'--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro'"
     suite: default-ja3
+    idempotence_fail_exit: 0
 #  - distribution: ubuntu
 #    version: 18.04
 #    init: /lib/systemd/systemd
@@ -38,6 +41,7 @@ env:
     init: /lib/systemd/systemd
     run_opts: "'--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro'"
     suite: default-HEAD
+    idempotence_fail_exit: 0
 
 services:
   - docker
@@ -77,7 +81,7 @@ script:
     | tee /tmp/idempotency.log
     | grep -q 'changed=0.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
-    || (echo 'Idempotence test: fail' && cat /tmp/idempotency.log && exit 1)
+    || (echo 'Idempotence test: fail' && cat /tmp/idempotency.log && exit ${idempotence_fail_exit})
 
 after_failure:
   # Check what happened on system.
