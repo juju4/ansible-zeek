@@ -10,7 +10,7 @@ provisioner:
   name: ansible_playbook
   roles_path: ../
   hosts: all
-#  ansible_verbose: true
+  # ansible_verbose: true
   ansible_verbose: false
   ansible_verbosity: 3
   ansible_extra_flags: <%= ENV['ANSIBLE_EXTRA_FLAGS'] %>
@@ -32,7 +32,7 @@ suites:
   - name: default-securityonion
     run_list:
     includes:
-#      - ubuntu-16.04
+      # - ubuntu-16.04
       - ubuntu-14.04
   - name: default-ja3
     run_list:

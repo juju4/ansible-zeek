@@ -1,26 +1,26 @@
 ---
 
 broids_packages:
-    - bro
+  - bro
 
 broids_packages_deps:
-    - mysql-server
-    - libapache2-mod-auth-mysql
-    - php5-mysql
-    - python-pip
-    - python-sqlalchemy
-    - python-mysqldb
-## python, SNI
-    - ca-certificates
-    - python-openssl
-## bro-pdns
-    - python-pymysql
-## trace-summary
-    - python-subnettree
-## pip upgrade
-    - libmysqlclient-dev
-## offloading
-    - ethtool
+  - mysql-server
+  - libapache2-mod-auth-mysql
+  - php5-mysql
+  - python-pip
+  - python-sqlalchemy
+  - python-mysqldb
+  ## python, SNI
+  - ca-certificates
+  - python-openssl
+  ## bro-pdns
+  - python-pymysql
+  ## trace-summary
+  - python-subnettree
+  ## pip upgrade
+  - libmysqlclient-dev
+  ## offloading
+  - ethtool
 
 mysql_svc: mysql
 mysql_confdir: /etc/mysql

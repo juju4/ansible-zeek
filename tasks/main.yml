@@ -51,6 +51,7 @@
     dest: /etc/profile
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
+    mode: '0644'
     state: present
     create: yes
   with_items:
@@ -67,9 +68,9 @@
     - "{{ broids_spool }}/misp2bro"
     - "{{ bro_intel }}"
 
-#- name: young-ssl bro script
-#  copy:
-#    src=young-ssl.bro dest={{ broids_site }}/young-ssl.bro mode=644
+# - name: young-ssl bro script
+#   copy:
+#     src=young-ssl.bro dest={{ broids_site }}/young-ssl.bro mode=644
 ## https://github.com/JustinAzoff/bro_scripts
 - name: Extra zeek script
   copy:
@@ -97,15 +98,16 @@
 - block:
     - name: Configure zeekctl-config.sh
       lineinfile:
-#        dest: "{{ broids_etc }}/broctl.cfg"
+        # dest: "{{ broids_etc }}/broctl.cfg"
         dest: "{{ broids_spool }}/zeekctl-config.sh"
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
+        mode: '0644'
         state: present
         backup: yes
         create: yes
       with_items:
-## log retention in days
+        ## log retention in days
         - { regexp: '^logexpireinterval=.*', line: "logexpireinterval=\"{{ broids_logexpire_interval }}\"" }
         - { regexp: '^statslogexpireinterval=.*', line: "statslogexpireinterval=\"{{ broids_logexpire_interval }}\"" }
       notify:
@@ -179,11 +181,11 @@
   when: "ethtool.stdout is defined and '-checksumming: on' in ethtool.stdout"
   ignore_errors: true
 
-#- name: start BRO_PDNS API service
-#  command: >
-#    {{ broids_site }}/bro-pdns/bro_pdns.py serve
-#  environment:
-#    BRO_PDNS_DB: "mysql://{{ mysql_pdns_user }}::{{ mysql_pdns_pass }}@localhost/pdns"
+# - name: start BRO_PDNS API service
+#   command: >
+#     {{ broids_site }}/bro-pdns/bro_pdns.py serve
+#   environment:
+#     BRO_PDNS_DB: "mysql://{{ mysql_pdns_user }}::{{ mysql_pdns_pass }}@localhost/pdns"
 
 # Test
 # curl http://localhost:8081/dns/www.youtube.com

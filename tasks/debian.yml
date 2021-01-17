@@ -20,7 +20,7 @@
         repo: >
           deb https://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/ /
         state: present
-## upstream focal 2.5.5/bionic 2.5.3/xenial 2.4.1, opensuse repo zeek/3.0.1 (not available for 16.04) or 2.5.5
+  ## upstream focal 2.5.5/bionic 2.5.3/xenial 2.4.1, opensuse repo zeek/3.0.1 (not available for 16.04) or 2.5.5
   when: >
     (ansible_distribution == 'Ubuntu' and ansible_distribution_version.split('.')[0]|int < 18) and
     not use_securityonion_deb
@@ -72,6 +72,7 @@
         dest: /etc/init.d/bro-ids
         regexp: '^DAEMON=.*'
         replace: "DAEMON={{ broids_broctl }}"
+        mode: '0644'
         backup: yes
       when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
   when: ansible_service_mgr != 'systemd'
@@ -90,6 +91,7 @@
         dest: "{{ broids_etc }}/broctl.cfg"
         regexp: "{{ item.re }}"
         replace: "{{ item.rep }}"
+        mode: '0644'
         backup: yes
       with_items:
         - { re: '^LogDir = .*', rep: "LogDir = {{ broids_log }}" }
@@ -101,6 +103,7 @@
     dest: "{{ broids_etc }}/broctl.cfg"
     regexp: "^MailConnectionSummary = .*"
     replace: "MailConnectionSummary = 1"
+    mode: '0644'
     backup: yes
   when: bro_email_notification
 - name: disable broctl MailConnectionSummary
@@ -108,6 +111,7 @@
     dest: "{{ broids_etc }}/broctl.cfg"
     regexp: "^MailConnectionSummary = .*"
     replace: "MailConnectionSummary = 0"
+    mode: '0644'
     backup: yes
   when: not bro_email_notification
 
@@ -129,6 +133,7 @@
   file:
     path: /etc/apparmor.d/disable/usr.sbin.mysqld
     src: /etc/apparmor.d/usr.sbin.mysqld
+    mode: '0644'
     state: link
   when: travisci is defined and travisci and apparmor_installed.stat.exists
   notify:

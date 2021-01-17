@@ -50,17 +50,18 @@
     dest: "{{ broids_site }}/cs-bro/bro-scripts/shellshock/detect-shellshock.bro"
     regexp: "{{ item.re }}"
     replace: "{{ item.rep }}"
+    mode: '0644'
     backup: yes
   with_items:
-## line 32: unknown identifier string_split_all
-#    - { re: split_all, rep: string_split_all }
+    ## line 32: unknown identifier string_split_all
+    # - { re: split_all, rep: string_split_all }
     - { re: find_ip_addresses, rep: extract_ip_addresses }
-#- name: update script s/split_all/string_split/all in bro_typosquatting.bro
-#  replace:
-#    dest: "{{ broids_site }}/securitykitten-bro/bro_typosquatting.bro"
-#    regexp: split_all
-#    replace: string_split_all
-#    backup: yes
+# - name: update script s/split_all/string_split/all in bro_typosquatting.bro
+#   replace:
+#     dest: "{{ broids_site }}/securitykitten-bro/bro_typosquatting.bro"
+#     regexp: split_all
+#     replace: string_split_all
+#     backup: yes
 
 ## https://github.com/MISP/MISP/issues/424
 - block:
@@ -71,7 +72,12 @@
         version: "{{ broids_scripts_version | default('eea82a3a601f873f8494605a859460231122dd29') }}"
         update: no
     - name: update misp2bro config
-      replace: "dest={{ broids_site }}/misp2bro/misp2bro.py regexp={{ item.re }} replace={{ item.rep }} backup=yes"
+      replace:
+        dest: "{{ broids_site }}/misp2bro/misp2bro.py"
+        regexp: "{{ item.re }}"
+        replace: "{{ item.rep }}"
+        backup: yes
+        mode: '0644'
       with_items:
         - { re: '^MISP_HOST=".*"', rep: "MISP_HOST=\"{{ broids_misp_url }}\"" }
         - { re: '^API_KEY=".*"', rep: "API_KEY=\"{{ broids_misp_apikey }}\"" }
@@ -79,21 +85,21 @@
         - { re: '^BRO_PATH=".*"', rep: "BRO_PATH=\"{{ broids_misp2bro_output | dirname }}\"" }
         - { re: 'logging.basicConfig\(filename=".*"',
             rep: "logging.basicConfig(filename=\"{{ broids_log }}/misp2bro.log\""
-          }
+        }
         - { re: '"tmp/', rep: "\"{{ broids_spool }}/misp2bro/" }
-## https://github.com/thnyheim/misp2bro/pull/1
+        ## https://github.com/thnyheim/misp2bro/pull/1
         - { re: " if int\\(event.find\\('attribute_count'\\).text\\)",
             rep: " #if int(event.find('attribute_count').text)"
-          }
-#      no_log: true
+        }
+        # no_log: true
     - name: update misp2bro sensors.txt
       template:
         src: misp2bro-sensors.txt.j2
         dest: "{{ broids_site }}/misp2bro/sensors.txt"
         mode: '0644'
         backup: yes
-## Note: if Killed, probably lacking memory (check oom in kern.log)
-##  OR UnicodeEncodeError: 'ascii' codec can't encode character u'\\u201c' in position 143: ordinal not in range(128)
+    ## Note: if Killed, probably lacking memory (check oom in kern.log)
+    ##  OR UnicodeEncodeError: 'ascii' codec can't encode character u'\\u201c' in position 143: ordinal not in range(128)
     - name: run misp2bro once
       command: "python {{ broids_site }}/misp2bro/misp2bro.py creates={{ broids_misp2bro_output }}"
       ignore_errors: true

@@ -1,12 +1,12 @@
 ---
 
 bro_mode: alone
-#bro_mode: manager
-#bro_mode: node
-#bro_manager: 10.0.0.10
+# bro_mode: manager
+# bro_mode: node
+# bro_manager: 10.0.0.10
 bro_nodes:
   - localhost
-#bro_nodes:
+# bro_nodes:
 #   - 10.0.0.11
 #   - 10.0.0.12
 bro_nodes_if: eth0
@@ -35,7 +35,7 @@ broids_logexpire_interval: 90
 bro_cs_enable: false
 bro_cs_apikey: ''
 bro_cs_proxy: ''
-#bro_cs_proxy: 'http://username:password@hostname:port'
+# bro_cs_proxy: 'http://username:password@hostname:port'
 bro_cs_autorestart: false
 
 ## http://blog.bro.org/2014/01/intelligence-data-and-bro_4980.html
@@ -45,10 +45,10 @@ broids_plugins_templates:
   - smb-detect-malicious-files
   - smb-hidden-shares
   - smb-rogue-hostname
-#  - tls_finger
-## if virustotal api key?
-#  - virus-total
-#  - vt-hashing
+  # - tls_finger
+  ## if virustotal api key?
+  # - virus-total
+  # - vt-hashing
 
 broids_vt_api_key: ''
 
@@ -63,19 +63,19 @@ broids_ja3_files:
 broids_pdns_enable: false
 mysql_user: root
 mysql_root_password: mysql_root_pass_to_change_or_get_lost
-#mysql_old_root_password:
+# mysql_old_root_password:
 mysql_pdns_user: pdns
 mysql_pdns_pass: pdns_pass_to_change_or_get_lost
 
 ## if using misp, either python script or curl/MISP API since sep 2016
-#broids_misp_agent: 'misp2bro'
+# broids_misp_agent: 'misp2bro'
 broids_misp_agent: 'curl'
 broids_misp_url: ''
 ## it's advised to create a dedicated user with read-only access
 broids_misp_apikey: ''
 ## Note: that will make 'broctl check' noticebly slower
 bro_intel: "/usr/share/bro/intel"
-#bro_intel: "/opt/zeek/intel"
+# bro_intel: "/opt/zeek/intel"
 broids_misp_output:
   - "{{ bro_intel }}/ip.intel"
   - "{{ bro_intel }}/intel/url.intel"
@@ -88,8 +88,8 @@ broids_misp_output:
 broids_misp_sensors: "{{ bro_nodes }}"
 ## misp2bro
 broids_misp2bro_output: "{{ bro_intel }}/misp-intel.dat"
-broids_misp2bro_sensors: [ 'example.bro' ]
+broids_misp2bro_sensors: ['example.bro']
 
-#broids_scripts_version: HEAD
+# broids_scripts_version: HEAD
 
 broids_testing: false

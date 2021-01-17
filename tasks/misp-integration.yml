@@ -4,7 +4,7 @@
   template:
     src: misp-bro-fetch.sh.j2
     dest: /usr/local/bin/misp-bro-fetch.sh
-## contains MISP api key!!!
+    ## contains MISP api key!!!
     mode: '0700'
 
 - name: run misp-bro-fetch.sh once

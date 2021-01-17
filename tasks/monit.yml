@@ -32,7 +32,11 @@
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: allow monit status/summary from localhost
-  replace: dest={{ monitrc }} regexp={{ item.re }} replace={{ item.rep }}
+  replace:
+    dest: "{{ monitrc }}"
+    regexp: "{{ item.re }}"
+    replace: "{{ item.rep }}"
+    mode: '0700'
   with_items:
     - { re: '^# set httpd port 2812 and', rep: ' set httpd port 2812 and' }
     - { re: '^#     use address localhost', rep: '     use address localhost' }

@@ -1,21 +1,21 @@
 ---
 
 broids_packages:
-    - bro
-    - bro-core
-    - broctl
+  - bro
+  - bro-core
+  - broctl
 
 broids_packages_deps:
-    - GeoIP-devel
-    - mysql
-    - mysql-server
-    - MySQL-python
-    - python-pip
-    - git
-## to review network card offloading settings
-    - ethtool
-    - pyOpenSSL
-    - crontabs
+  - GeoIP-devel
+  - mysql
+  - mysql-server
+  - MySQL-python
+  - python-pip
+  - git
+  ## to review network card offloading settings
+  - ethtool
+  - pyOpenSSL
+  - crontabs
 
 mysql_svc: mysqld
 mysql_confdir: /etc/my.cnf.d
@@ -31,7 +31,7 @@ broids_plugindir: /opt/bro/lib/broctl/plugins
 bro_extractedfiles: "/var/log/bro/extracted"
 broids_log: "/var/log/bro"
 
-#monitrc: /etc/monitrc
+# monitrc: /etc/monitrc
 monitrc: /etc/monit.conf
 monitconfd: /etc/monit.d
 

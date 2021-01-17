@@ -2,27 +2,27 @@
 ## opensuse zeek repository
 
 broids_packages:
-    - zeek
-    - zeek-core
-    - zeekctl
+  - zeek
+  - zeek-core
+  - zeekctl
 
 broids_packages_deps:
-    - mysql-server
-    - php-mysql
-    - python-pip
-    - python-sqlalchemy
-    - python-mysqldb
-    - ca-certificates
-    - python-openssl
-    - cron
-## bro-pdns
-    - python-pymysql
-## trace-summary
-    - python-subnettree
-## pip upgrade
-    - libmysqlclient-dev
-## offloading
-    - ethtool
+  - mysql-server
+  - php-mysql
+  - python-pip
+  - python-sqlalchemy
+  - python-mysqldb
+  - ca-certificates
+  - python-openssl
+  - cron
+  ## bro-pdns
+  - python-pymysql
+  ## trace-summary
+  - python-subnettree
+  ## pip upgrade
+  - libmysqlclient-dev
+  ## offloading
+  - ethtool
 
 mysql_svc: mysql
 mysql_confdir: /etc/mysql
