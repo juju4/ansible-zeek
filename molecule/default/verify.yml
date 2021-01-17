@@ -1,0 +1,52 @@
+---
+
+- name: Verify
+  hosts: zeek
+  tasks:
+    - name: Gather package facts
+      package_facts:
+        manager: auto
+    - name: Validate that needed packages are present
+      assert:
+        that: ansible_facts.packages['zeek']
+
+    - name: Ensure /opt/zeek/etc/zeekctl.cfg config file is present
+      stat:
+        path: /opt/zeek/etc/zeekctl.cfg
+      register: cfg
+    - name: Validate config present
+      assert:
+        that: cfg.stat.exists and cfg.stat.size != 0
+
+    - name: Ensure process is running
+      command: pgrep -u root zeek
+      register: ps
+      changed_when: false
+      ignore_errors: true
+    - name: Validate ps output
+      assert:
+        that: ps.stdout
+      ignore_errors: true
+
+    - name: check all processes
+      command: ps aux
+      changed_when: false
+      register: psa
+    - debug: var=psa verbosity=1
+
+    - name: Fetch content of /var/log/bro/current/stderr.log
+      slurp:
+        src: /var/log/bro/current/stderr.log
+      register: log1
+    - name: Validate /var/log/bro/current/stderr.log
+      assert:
+        that: >
+          "'listening on' in log1['content'] | b64decode"
+
+    - name: Ensure ports are listening
+      wait_for:
+        host: "{{ item.h }}"
+        port: "{{ item.p }}"
+        timeout: 10
+      with_items:
+        - { h: localhost, p: "47760" }
