@@ -10,12 +10,12 @@ broids_packages_deps:
   - GeoIP-devel
   - mariadb
   - mariadb-server
-  - MySQL-python
-  - python-pip
+  - python3-mysql
+  - python3-pip
   - git
   ## to review network card offloading settings
   - ethtool
-  - pyOpenSSL
+  - python3-pyOpenSSL
   - crontabs
   # ifconfig for bro-scripts
   - net-tools
