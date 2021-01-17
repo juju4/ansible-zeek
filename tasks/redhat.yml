@@ -77,3 +77,7 @@
 
 - name: Redhat | Ensure Mysql/Mariadb is running and enabled on boot.
   service: "name={{ mysql_svc }} state=started enabled=yes"
+  when: >
+    not (ansible_virtualization_type is defined and
+      (ansible_virtualization_type == "docker" or ansible_virtualization_type == "VirtualPC")
+    )
