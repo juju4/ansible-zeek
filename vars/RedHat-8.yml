@@ -13,6 +13,7 @@ broids_packages_deps:
   - python3-mysql
   - python3-pip
   - git
+  - libpcap-devel
   ## to review network card offloading settings
   - ethtool
   - python3-pyOpenSSL
