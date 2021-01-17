@@ -34,11 +34,11 @@
       register: psa
     - debug: var=psa verbosity=1
 
-    - name: Fetch content of /var/log/bro/current/stderr.log
+    - name: Fetch content of /var/log/zeek/current/stderr.log
       slurp:
-        src: /var/log/bro/current/stderr.log
+        src: /var/log/zeek/current/stderr.log
       register: log1
-    - name: Validate /var/log/bro/current/stderr.log
+    - name: Validate /var/log/zeek/current/stderr.log
       assert:
         that: >
           "'listening on' in log1['content'] | b64decode"
