@@ -79,6 +79,7 @@
     mode: '0644'
   with_items:
     - file_analysis_02.bro
+- include: "random.yml name=local"
 - name: add zeek local configuration
   template:
     src: local.zeek.j2

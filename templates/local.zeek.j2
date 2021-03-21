@@ -7,7 +7,7 @@
 {# centos7=zeek 3.0, ubuntu 18.04=zeek 3.2 #}
 # Installation-wide salt value that is used in some digest hashes, e.g., for
 # the creation of file IDs. Please change this to a hard to guess value.
-redef digest_salt = "{{ broids_salt | default('Please change this value.') }}";
+redef digest_salt = "{{ salt | default('Please change this value.') }}";
 
 {% endif %}
 # Process packets despite bad checksums.

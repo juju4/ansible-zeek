@@ -1,0 +1,48 @@
+---
+
+- name: Set fact secretdir
+  set_fact:
+    secretdir: "{{ broids_etc }}"
+
+- name: ensure openssl is present
+  package: name=openssl state=present
+  register: pkg_result
+  until: pkg_result is success
+
+- name: Generating salt
+  shell: |
+    set -o pipefail
+    openssl rand -base64 32 | sed 's@[=\\/\\+]@@g;'| tee {{ secretdir }}/.zeek_secrets-{{ name }}
+  args:
+    executable: /bin/bash
+    creates: "{{ secretdir }}/.zeek_secrets-{{ name }}"
+  register: secrets
+  changed_when: false
+  no_log: true
+
+- name: Check if existing secrets
+  stat:
+    path: "{{ secretdir }}/.zeek_secrets-{{ name }}"
+  register: s
+
+- name: Recover existing salt
+  command: "cat {{ secretdir }}/.zeek_secrets-{{ name }}"
+  changed_when: false
+  register: s2
+  when: s.stat.exists
+  no_log: true
+
+- name: Set fact salt
+  set_fact:  # noqa 503
+    salt: "{{ secrets.stdout_lines.0 }}"
+  when: secrets.changed
+  no_log: true
+
+- name: Set fact salt
+  set_fact:
+    salt: "{{ s2.stdout_lines.0 }}"
+  when: s.stat.exists
+  no_log: true
+
+# - debug: var=secrets
+# - debug: var=salt
