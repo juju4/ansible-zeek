@@ -28,6 +28,14 @@
     mode: 0644
   when: ansible_os_family == "Fedora"
 
+- name: Redhat8 | Enable PowerTools repository for libpcap-devel
+  replace:
+    dest: /etc/yum.repos.d/CentOS-Linux-PowerTools.repo
+    regexp: '^enabled=.*'
+    replace: '^enabled=1'
+    mode: '0644'
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8)
+
 # opensuse mirror has issue sometimes
 # https://central.owncloud.org/t/client-install-redhat-repository-download-fails/9459/6
 # https://bugzilla.redhat.com/show_bug.cgi?id=1055478

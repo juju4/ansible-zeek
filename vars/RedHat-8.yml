@@ -13,6 +13,8 @@ broids_packages_deps:
   - python3-mysql
   - python3-pip
   - git
+  - dnf-command(config-manager)
+  # requires PowerTools repository enabled in /etc/yum.repos.d/CentOS-Linux-PowerTools.repo
   - libpcap-devel
   ## to review network card offloading settings
   - ethtool
