@@ -37,7 +37,8 @@
       command: ps aux
       changed_when: false
       register: psa
-    - debug: var=psa verbosity=1
+    - name: Debug | process output
+      debug: var=psa verbosity=1
 
     - name: Fetch content of /var/log/zeek/current/stderr.log
       slurp:

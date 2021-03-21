@@ -35,8 +35,10 @@
   when: not use_securityonion_deb
 
 ## WARNING: The following packages cannot be authenticated! = force
-- debug: var=broids_packages
-- debug: var=broids_packages_deps
+- name: Debug | broids_packages
+  debug: var=broids_packages
+- name: Debug | broids_packages_deps
+  debug: var=broids_packages_deps
 - name: Debian/Ubuntu | Install Zeek and dependencies
   apt: name={{ broids_packages + broids_packages_deps }} state=present update_cache=yes cache_valid_time=3600 force=yes
   register: pkg_result

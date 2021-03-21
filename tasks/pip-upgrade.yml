@@ -13,7 +13,8 @@
   changed_when: false
   register: pipv
 
-- debug: var=pipv.stdout
+- name: Debug | pip version
+  debug: var=pipv.stdout
 
 ## does not seem to be handled well by ansible pip module
 - block:
