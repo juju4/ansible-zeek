@@ -12,6 +12,8 @@ broids_packages_deps:
   - mariadb-server
   - MySQL-python
   - python-pip
+  - python36
+  - python3-pip
   - git
   ## to review network card offloading settings
   - ethtool
@@ -19,6 +21,8 @@ broids_packages_deps:
   - crontabs
   # ifconfig for bro-scripts
   - net-tools
+
+pip_bin: pip3.6
 
 mysql_svc: mariadb
 mysql_confdir: /etc/my.cnf.d

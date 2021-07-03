@@ -4,5 +4,6 @@
   pip:
     name: zkg
     state: present
+    executable: "{{ pip_bin | default('pip3') }}"
   register: pkg_result
   until: pkg_result is success
