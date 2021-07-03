@@ -34,8 +34,9 @@ broids_group: 'zeek'
 broids_broctl: '/opt/zeek/bin/zeekctl'
 broids_config: "{{ broids_spool }}/zeekctl-config.sh"
 broids_spool: "{{ bro_prefix }}/spool"
-broids_libdir: /opt/zeek/lib/zeekctl/ZeekControl
-broids_plugindir: /opt/zeek/lib/zeekctl/plugins
+zeekctl_lib: /opt/zeek/lib/zeek/python/zeekctl
+broids_libdir: /opt/zeek/lib/zeek/python/zeekctl/ZeekControl
+broids_plugindir: /opt/zeek/lib/zeek/python/zeekctl/plugins
 bro_extractedfiles: "/var/log/zeek/extracted"
 broids_log: "/var/log/zeek"
 
