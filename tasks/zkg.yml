@@ -1,0 +1,8 @@
+---
+
+- name: Ensure Zkg Zeek Package Manager is present
+  pip:
+    name: zkg
+    state: present
+  register: pkg_result
+  until: pkg_result is success
