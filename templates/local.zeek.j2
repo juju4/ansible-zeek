@@ -157,7 +157,7 @@ redef PDNS::uri = "mysql://{{ mysql_pdns_user }}:{{ mysql_pdns_pass }}@localhost
 #### Intel ####
 
 {% if broids_misp_url != '' %}
-redef Intel::read_files += { 
+redef Intel::read_files += {
 {% for intel in broids_intels %}
     "{{ intel }}",
 {% endfor %}
@@ -205,4 +205,3 @@ redef Intel::read_files += {
 {% for f in broids_plugins_templates %}
 @load {{ broids_site }}/{{ f }}.bro
 {% endfor %}
-

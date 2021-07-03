@@ -10,4 +10,3 @@ event SSL::log_ssl(rec: SSL::Info)
                        rec$id$resp_h, rec$not_valid_before, rec$subject);
                }
        }
-

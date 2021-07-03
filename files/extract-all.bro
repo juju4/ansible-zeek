@@ -21,4 +21,3 @@ event file_new(f: fa_file)
     local fname = fmt("%s-%s.%s", f$source, f$id, ext);
     Files::add_analyzer(f, Files::ANALYZER_EXTRACT, [$extract_filename=fname]);
     }
-

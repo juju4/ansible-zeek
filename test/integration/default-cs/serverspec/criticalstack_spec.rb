@@ -16,4 +16,3 @@ describe file('/var/log/critical-stack-intel.log'), :if => os[:family] == 'ubunt
   its(:size) { should > 0 }
   its(:content) { should_not match /\[ERROR\]/ }
 end
-

@@ -1,4 +1,3 @@
 !/opt/critical-stack/frameworks/intel/.cache
 /opt/critical-stack/configs/critical-stack-intel.db$ VarFile
 /opt/critical-stack/frameworks/intel/master-public.bro.dat$ VarFile
-

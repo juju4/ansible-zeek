@@ -11,4 +11,3 @@ event file_hash(f: fa_file, kind: string, hash: string)
     {
     print "file_hash", f$id, kind, hash;
     }
-
