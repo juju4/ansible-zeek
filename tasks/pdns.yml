@@ -1,5 +1,14 @@
 ---
 
+- name: Debian/Ubuntu | Install PassiveDNS packages
+  apt:
+    name: "{{ broid_pdns_packages_deps }}"
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  register: pkg_result
+  until: pkg_result is success
+
 ## http://nullsecure.org/building-your-own-passivedns-feed/
 ## OR ? http://stackoverflow.com/questions/16444306/ansible-idempotent-mysql-installation-playbook
 ## is mysql_install_db necessary? probably not
