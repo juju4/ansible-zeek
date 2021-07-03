@@ -102,7 +102,7 @@
     ##  OR UnicodeEncodeError: 'ascii' codec can't encode character u'\\u201c' in position 143: ordinal not in range(128)
     - name: run misp2bro once
       command: "python {{ broids_site }}/misp2bro/misp2bro.py creates={{ broids_misp2bro_output }}"
-      ignore_errors: true
+      failed_when: false
     - name: Ensure misp2bro cron task is present
       cron: name="misp2bro refresh" minute=0 hour=12
         user="root" job="python {{ broids_site }}/misp2bro/misp2bro.py > /tmp/misp2bro-cron.out"

@@ -27,11 +27,11 @@
       command: pgrep -u root zeek
       register: ps
       changed_when: false
-      ignore_errors: true
+      failed_when: false
     - name: Validate ps output
       assert:
         that: ps.stdout
-      ignore_errors: true
+      failed_when: false
 
     - name: check all processes
       command: ps aux

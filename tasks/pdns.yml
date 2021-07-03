@@ -49,7 +49,7 @@
     - 127.0.0.1
     - ::1
     - localhost
-  ignore_errors: true
+  failed_when: false
 - name: ensure pdns database exists
   mysql_db:
     name: pdns

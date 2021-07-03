@@ -152,7 +152,7 @@
 - name: Check zeekctl-config.sh
   command: "cat {{ broids_config }}"
   changed_when: false
-  ignore_errors: true
+  failed_when: false
   register: zeekctlcfg
 - name: Remove placeholder zeekctl-config.sh
   file:
@@ -180,7 +180,7 @@
 - name: Disable network card offloading for eth0
   command: "ethtool --offload {{ bro_nodes_if }} rx off tx off"
   when: "ethtool.stdout is defined and '-checksumming: on' in ethtool.stdout"
-  ignore_errors: true
+  failed_when: false
 
 # - name: start BRO_PDNS API service
 #   command: >

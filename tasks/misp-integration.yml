@@ -9,7 +9,7 @@
 
 - name: run misp-bro-fetch.sh once
   command: "/usr/local/bin/misp-bro-fetch.sh creates=/usr/share/bro/intel/ip.intel"
-  ignore_errors: true
+  failed_when: false
 
 - name: Set misp2bro cron task
   cron: name="misp2bro refresh" minute=0 hour=12
