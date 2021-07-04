@@ -37,6 +37,7 @@
     - { o: user, v: root }
     - { o: password, v: "{{ mysql_old_root_password | default('') }}" }
   when: not mycnf.stat.exists
+  no_log: true
 
 - name: Set mysql root user password
   mysql_user:
