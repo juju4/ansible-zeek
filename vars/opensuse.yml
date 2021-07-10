@@ -12,7 +12,6 @@ broids_packages_deps:
   - ca-certificates
   - python-openssl
   - cron
-  - gpg
   ## trace-summary
   - python-subnettree
   ## pip upgrade
