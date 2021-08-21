@@ -4,12 +4,7 @@
   command: "{{ broids_broctl }} check"
 
 - name: deploy zeek
-  block:
-    - name: deploy
-      command: "{{ broids_broctl }} deploy"
-  rescue:
-    - name: diag
-      command: "{{ broids_broctl }} diag"
+  command: "{{ broids_broctl }} deploy"
 
 - name: restart zeek
   command: "{{ broids_broctl }} restart"
