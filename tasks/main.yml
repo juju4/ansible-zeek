@@ -198,6 +198,10 @@
 - include: aide-hids.yml
 - include: monit.yml
 
+- name: zeek diag
+  command: "{{ broids_broctl }} diag"
+  changed_when: false
+
 - name: Install testing tools
   package:
     name: "{{ broids_testing_pkgs }}"
