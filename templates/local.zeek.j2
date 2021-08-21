@@ -143,7 +143,14 @@ redef HTTP::default_capture_password = T;
 @load policy/tuning/json-logs.zeek
 
 {% endif %}
+{% if ansible_os_family == "RedHat" %}
+{# Zeek 4.0 #}
+@load policy/protocols/ssl/extract-certs-pem
+redef SSL::extract_certs_pem = ALL_HOSTS;
+{% else %}
+{# Zeek 4.1 #}
 @load policy/protocols/ssl/log-certs-base64
+{% endif %}
 @load policy/protocols/ssl/expiring-certs
 redef SSL::notify_certs_expiration = ALL_HOSTS;
 @load policy/frameworks/files/detect-MHR
