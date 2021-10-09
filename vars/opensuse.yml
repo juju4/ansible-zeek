@@ -18,6 +18,7 @@ broids_packages_deps:
   - libmysqlclient-dev
   ## offloading
   - ethtool
+  - libcap2-bin
 
 broid_pdns_packages_deps:
   - mysql-server
