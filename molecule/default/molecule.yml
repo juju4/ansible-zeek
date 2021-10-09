@@ -17,6 +17,9 @@ platforms:
     #   no_proxy: ${no_proxy}
     groups:
       - zeek
+    capabilities:
+      - NET_ADMIN
+      - NET_RAW
 provisioner:
   name: ansible
   config_options:
