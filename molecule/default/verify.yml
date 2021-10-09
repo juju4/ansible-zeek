@@ -24,7 +24,7 @@
         that: cfg.stat.exists and cfg.stat.size != 0
 
     - name: Ensure process is running
-      command: pgrep -u root zeek
+      command: pgrep -u _zeek zeek
       register: ps
       changed_when: false
       failed_when: false
