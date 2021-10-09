@@ -2,12 +2,18 @@
 
 - name: check zeek
   command: "{{ broids_broctl }} check"
+  become: yes
+  become_user: "{{ broids_user }}"
 
 - name: deploy zeek
   command: "{{ broids_broctl }} deploy"
+  become: yes
+  become_user: "{{ broids_user }}"
 
 - name: restart zeek
   command: "{{ broids_broctl }} restart"
+  become: yes
+  become_user: "{{ broids_user }}"
 
 - name: restart monit
   service: name=monit state=restarted

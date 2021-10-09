@@ -23,6 +23,14 @@
 
 - include: pyopenssl.yml
 
+- name: ensure unprivileged zeek user exists
+  user:
+    name: "{{ broids_user }}"
+    home: "{{ broids_home }}"
+    create_home: no
+    system: yes
+  when: broids_user != 'root'
+
 - name: Debian | install zeek
   include: debian.yml
   when: >
@@ -58,15 +66,30 @@
     - { regexp: '^export BROPATH=', line: 'export BROPATH={{ bro_prefix }}' }
     - { regexp: '^export PATH=', line: 'export PATH=$PATH:$BROPATH/bin' }
 
+- name: Unprivileged zeek with Linux Capabilities
+  capabilities:
+    path: "{{ bro_prefix }}/bin/zeek"
+    capability: 'cap_net_raw,cap_net_admin=eip'
+    state: present
+  when: broids_user != 'root'
+
 - name: ensure zeek directories exist
-  file: dest={{ item }} state=directory mode=0775 group={{ broids_group }}
+  file:
+    dest: "{{ item }}"
+    state: "directory"
+    mode: '0775'
+    owner: "{{ broids_user }}"
+    group: "{{ broids_group }}"
   with_items:
     - "{{ broids_site }}"
     - "{{ broids_log }}"
     - "{{ broids_log }}/stats"
     - "{{ broids_spool }}"
+    - "{{ broids_spool }}/tmp"
     - "{{ broids_spool }}/misp2bro"
     - "{{ bro_intel }}"
+    - "{{ bro_extractedfiles }}/http"
+    - "{{ bro_extractedfiles }}/ftp"
 
 # - name: young-ssl bro script
 #   copy:
@@ -104,6 +127,7 @@
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
         mode: '0600'
+        owner: "{{ broids_user }}"
         state: present
         backup: yes
         create: yes
@@ -123,8 +147,8 @@
 - name: configure zeek maintenance script as scheduled task
   cron:
     name: "zeek maintainance"
-    minute: "0-59/5"
-    user: "root"
+    minute: "*/5"
+    user: "{{ broids_user }}"
     job: "{{ broids_broctl }} cron"
     cron_file: "ansible_bro"
 
@@ -137,15 +161,6 @@
 
 - include: pdns.yml
   when: broids_pdns_enable
-
-- name: create directory for extracted files
-  file:
-    dest: "{{ item }}"
-    state: directory
-    mode: '0755'
-  with_items:
-    - "{{ bro_extractedfiles }}/http"
-    - "{{ bro_extractedfiles }}/ftp"
 
 - include: bro-scripts.yml
 
@@ -167,6 +182,8 @@
 
 - name: Ending zeek configuration
   command: "{{ broids_broctl }} install"
+  become: yes
+  become_user: "{{ broids_user }}"
   args:
     creates: "{{ broids_config }}"
   notify:
@@ -200,6 +217,8 @@
 
 - name: zeek diag
   command: "{{ broids_broctl }} diag"
+  become: yes
+  become_user: "{{ broids_user }}"
   changed_when: false
 
 - name: Install testing tools

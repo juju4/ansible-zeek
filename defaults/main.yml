@@ -10,6 +10,9 @@ bro_nodes:
 #   - 10.0.0.11
 #   - 10.0.0.12
 bro_nodes_if: eth0
+# broids_user: root
+broids_user: _zeek
+broids_home: /nonexistent
 
 bro_email_notification: true
 
