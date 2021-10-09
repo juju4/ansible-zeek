@@ -43,6 +43,11 @@
     - name: Debug | process output
       debug: var=psa verbosity=1
 
+    - name: check few directories
+      command: ls -l /opt/zeek/etc /opt/zeek/spool
+      changed_when: false
+      failed_when: false
+
     - name: Fetch content of /var/log/zeek/current/stderr.log
       slurp:
         src: /var/log/zeek/current/stderr.log
