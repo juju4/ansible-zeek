@@ -90,6 +90,7 @@
     - "{{ bro_intel }}"
     - "{{ bro_extractedfiles }}/http"
     - "{{ bro_extractedfiles }}/ftp"
+    - "{{ bro_prefix }}/share/zeekctl/scripts"
 
 # - name: young-ssl bro script
 #   copy:
