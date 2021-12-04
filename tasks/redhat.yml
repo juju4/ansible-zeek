@@ -17,6 +17,8 @@
     owner: root
     group: root
     mode: '0644'
+  register: dl_result
+  until: dl_result is success
   when: ansible_os_family == "RedHat"
 - name: Fedora | Install Zeek yum repository
   get_url:
@@ -26,6 +28,8 @@
     owner: root
     group: root
     mode: 0644
+  register: dl_result
+  until: dl_result is success
   when: ansible_os_family == "Fedora"
 
 - name: Redhat8 | Enable PowerTools repository for libpcap-devel
