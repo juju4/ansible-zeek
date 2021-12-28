@@ -195,16 +195,26 @@
     - deploy zeek
     - restart zeek
 
-## OR http://serverfault.com/questions/421995/disable-tcp-offloading-completely-generically-and-easily
-- name: check network card checksum offloading state
-  command: "ethtool --show-offload {{ bro_nodes_if }}"
-  register: ethtool
-  changed_when: false
-## FIXME! not working on digitalocean droplet: got: 'rx-checksumming: on [fixed] tx-checksumming: off' and can't change
-- name: Disable network card offloading for eth0
-  command: "ethtool --offload {{ bro_nodes_if }} rx off tx off"
-  when: "ethtool.stdout is defined and '-checksumming: on' in ethtool.stdout"
-  failed_when: false
+- name: check if offloading marker is present
+  stat: path=/root/.ansible-zeek-offloading
+  register: offload
+- block:
+    ## OR http://serverfault.com/questions/421995/disable-tcp-offloading-completely-generically-and-easily
+    - name: check network card checksum offloading state
+      command: "ethtool --show-offload {{ bro_nodes_if }}"
+      register: ethtool
+      changed_when: false
+    ## FIXME! not working on digitalocean droplet: got: 'rx-checksumming: on [fixed] tx-checksumming: off' and can't change
+    - name: Disable network card offloading for eth0
+      command: "ethtool --offload {{ bro_nodes_if }} rx off tx off"
+      when: "ethtool.stdout is defined and '-checksumming: on' in ethtool.stdout"
+      failed_when: false
+    - name: add offloading marker
+      file:
+        dest: /root/.ansible-zeek-offloading
+        mode: '0644'
+        state: touch
+  when: not offload.stat.exists
 
 # - name: start BRO_PDNS API service
 #   command: >
