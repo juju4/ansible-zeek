@@ -69,7 +69,7 @@
 - name: Unprivileged zeek with Linux Capabilities
   capabilities:
     path: "{{ bro_prefix }}/bin/zeek"
-    capability: 'cap_net_raw,cap_net_admin=eip'
+    capability: 'cap_net_admin,cap_net_raw+eip'
     state: present
   when: broids_user != 'root'
 
@@ -85,15 +85,16 @@
     - "{{ broids_log }}"
     - "{{ broids_log }}/stats"
     - "{{ broids_spool }}"
-    - "{{ broids_spool }}/bro"
-    - "{{ broids_spool }}/installed-scripts-do-not-touch/auto"
-    - "{{ broids_spool }}/installed-scripts-do-not-touch/site"
     - "{{ broids_spool }}/tmp"
     - "{{ broids_spool }}/misp2bro"
     - "{{ bro_intel }}"
     - "{{ bro_extractedfiles }}/http"
     - "{{ bro_extractedfiles }}/ftp"
     - "{{ bro_prefix }}/share/zeekctl/scripts"
+    ## this seems required only when migrating from privileged zeek. else no idempotence.
+    # - "{{ broids_spool }}/bro"
+    # - "{{ broids_spool }}/installed-scripts-do-not-touch/auto"
+    # - "{{ broids_spool }}/installed-scripts-do-not-touch/site"
 
 # - name: young-ssl bro script
 #   copy:
@@ -137,11 +138,11 @@
         create: yes
       with_items:
         # missing on rhel8
-        - { regexp: '^libdirinternal=.*', line: "libdirinternal=\"{{ zeekctl_lib | default(bro_prefix + '/lib/zeekctl') }}\"" }
+        - { regexp: '^libdirinternal=.*', line: "libdirinternal=\"{{ zeekctl_lib | default(bro_prefix + '/lib/zeek/python') }}\"" }
         - { regexp: '^plugindir=.*', line: "plugindir=\"{{ broids_plugindir }}\"" }
         ## log retention in days
         - { regexp: '^logexpireinterval=.*', line: "logexpireinterval=\"{{ broids_logexpire_interval }}\"" }
-        - { regexp: '^statslogexpireinterval=.*', line: "statslogexpireinterval=\"{{ broids_logexpire_interval }}\"" }
+        - { regexp: '^statslogexpireinterval=.*', line: "statslogexpireinterval=\"{{ broids_statslogexpire_interval }}\"" }
       notify:
         - check zeek
         - deploy zeek

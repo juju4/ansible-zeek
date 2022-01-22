@@ -33,6 +33,7 @@ bro_opensuse_rpm_mirror: http://download.opensuse.org/repositories/security:/zee
 
 ## local disk logs limit in days
 broids_logexpire_interval: 90
+broids_statslogexpire_interval: 0
 
 ## install critical stack (need to register to get API key, https://intel.criticalstack.com/)
 bro_cs_enable: false
