@@ -91,9 +91,9 @@
     - "{{ bro_extractedfiles }}/http"
     - "{{ bro_extractedfiles }}/ftp"
     - "{{ bro_prefix }}/share/zeekctl/scripts"
-    ## this seems required only when migrating from privileged zeek. else no idempotence.
-    # - "{{ broids_spool }}/bro"
-    # - "{{ broids_spool }}/installed-scripts-do-not-touch/auto"
+    # this seems required only when migrating from privileged zeek. else no idempotence.
+    # - "{{ broids_spool }}/bro"
+    # - "{{ broids_spool }}/installed-scripts-do-not-touch/auto"
     # - "{{ broids_spool }}/installed-scripts-do-not-touch/site"
 
 # - name: young-ssl bro script
@@ -107,7 +107,9 @@
     mode: '0644'
   with_items:
     - file_analysis_02.bro
-- import_tasks: "random.yml name=local"
+- import_tasks: random.yml
+  vars:
+    name: local
 - name: add zeek local configuration
   template:
     src: local.zeek.j2
