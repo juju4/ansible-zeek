@@ -21,7 +21,7 @@
   register: pkg_result
   until: pkg_result is success
 
-- include: pyopenssl.yml
+- import_tasks: pyopenssl.yml
 
 - name: ensure unprivileged zeek user exists
   user:
@@ -32,25 +32,25 @@
   when: broids_user != 'root'
 
 - name: Debian | install zeek
-  include: debian.yml
+  import_tasks: debian.yml
   when: >
     not bro_force_source_build and
     (not use_zeek_opensuse_repo or ansible_distribution_release == "xenial") and
     (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
 
 - name: Debian opensuse repo-based | install zeek
-  include: debian-opensuse.yml
+  import_tasks: debian-opensuse.yml
   when: >
     not bro_force_source_build and
     (use_zeek_opensuse_repo and ansible_distribution_release != "xenial") and
     (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
 
 - name: Redhat | install zeek
-  include: redhat.yml
+  import_tasks: redhat.yml
   when: not bro_force_source_build and ansible_os_family == "RedHat"
 
 - name: install zeek from source
-  include: source.yml
+  import_tasks: source.yml
   when: bro_force_source_build and not use_zeek_opensuse_repo
 
 ## Extra configuration
@@ -107,7 +107,7 @@
     mode: '0644'
   with_items:
     - file_analysis_02.bro
-- include: "random.yml name=local"
+- import_tasks: "random.yml name=local"
 - name: add zeek local configuration
   template:
     src: local.zeek.j2
@@ -164,12 +164,12 @@
     - deploy zeek
     - restart zeek
 
-- include: pdns.yml
+- import_tasks: pdns.yml
   when: broids_pdns_enable
 
-- include: bro-scripts.yml
+- import_tasks: bro-scripts.yml
 
-- include: critical-stack.yml
+- import_tasks: critical-stack.yml
   when: bro_cs_enable is defined and bro_cs_enable
 
 - name: Check zeekctl-config.sh
@@ -227,8 +227,8 @@
 # curl http://localhost:8081/dns/www.youtube.com
 
 - import_tasks: zkg.yml
-- include: aide-hids.yml
-- include: monit.yml
+- import_tasks: aide-hids.yml
+- import_tasks: monit.yml
 
 - name: zeek diag
   command: "{{ broids_broctl }} diag"

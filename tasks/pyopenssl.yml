@@ -1,7 +1,7 @@
 ---
 
 - block:
-    - include: pip-upgrade.yml
+    - import_tasks: pip-upgrade.yml
     ## AttributeError: 'module' object has no attribute 'SSL_ST_INIT'
     - name: PyOpenSSL 16.2+
       pip:

@@ -111,7 +111,7 @@
 
 ## http://feathub.com/MISP/MISP/+21
 ## or curl ? http://10.252.116.20/events/downloadExport/bro
-- include: misp-integration.yml
+- import_tasks: misp-integration.yml
   when: broids_misp_url is defined and broids_misp_url and broids_misp_agent == 'curl'
 
 - name: copy zeek plugins from templates
@@ -122,7 +122,7 @@
     backup: yes
   with_items: "{{ broids_plugins_templates }}"
 
-- include: ja3.yml
+- import_tasks: ja3.yml
   when: broids_ja3_enable
 
 ## Anything to recover?
