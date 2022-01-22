@@ -11,8 +11,7 @@
 
 - name: RHEL | Install Zeek yum repository
   get_url:
-    url: >
-      https://download.opensuse.org/repositories/security:zeek/CentOS_{{ ansible_distribution_major_version }}/security:zeek.repo
+    url: "{{ zeek_opensuse_yum_repo_url }}"
     dest: /etc/yum.repos.d/zeek.repo
     owner: root
     group: root
