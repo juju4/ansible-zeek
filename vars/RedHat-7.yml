@@ -47,3 +47,5 @@ broids_testing_pkgs:
   - iproute
 
 zeek_opensuse_yum_repo_url: https://download.opensuse.org/repositories/security:zeek/CentOS_{{ ansible_distribution_major_version }}/security:zeek.repo
+
+zeek_validate_certs: no

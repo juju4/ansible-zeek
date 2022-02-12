@@ -16,6 +16,7 @@
     owner: root
     group: root
     mode: '0644'
+    validate_certs: "{{ zeek_validate_certs | default('yes') }}"
   register: dl_result
   until: dl_result is success
   when: ansible_os_family == "RedHat"
