@@ -31,6 +31,10 @@
   until: dl_result is success
   when: ansible_os_family == "Fedora"
 
+- name: Redhat | list yum repos
+  command: ls -l /etc/yum.repos.d/
+  changed_when: false
+
 - name: Redhat8 | Enable PowerTools repository for libpcap-devel
   replace:
     dest: /etc/yum.repos.d/CentOS-Linux-PowerTools.repo
