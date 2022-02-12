@@ -133,7 +133,7 @@
         dest: "{{ broids_spool }}/zeekctl-config.sh"
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
-        mode: '0600'
+        mode: '0660'
         owner: "{{ broids_user }}"
         state: present
         backup: yes
