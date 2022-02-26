@@ -46,4 +46,4 @@ broids_testing_pkgs:
   - iproute
 
 zeek_opensuse_yum_repo_url: https://download.opensuse.org/repositories/security:zeek/CentOS_{{ ansible_distribution_major_version }}_Stream/security:zeek.repo
-zeek_redhat_powertools_repofile: /etc/yum.repos.d/CentOS-Stream-PowerTools.repo
+zeek_redhat_powertools_repofile: /etc/yum.repos.d/Rocky-PowerTools.repo

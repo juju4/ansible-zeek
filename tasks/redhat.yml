@@ -38,7 +38,7 @@
 
 - name: Redhat8 | Enable PowerTools repository for libpcap-devel
   replace:
-    dest: /etc/yum.repos.d/CentOS-Linux-PowerTools.repo
+    dest: "{{ zeek_redhat_powertools_repofile }}"
     regexp: '^enabled=.*'
     replace: '^enabled=1'
     mode: '0644'
