@@ -39,6 +39,7 @@
     - name: check all processes
       command: ps aux
       changed_when: false
+      failed_when: false
       register: psa
     - name: Debug | process output
       debug: var=psa verbosity=1
