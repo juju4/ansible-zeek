@@ -1,0 +1,51 @@
+---
+
+## bro fedora pkg
+broids_packages:
+  - zeek-lts
+  - zeek-lts-core
+  - zeekctl-lts
+
+broids_packages_deps:
+  - GeoIP-devel
+  - mariadb
+  - mariadb-server
+  - MySQL-python
+  - python-pip
+  - python36
+  - python3-pip
+  - git
+  ## to review network card offloading settings
+  - ethtool
+  - pyOpenSSL
+  - crontabs
+  # ifconfig for bro-scripts
+  - net-tools
+
+pip_bin: pip3.6
+
+mysql_svc: mariadb
+mysql_confdir: /etc/my.cnf.d
+
+bro_prefix: '/opt/zeek'
+broids_etc: '/opt/zeek/etc'
+broids_site: '/opt/zeek/share/zeek/site'
+broids_group: 'zeek'
+broids_broctl: '/opt/zeek/bin/zeekctl'
+broids_config: "{{ broids_spool }}/zeekctl-config.sh"
+broids_spool: "{{ bro_prefix }}/spool"
+zeekctl_lib: /opt/zeek/lib/zeek/python/zeekctl
+broids_libdir: /opt/zeek/lib/zeek/python/zeekctl/ZeekControl
+broids_plugindir: /opt/zeek/lib/zeek/python/zeekctl/plugins
+bro_extractedfiles: "/var/log/zeek/extracted"
+broids_log: "/var/log/zeek"
+
+monitrc: /etc/monitrc
+monitconfd: /etc/monit.d
+
+broids_testing_pkgs:
+  - iproute
+
+zeek_opensuse_yum_repo_url: https://download.opensuse.org/repositories/security:zeek/CentOS_{{ ansible_distribution_major_version }}/security:zeek.repo
+
+zeek_validate_certs: no
