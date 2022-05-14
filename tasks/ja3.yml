@@ -13,6 +13,7 @@
     url: "{{ item.u }}"
     dest: "{{ broids_site }}/ja3/{{ item.u | basename }}"
     checksum: "{{ item.c }}"
+    mode: '0644'
     backup: yes
   with_items: "{{ broids_ja3_files }}"
   notify:
