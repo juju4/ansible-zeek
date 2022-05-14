@@ -49,7 +49,7 @@ event file_hash(f: fa_file, kind: string, hash: string)
                         # If the number of positives (number stored in variable notic) equals or exceeds the threshold, generate a notice
                         if (notic >= notice_threshold )
                         {
-                            local msg = fmt("%s,%s,%s","Potentially Malicious File Transfered via SMB",stuff[9],stuff[4]);
+                            local msg = fmt("%s,%s,%s","Potentially Malicious File Transferred via SMB",stuff[9],stuff[4]);
 
                             local n: Notice::Info = Notice::Info($note=SMB, $msg=msg, $sub=stuff[5]);
 
