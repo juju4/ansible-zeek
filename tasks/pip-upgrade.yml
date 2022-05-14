@@ -5,7 +5,7 @@
 ## https://github.com/Toblerity/Shapely/issues/305      ImportError: No module named packaging.version
 ## https://github.com/pypa/setuptools/issues/937
 - name: check current pip version
-  shell: |
+  ansible.builtin.shell: |
     set -o pipefail
     pip --version | sed "s/pip \(.*\) from .*/\1/"
   args:
@@ -14,17 +14,18 @@
   register: pipv
 
 - name: Debug | pip version
-  debug: var=pipv.stdout
+  ansible.builtin.debug: var=pipv.stdout
 
 ## does not seem to be handled well by ansible pip module
-- block:
+- name: old pip
+  block:
 
     - name: upgrade pip to latest
-      command: pip install --upgrade pip
+      ansible.builtin.command: pip install --upgrade pip
       when: ansible_os_family != "Debian"
 
     - name: upgrade setuptools to latest
-      command: pip install --upgrade setuptools
+      ansible.builtin.command: pip install --upgrade setuptools
       when: ansible_os_family != "Debian"
 
   when: pipv.stdout|int is version_compare( '10.1', '<')

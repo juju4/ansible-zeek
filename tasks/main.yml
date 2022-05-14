@@ -1,19 +1,19 @@
 ---
 
 - name: Include version-specific variables for Ubuntu.
-  include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
+  ansible.builtin.include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
   when: ansible_distribution == 'Ubuntu'
 - name: Include version-specific variables for RedHat
-  include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
+  ansible.builtin.include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
   when: ansible_os_family == "RedHat"
 - name: Include securityonion variables
-  include_vars: securityonion.yml
+  ansible.builtin.include_vars: securityonion.yml
   when: >
     use_securityonion_deb and
     (ansible_distribution_release == "precise" or ansible_distribution_release == "trusty")
 
 - name: Debian | Install Bro dependencies
-  apt:
+  ansible.builtin.apt:
     name: ['git', 'gdb', 'gpg']
     state: present
     update_cache: yes
@@ -24,7 +24,7 @@
 - import_tasks: pyopenssl.yml
 
 - name: ensure unprivileged zeek user exists
-  user:
+  ansible.builtin.user:
     name: "{{ broids_user }}"
     home: "{{ broids_home }}"
     create_home: no
@@ -55,7 +55,7 @@
 
 ## Extra configuration
 - name: Add BROPATH to /etc/profile
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/profile
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
@@ -74,7 +74,7 @@
   when: broids_user != 'root'
 
 - name: ensure zeek directories exist
-  file:
+  ansible.builtin.file:
     dest: "{{ item }}"
     state: "directory"
     mode: '0775'
@@ -97,11 +97,11 @@
     # - "{{ broids_spool }}/installed-scripts-do-not-touch/site"
 
 # - name: young-ssl bro script
-#   copy:
+#   ansible.builtin.copy:
 #     src=young-ssl.bro dest={{ broids_site }}/young-ssl.bro mode=644
 ## https://github.com/JustinAzoff/bro_scripts
 - name: Extra zeek script
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "{{ broids_site }}/{{ item }}"
     mode: '0644'
@@ -111,7 +111,7 @@
   vars:
     name: local
 - name: add zeek local configuration
-  template:
+  ansible.builtin.template:
     src: local.zeek.j2
     dest: "{{ broids_site }}/local.zeek"
     mode: '0644'
@@ -124,11 +124,12 @@
 ## Note: file is created by broctl: install and {{ broids_spool }}/broctl-config.sh
 ##  -> {{ bro_prefix }}/share/broctl/scripts/broctl-config.sh
 - name: Check if zeekctl-config.sh is present
-  stat: path={{ broids_spool }}/zeekctl-config.sh
+  ansible.builtin.stat: path={{ broids_spool }}/zeekctl-config.sh
   register: st
-- block:
+- name: zeekctl-config.sh
+  block:
     - name: Configure zeekctl-config.sh
-      lineinfile:
+      ansible.builtin.lineinfile:
         # dest: "{{ broids_etc }}/broctl.cfg"
         dest: "{{ broids_spool }}/zeekctl-config.sh"
         regexp: "{{ item.regexp }}"
@@ -152,7 +153,7 @@
   when: st.stat.exists
 
 - name: configure zeek maintenance script as scheduled task
-  cron:
+  ansible.builtin.cron:
     name: "zeek maintenance"
     minute: "*/5"
     user: "{{ broids_user }}"
@@ -160,7 +161,7 @@
     cron_file: "ansible_bro"
 
 - name: Configure node.cfg
-  template: src=node.cfg.j2 dest={{ broids_etc }}/node.cfg mode=0664 owner=root group={{ broids_group }}
+  ansible.builtin.template: src=node.cfg.j2 dest={{ broids_etc }}/node.cfg mode=0664 owner=root group={{ broids_group }}
   notify:
     - check zeek
     - deploy zeek
@@ -175,12 +176,12 @@
   when: bro_cs_enable is defined and bro_cs_enable
 
 - name: Check zeekctl-config.sh
-  command: "cat {{ broids_config }}"
+  ansible.builtin.command: "cat {{ broids_config }}"
   changed_when: false
   failed_when: false
   register: zeekctlcfg
 - name: Remove placeholder zeekctl-config.sh
-  file:
+  ansible.builtin.file:
     path: "{{ broids_config }}"
     state: absent
   when: >
@@ -188,7 +189,7 @@
     zeekctlcfg.stdout == '# Automatically generated. Do not edit.'
 
 - name: Ending zeek configuration
-  command: "{{ broids_broctl }} install"
+  ansible.builtin.command: "{{ broids_broctl }} install"
   become: yes
   become_user: "{{ broids_user }}"
   args:
@@ -199,28 +200,29 @@
     - restart zeek
 
 - name: check if offloading marker is present
-  stat: path=/root/.ansible-zeek-offloading
+  ansible.builtin.stat: path=/root/.ansible-zeek-offloading
   register: offload
-- block:
+- name: Network offloading
+  block:
     ## OR http://serverfault.com/questions/421995/disable-tcp-offloading-completely-generically-and-easily
     - name: check network card checksum offloading state
-      command: "ethtool --show-offload {{ bro_nodes_if }}"
+      ansible.builtin.command: "ethtool --show-offload {{ bro_nodes_if }}"
       register: ethtool
       changed_when: false
     ## FIXME! not working on digitalocean droplet: got: 'rx-checksumming: on [fixed] tx-checksumming: off' and can't change
     - name: Disable network card offloading for eth0
-      command: "ethtool --offload {{ bro_nodes_if }} rx off tx off"
+      ansible.builtin.command: "ethtool --offload {{ bro_nodes_if }} rx off tx off"
       when: "ethtool.stdout is defined and '-checksumming: on' in ethtool.stdout"
       failed_when: false
     - name: add offloading marker
-      file:
+      ansible.builtin.file:
         dest: /root/.ansible-zeek-offloading
         mode: '0644'
         state: touch
   when: not offload.stat.exists
 
 # - name: start BRO_PDNS API service
-#   command: >
+#   ansible.builtin.command: >
 #     {{ broids_site }}/bro-pdns/bro_pdns.py serve
 #   environment:
 #     BRO_PDNS_DB: "mysql://{{ mysql_pdns_user }}::{{ mysql_pdns_pass }}@localhost/pdns"
@@ -233,13 +235,13 @@
 - import_tasks: monit.yml
 
 - name: zeek diag
-  command: "{{ broids_broctl }} diag"
+  ansible.builtin.command: "{{ broids_broctl }} diag"
   become: yes
   become_user: "{{ broids_user }}"
   changed_when: false
 
 - name: Install testing tools
-  package:
+  ansible.builtin.package:
     name: "{{ broids_testing_pkgs }}"
     state: present
   when: broids_testing

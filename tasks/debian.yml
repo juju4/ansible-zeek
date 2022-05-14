@@ -1,22 +1,23 @@
 ---
 
 - name: Debian | Ensure apt-transport-https is present
-  package:
+  ansible.builtin.package:
     name: apt-transport-https
     state: present
   register: pkg_result
   until: pkg_result is success
 
-- block:
+- name: Opensuse repository
+  block:
     - name: Ubuntu | Add bro repository key
-      apt_key:
+      ansible.builtin.apt_key:
         url: >
           https://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/Release.key
         state: present
       register: pkg_result
       until: pkg_result is success
     - name: Ubuntu | Add bro repository
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: >
           deb https://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/ /
         state: present
@@ -24,24 +25,26 @@
   when: >
     (ansible_distribution == 'Ubuntu' and ansible_distribution_version.split('.')[0]|int < 18) and
     not use_securityonion_deb
-- block:
+- name: Opensuse repository2
+  block:
     - name: Debian | Add bro repository key
-      apt_key:
+      ansible.builtin.apt_key:
         url: >
           https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_distribution_version }}/Release.key
         state: present
       register: pkg_result
       until: pkg_result is success
     - name: Debian | Add bro repository
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: >
           deb https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_distribution_version }}/ /
         state: present
   when: ansible_distribution == 'Debian' and not use_securityonion_deb
 ## https://github.com/Security-Onion-Solutions/security-onion/wiki/InstallingOnUbuntu   Only Ubuntu 12.04
-- block:
+- name: Precise,Trusty | Opensuse repository
+  block:
     - name: Ubuntu | using securityonion repository
-      apt_repository: repo='ppa:securityonion/stable' update_cache=yes
+      ansible.builtin.apt_repository: repo='ppa:securityonion/stable' update_cache=yes
   when: >
     use_securityonion_deb and
     (ansible_distribution_release == "precise" or ansible_distribution_release == "trusty")
@@ -49,16 +52,17 @@
 
 ## WARNING: The following packages cannot be authenticated! = force
 - name: Debian/Ubuntu | Install Bro and dependencies
-  apt: name={{ broids_packages + broids_packages_deps }} state=present update_cache=yes cache_valid_time=3600 force=yes
+  ansible.builtin.apt: name={{ broids_packages + broids_packages_deps }} state=present update_cache=yes cache_valid_time=3600 force=yes
   register: pkg_result
   until: pkg_result is success
 
-- block:
+- name: init.d
+  block:
     - name: Check if /etc/init.d/bro-ids is present
-      stat: path=/etc/init.d/bro-ids
+      ansible.builtin.stat: path=/etc/init.d/bro-ids
       register: initbro
     - name: download startup script for bro
-      get_url:
+      ansible.builtin.get_url:
         url: https://raw.githubusercontent.com/lruppert/bro-scripts/master/shell/bro-ids
         dest: /etc/init.d/bro-ids
         mode: '0755'
@@ -68,7 +72,7 @@
         (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and
         not initbro.stat.exists
     - name: update bro path in init.d/bro-ids
-      replace:
+      ansible.builtin.replace:
         dest: /etc/init.d/bro-ids
         regexp: '^DAEMON=.*'
         replace: "DAEMON={{ broids_broctl }}"
@@ -78,16 +82,17 @@
   when: ansible_service_mgr != 'systemd'
 
 - name: install startup script for bro - systemd
-  template:
+  ansible.builtin.template:
     src: systemd-bro.service.j2
     dest: /lib/systemd/system/bro.service
     mode: '0644'
     backup: yes
   when: ansible_service_mgr == 'systemd'
 
-- block:
+- name: Opensuse repository
+  block:
     - name: update broctl LogDir
-      replace:
+      ansible.builtin.replace:
         dest: "{{ broids_etc }}/broctl.cfg"
         regexp: "{{ item.re }}"
         replace: "{{ item.rep }}"
@@ -99,7 +104,7 @@
 
 ## bro 2.1+
 - name: enable broctl MailConnectionSummary
-  replace:
+  ansible.builtin.replace:
     dest: "{{ broids_etc }}/broctl.cfg"
     regexp: "^MailConnectionSummary = .*"
     replace: "MailConnectionSummary = 1"
@@ -107,7 +112,7 @@
     backup: yes
   when: bro_email_notification
 - name: disable broctl MailConnectionSummary
-  replace:
+  ansible.builtin.replace:
     dest: "{{ broids_etc }}/broctl.cfg"
     regexp: "^MailConnectionSummary = .*"
     replace: "MailConnectionSummary = 0"
@@ -116,21 +121,21 @@
   when: not bro_email_notification
 
 - name: ensure aide hids directory exists
-  file: dest=/etc/aide/aide.conf.d state=directory mode=0755
+  ansible.builtin.file: dest=/etc/aide/aide.conf.d state=directory mode=0755
 - name: Add custom configuration for aide HIDS
-  copy: "src={{ item }} dest=/etc/aide/aide.conf.d owner=root mode=0644"
+  ansible.builtin.copy: "src={{ item }} dest=/etc/aide/aide.conf.d owner=root mode=0644"
   with_items:
     - aide-criticalstack
 
 ## from https://github.com/geerlingguy/drupal-vm/pull/456/files#diff-b1546b21a9366075f1e1245d7551eee6R11
 - name: Detect if AppArmor is installed.
-  stat:
+  ansible.builtin.stat:
     path: /etc/init.d/apparmor
   register: apparmor_installed
   when: travisci is defined and travisci
 
 - name: Ensure MySQL AppArmor profile is disabled (for slow query log).
-  file:
+  ansible.builtin.file:
     path: /etc/apparmor.d/disable/usr.sbin.mysqld
     src: /etc/apparmor.d/usr.sbin.mysqld
     mode: '0644'

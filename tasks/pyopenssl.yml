@@ -1,10 +1,11 @@
 ---
 
-- block:
+- name: Xenial
+  block:
     - import_tasks: pip-upgrade.yml
     ## AttributeError: 'module' object has no attribute 'SSL_ST_INIT'
     - name: PyOpenSSL 16.2+
-      pip:
+      ansible.builtin.pip:
         name: pyopenssl
         version: 17.2.0
         state: present

@@ -1,7 +1,7 @@
 ---
 
 - name: Debian/Ubuntu | Install PassiveDNS packages
-  apt:
+  ansible.builtin.apt:
     name: "{{ broid_pdns_packages_deps }}"
     state: present
     update_cache: yes
@@ -19,14 +19,14 @@
 #     - mysql_secure_installation    ## interactive
 
 - name: check that mysql is running
-  service: "name={{ mysql_svc }} state=started"
+  ansible.builtin.service: "name={{ mysql_svc }} state=started"
 
 - name: check if root my.cnf file
-  stat: path=/root/.my.cnf
+  ansible.builtin.stat: path=/root/.my.cnf
   register: mycnf
 
 - name: Ensure root my.cnf is set
-  ini_file:
+  ansible.builtin.ini_file:
     path: /root/.my.cnf
     section: client
     option: "{{ item.o }}"
@@ -67,18 +67,18 @@
     login_password: "{{ mysql_root_password }}"
 
 - name: delete anonymous MySQL server user for localhost
-  action: mysql_user user="" state="absent" login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
+  mysql_user: user="" state="absent" login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
 - name: remove the MySQL test database
-  action: mysql_db db=test state=absent login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
+  mysql_db: db=test state=absent login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
 
 - name: Install Pdns requirements
-  pip: name=bottle state=present
+  ansible.builtin.pip: name=bottle state=present
   register: pkg_result
   until: pkg_result is success
 
 ## 2016-2017 ongoing: rewrite in go without bro module
 - name: git clone bro-pdns
-  git:
+  ansible.builtin.git:
     repo: https://github.com/JustinAzoff/bro-pdns.git
     dest: "{{ broids_site }}/bro-pdns"
     version: master

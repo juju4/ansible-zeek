@@ -1,17 +1,17 @@
 ---
 
 - name: install misp update script
-  template:
+  ansible.builtin.template:
     src: misp-bro-fetch.sh.j2
     dest: /usr/local/bin/misp-bro-fetch.sh
     ## contains MISP api key!!!
     mode: '0700'
 
 - name: run misp-bro-fetch.sh once
-  command: "/usr/local/bin/misp-bro-fetch.sh creates=/usr/share/bro/intel/ip.intel"
+  ansible.builtin.command: "/usr/local/bin/misp-bro-fetch.sh creates=/usr/share/bro/intel/ip.intel"
   failed_when: false
 
 - name: Set misp2bro cron task
-  cron: name="misp2bro refresh" minute=0 hour=12
+  ansible.builtin.cron: name="misp2bro refresh" minute=0 hour=12
     user="root" job="/usr/local/bin/misp-bro-fetch.sh"
     cron_file=ansible_misp2bro-refresh

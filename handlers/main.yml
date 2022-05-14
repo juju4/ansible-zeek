@@ -1,26 +1,26 @@
 ---
 
 - name: check zeek
-  command: "{{ broids_broctl }} check"
+  ansible.builtin.command: "{{ broids_broctl }} check"
   become: yes
   become_user: "{{ broids_user }}"
 
 - name: deploy zeek
-  command: "{{ broids_broctl }} deploy"
+  ansible.builtin.command: "{{ broids_broctl }} deploy"
   become: yes
   become_user: "{{ broids_user }}"
 
 - name: restart zeek
-  command: "{{ broids_broctl }} restart"
+  ansible.builtin.command: "{{ broids_broctl }} restart"
   become: yes
   become_user: "{{ broids_user }}"
 
 - name: restart monit
-  service: name=monit state=restarted
+  ansible.builtin.service: name=monit state=restarted
 
 - name: fetch critical-stack-intel feeds
-  command: critical-stack-intel pull
+  ansible.builtin.command: critical-stack-intel pull
 
 - name: Restart apparmor
-  service: name=apparmor state=restarted
+  ansible.builtin.service: name=apparmor state=restarted
   when: travisci is defined and travisci

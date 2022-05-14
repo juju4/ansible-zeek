@@ -1,51 +1,52 @@
 ---
 
 - name: Debian | Ensure apt-transport-https is present
-  package:
+  ansible.builtin.package:
     name: apt-transport-https
     state: present
   register: pkg_result
   until: pkg_result is success
 
 - name: Debian | Set opensuse repo url
-  set_fact:
+  ansible.builtin.set_fact:
     opensuse_url: "https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_distribution_version }}"
   when: ansible_distribution == 'Debian'
 
 - name: Ubuntu | Set opensuse repo url
-  set_fact:
+  ansible.builtin.set_fact:
     opensuse_url: "https://download.opensuse.org/repositories/security:/zeek/xUbuntu_{{ ansible_distribution_version }}"
   when: ansible_distribution == 'Ubuntu'
 
-- block:
+- name: Opensuse repository
+  block:
     - name: Debian | Add zeek repository key
-      apt_key:
+      ansible.builtin.apt_key:
         url: >
           {{ opensuse_url }}/Release.key
         state: present
       register: pkg_result
       until: pkg_result is success
     - name: Debian | Add zeek repository
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: >
           deb {{ opensuse_url }}/ /
         state: present
     - name: Use Zeek opensuse variable
-      include_vars: opensuse.yml
+      ansible.builtin.include_vars: opensuse.yml
   when: not use_securityonion_deb
 
 ## WARNING: The following packages cannot be authenticated! = force
 - name: Debug | broids_packages
-  debug: var=broids_packages
+  ansible.builtin.debug: var=broids_packages
 - name: Debug | broids_packages_deps
-  debug: var=broids_packages_deps
+  ansible.builtin.debug: var=broids_packages_deps
 - name: Debian/Ubuntu | Install Zeek and dependencies
-  apt: name={{ broids_packages + broids_packages_deps }} state=present update_cache=yes cache_valid_time=3600 force=yes
+  ansible.builtin.apt: name={{ broids_packages + broids_packages_deps }} state=present update_cache=yes cache_valid_time=3600 force=yes
   register: pkg_result
   until: pkg_result is success
 
 - name: update zeekctl LogDir
-  replace:
+  ansible.builtin.replace:
     dest: "{{ broids_etc }}/zeekctl.cfg"
     regexp: "{{ item.re }}"
     replace: "{{ item.rep }}"
@@ -55,7 +56,7 @@
     - { re: '^LogDir = .*', rep: "LogDir = {{ broids_log }}" }
 
 - name: enable zeekctl MailConnectionSummary
-  replace:
+  ansible.builtin.replace:
     dest: "{{ broids_etc }}/zeekctl.cfg"
     regexp: "^MailConnectionSummary = .*"
     replace: "MailConnectionSummary = 1"
@@ -63,7 +64,7 @@
     backup: yes
   when: bro_email_notification
 - name: disable zeekctl MailConnectionSummary
-  replace:
+  ansible.builtin.replace:
     dest: "{{ broids_etc }}/zeekctl.cfg"
     regexp: "^MailConnectionSummary = .*"
     replace: "MailConnectionSummary = 0"
@@ -72,21 +73,21 @@
   when: not bro_email_notification
 
 - name: ensure aide hids directory exists
-  file: dest=/etc/aide/aide.conf.d state=directory mode=0755
+  ansible.builtin.file: dest=/etc/aide/aide.conf.d state=directory mode=0755
 - name: Add custom configuration for aide HIDS
-  copy: "src={{ item }} dest=/etc/aide/aide.conf.d owner=root mode=0644"
+  ansible.builtin.copy: "src={{ item }} dest=/etc/aide/aide.conf.d owner=root mode=0644"
   with_items:
     - aide-criticalstack
 
 ## from https://github.com/geerlingguy/drupal-vm/pull/456/files#diff-b1546b21a9366075f1e1245d7551eee6R11
 - name: Detect if AppArmor is installed.
-  stat:
+  ansible.builtin.stat:
     path: /etc/init.d/apparmor
   register: apparmor_installed
   when: travisci is defined and travisci
 
 - name: Ensure MySQL AppArmor profile is disabled (for slow query log).
-  file:
+  ansible.builtin.file:
     path: /etc/apparmor.d/disable/usr.sbin.mysqld
     src: /etc/apparmor.d/usr.sbin.mysqld
     mode: '0644'

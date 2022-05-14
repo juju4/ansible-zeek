@@ -1,6 +1,6 @@
 ---
 - name: Debian | Install Bro dependencies
-  apt:
+  ansible.builtin.apt:
     name:
       - cmake
       - make
@@ -25,7 +25,7 @@
   register: pkg_result
   until: pkg_result is success
 - name: Redhat | Install Bro dependencies
-  yum:
+  ansible.builtin.yum:
     name:
       - cmake
       - make
@@ -47,22 +47,22 @@
   until: pkg_result is success
 
 - name: Check if bro archive already exists
-  stat: path=/root/bro-{{ bro_v }}.tar.gz
+  ansible.builtin.stat: path=/root/bro-{{ bro_v }}.tar.gz
   register: broarchive
 - name: Download BRO archive
   ## github archive doesn't contain submodules/not recursive
   # get_url: url=https://github.com/bro/bro/archive/v{{ bro_v }}.tar.gz
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ bro_src_url }}"
     dest: "/root/bro-{{ bro_v }}.tar.gz"
     mode: '0400'
     checksum: "sha256:{{ bro_archive_sha256 }}"
   when: not broarchive.stat.exists
 - name: Check if bro binary exists
-  stat: path={{ bro_prefix }}/bin/bro
+  ansible.builtin.stat: path={{ bro_prefix }}/bin/bro
   register: brobin
 - name: compile and install bro
-  command: "{{ item.command }}"
+  ansible.builtin.command: "{{ item.command }}"
   args:
     chdir: "{{ item.chdir }}"
     creates: "{{ item.c }}"
@@ -78,4 +78,4 @@
   when: not brobin.stat.exists
 
 - name: ensure bro group exists
-  group: name=bro state=present
+  ansible.builtin.group: name=bro state=present

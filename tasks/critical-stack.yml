@@ -3,14 +3,15 @@
 ## https://support.criticalstack.com/hc/en-us/sections/200673595-Intel-Marketplace
 ## https://packagecloud.io/install/repositories/intelstack/client/script.deb.sh
 
-- block:
+- name: Debian
+  block:
     # 'HTTP Error 402: Payment Required' ???
     - name: Debian | Install apt key
-      apt_key:
+      ansible.builtin.apt_key:
         url: 'https://packagecloud.io/intelstack/client/gpgkey'
         state: present
     - name: Debian | Install critical stack repositories
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: "{{ item }}"
         state: present
         filename: intelstack_client
@@ -18,7 +19,7 @@
         - "deb https://packagecloud.io/intelstack/client/{{ ansible_distribution | lower }}/ {{ ansible_distribution_release | lower }} main"
         - "deb-src https://packagecloud.io/intelstack/client/{{ ansible_distribution | lower }}/ {{ ansible_distribution_release | lower }} main"
     - name: Debian | Ensure intel-stack-client and requirements are present
-      apt:
+      ansible.builtin.apt:
         name:
           - debian-archive-keyring
           - apt-transport-https
@@ -29,9 +30,10 @@
       register: pkg_result
       until: pkg_result is success
   when: (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
-- block:
+- name: RedHat
+  block:
     - name: RedHat | add critical stack repositories
-      yum_repository:
+      ansible.builtin.yum_repository:
         name: "{{ item.name }}"
         file: intelstack_client
         baseurl: "{{ item.baseurl }}"
@@ -47,7 +49,7 @@
         - { name: intelstack_client-source, baseurl: 'https://packagecloud.io/intelstack/client/el/$releasever/SRPMS' }
 
     - name: RedHat | install critical stack
-      yum:
+      ansible.builtin.yum:
         name: intel-stack-client
         state: present
       become: yes
@@ -56,22 +58,22 @@
   when: ansible_os_family == "RedHat"
 
 - name: register critical stack API key
-  command: "critical-stack-intel api {{ bro_cs_apikey }}"
+  ansible.builtin.command: "critical-stack-intel api {{ bro_cs_apikey }}"
   args:
     creates: /opt/critical-stack/configs/critical-stack-intel.db
   become: yes
   when: bro_cs_apikey is defined and bro_cs_apikey
 - name: set a proxy for critical stack
-  command: "critical-stack-intel config --set proxy.url=\"{{ bro_cs_proxy }}\""
+  ansible.builtin.command: "critical-stack-intel config --set proxy.url=\"{{ bro_cs_proxy }}\""
   become: yes
   when: bro_cs_proxy is defined and bro_cs_proxy
 
 - name: check current settings in critical-stack
-  command: "critical-stack-intel config --list-set"
+  ansible.builtin.command: "critical-stack-intel config --list-set"
   register: csconfig
   changed_when: false
 - name: update bro setup in critical-stack
-  command: "{{ item }}"
+  ansible.builtin.command: "{{ item }}"
   with_items:
     - "critical-stack-intel config --set bro.path={{ bro_prefix }}"
     - "critical-stack-intel config --set bro.include.path={{ broids_site }}/local.zeek"
@@ -84,11 +86,11 @@
     - restart zeek
 
 - name: allow critical-stack to auto-restart bro
-  command: "critical-stack-intel config --set bro.restart=true"
+  ansible.builtin.command: "critical-stack-intel config --set bro.restart=true"
   when: bro_cs_autorestart
 
 - name: Ensure intel-stack-client service is enabled and started
-  service:
+  ansible.builtin.service:
     name: intel-stack-client
     enabled: true
     state: started

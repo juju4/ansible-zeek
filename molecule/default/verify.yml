@@ -4,32 +4,32 @@
   hosts: zeek
   tasks:
     - name: Gather package facts
-      package_facts:
+      ansible.builtin.package_facts:
         manager: auto
     - name: Debian | Validate that needed packages are present
-      assert:
+      ansible.builtin.assert:
         that: ansible_facts.packages['zeek']
       when: ansible_os_family == "Debian"
     - name: RedHat | Validate that needed packages are present
-      assert:
+      ansible.builtin.assert:
         that: ansible_facts.packages['zeek-lts']
       when: ansible_os_family == "RedHat"
 
     - name: Ensure /opt/zeek/etc/zeekctl.cfg config file is present
-      stat:
+      ansible.builtin.stat:
         path: /opt/zeek/etc/zeekctl.cfg
       register: cfg
     - name: Validate config present
-      assert:
+      ansible.builtin.assert:
         that: cfg.stat.exists and cfg.stat.size != 0
 
     - name: Ensure process is running
-      command: pgrep -u _zeek zeek
+      ansible.builtin.command: pgrep -u _zeek zeek
       register: ps
       changed_when: false
       failed_when: false
     - name: Validate ps output
-      assert:
+      ansible.builtin.assert:
         that: ps.stdout
       when: >
         not (ansible_virtualization_type is defined and
@@ -37,25 +37,25 @@
             )
 
     - name: check all processes
-      command: ps aux
+      ansible.builtin.command: ps aux
       changed_when: false
       failed_when: false
       register: psa
     - name: Debug | process output
-      debug: var=psa verbosity=1
+      ansible.builtin.debug: var=psa verbosity=1
 
     - name: check few directories
-      command: ls -l /opt/zeek/etc /opt/zeek/spool
+      ansible.builtin.command: ls -l /opt/zeek/etc /opt/zeek/spool
       changed_when: false
       failed_when: false
 
     - name: Fetch content of /var/log/zeek/current/stderr.log
-      slurp:
+      ansible.builtin.slurp:
         src: /var/log/zeek/current/stderr.log
       register: log1
       failed_when: false
     - name: Validate /var/log/zeek/current/stderr.log
-      assert:
+      ansible.builtin.assert:
         that: >
           "'listening on' in log1['content'] | b64decode"
       when: >
@@ -64,7 +64,7 @@
             )
 
     - name: Ensure ports are listening
-      wait_for:
+      ansible.builtin.wait_for:
         host: "{{ item.h }}"
         port: "{{ item.p }}"
         timeout: 10

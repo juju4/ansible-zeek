@@ -3,13 +3,13 @@
 ## https://github.com/salesforce/ja3/tree/master/bro
 
 - name: Create ja3 directory in bro site
-  file:
+  ansible.builtin.file:
     dest: "{{ broids_site }}/ja3"
     state: directory
     mode: '0755'
 
 - name: Download ja3 zeek scripts
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ item.u }}"
     dest: "{{ broids_site }}/ja3/{{ item.u | basename }}"
     checksum: "{{ item.c }}"

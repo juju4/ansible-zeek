@@ -1,7 +1,7 @@
 ---
 
 - name: Ensure Zkg Zeek Package Manager is present
-  pip:
+  ansible.builtin.pip:
     name: zkg
     state: present
     executable: "{{ pip_bin | default('pip3') }}"

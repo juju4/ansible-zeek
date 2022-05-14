@@ -2,51 +2,51 @@
 ## Note: if you edit anything here, adapt templates/local.bro as needed
 
 - name: git clone seth hall APT1
-  git:
+  ansible.builtin.git:
     repo: https://github.com/sethhall/bro-apt1
     dest: "{{ broids_site }}/apt1"
     version: "{{ broids_scripts_version | default('cfb5623ab4e8e5b2ec46b453aff990e559c6b889') }}"
 - name: git clone Crowdstrike bro scripts
-  git:
+  ansible.builtin.git:
     repo: https://github.com/CrowdStrike/cs-bro.git
     dest: "{{ broids_site }}/cs-bro"
     version: "{{ broids_scripts_version | default('fed8ec6d1fc93a7e149973cd6e5b3e02cc4410f4') }}"
     update: no
 - name: git clone jonschipp bro scripts
-  git:
+  ansible.builtin.git:
     repo: https://github.com/jonschipp/bro-scripts.git
     dest: "{{ broids_site }}/jonschipp-bro"
     version: "{{ broids_scripts_version | default('54b7f663325297012b4a49de359a286712f8dc15') }}"
 - name: git clone securitykitten bro scripts
-  git:
+  ansible.builtin.git:
     repo: https://github.com/securitykitten/bro_scripts.git
     dest: "{{ broids_site }}/securitykitten-bro"
     version: "{{ broids_scripts_version | default('f1881b3d1d37e9775130dd300498539bd4336651') }}"
     update: no
 - name: git clone fox-it bro scripts
-  git:
+  ansible.builtin.git:
     repo: https://github.com/fox-it/bro-scripts.git
     dest: "{{ broids_site }}/foxit-bro"
     version: "{{ broids_scripts_version | default('b3aa56dbfb2a149dafea3302ce978b0a978b5c52') }}"
 - name: git clone criticalstack bro scripts
-  git:
+  ansible.builtin.git:
     repo: https://github.com/criticalstack/bro-scripts.git
     dest: "{{ broids_site }}/criticalstack"
     version: "{{ broids_scripts_version | default('5d76c03e783b6983d7f81974415b5c37344677df') }}"
 - name: git clone sooshie bro scripts
-  git:
+  ansible.builtin.git:
     repo: https://github.com/sooshie/bro-scripts.git
     dest: "{{ broids_site }}/sooshie-bro"
     version: "{{ broids_scripts_version | default('42cbbabcc40959466fd7c716370eb3d7617ce9fc') }}"
 - name: git clone dovehawk bro scripts - MISP
-  git:
+  ansible.builtin.git:
     repo: https://github.com/tylabs/dovehawk.git
     dest: "{{ broids_site }}/dovehawk"
     version: "{{ broids_scripts_version | default('1099f4babffd77b511127f358d2a50d144d08141') }}"
 
 ## from https://www.bro.org/download/CHANGES.bro.txt, 2.3-404
 - name: update script s/split_all/string_split/all in detect-shellshock.bro
-  replace:
+  ansible.builtin.replace:
     dest: "{{ broids_site }}/cs-bro/bro-scripts/shellshock/detect-shellshock.bro"
     regexp: "{{ item.re }}"
     replace: "{{ item.rep }}"
@@ -64,15 +64,16 @@
 #     backup: yes
 
 ## https://github.com/MISP/MISP/issues/424
-- block:
+- name: misp2bro
+  block:
     - name: git clone misp2bro
-      git:
+      ansible.builtin.git:
         repo: https://github.com/thnyheim/misp2bro.git
         dest: "{{ broids_site }}/misp2bro"
         version: "{{ broids_scripts_version | default('eea82a3a601f873f8494605a859460231122dd29') }}"
         update: no
     - name: update misp2bro config
-      replace:
+      ansible.builtin.replace:
         dest: "{{ broids_site }}/misp2bro/misp2bro.py"
         regexp: "{{ item.re }}"
         replace: "{{ item.rep }}"
@@ -93,7 +94,7 @@
         }
         # no_log: true
     - name: update misp2bro sensors.txt
-      template:
+      ansible.builtin.template:
         src: misp2bro-sensors.txt.j2
         dest: "{{ broids_site }}/misp2bro/sensors.txt"
         mode: '0644'
@@ -101,10 +102,10 @@
     ## Note: if Killed, probably lacking memory (check oom in kern.log)
     ##  OR UnicodeEncodeError: 'ascii' codec can't encode character u'\\u201c' in position 143: ordinal not in range(128)
     - name: run misp2bro once
-      command: "python {{ broids_site }}/misp2bro/misp2bro.py creates={{ broids_misp2bro_output }}"
+      ansible.builtin.command: "python {{ broids_site }}/misp2bro/misp2bro.py creates={{ broids_misp2bro_output }}"
       failed_when: false
     - name: Ensure misp2bro cron task is present
-      cron: name="misp2bro refresh" minute=0 hour=12
+      ansible.builtin.cron: name="misp2bro refresh" minute=0 hour=12
         user="root" job="python {{ broids_site }}/misp2bro/misp2bro.py > /tmp/misp2bro-cron.out"
         cron_file=ansible_misp2bro-refresh
   when: broids_misp_url is defined and broids_misp_url and broids_misp_agent == 'misp2bro'
@@ -115,7 +116,7 @@
   when: broids_misp_url is defined and broids_misp_url and broids_misp_agent == 'curl'
 
 - name: copy zeek plugins from templates
-  template:
+  ansible.builtin.template:
     src: "zeek-{{ item }}.zeek.j2"
     dest: "{{ broids_site }}/{{ item }}.zeek"
     mode: '0644'
