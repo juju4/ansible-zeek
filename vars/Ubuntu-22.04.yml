@@ -1,0 +1,57 @@
+---
+## bro has 2.5.3 in official repository
+
+broids_packages:
+  - bro
+  - broctl
+
+broids_packages_deps:
+  - python3-pip
+  - python3-setuptools
+  - ca-certificates
+  - python-openssl
+  - cron
+  ## trace-summary
+  - python-subnettree
+  ## pip upgrade
+  - libmysqlclient-dev
+  ## offloading
+  - ethtool
+
+broid_pdns_packages_deps:
+  - mysql-server
+  - php-mysql
+  - python3-sqlalchemy
+  - python3-mysqldb
+  - python3-pymysql
+
+mysql_svc: mysql
+mysql_confdir: /etc/mysql
+
+### if using opensuse repository 2.5
+# bro_prefix: '/opt/bro'
+# broids_etc: '/opt/bro/etc'
+# broids_site: '/opt/bro/share/bro/site'
+# broids_group: 'bro'
+# broids_broctl: '/opt/bro/bin/broctl'
+# broids_spool: "{{ bro_prefix }}/spool"
+# bro_extractedfiles: "/var/log/bro/extracted"
+# broids_log: "/var/log/bro"
+# broids_libdir: /opt/bro/lib/broctl/BroControl
+# broids_plugindir: /opt/bro/lib/broctl/BroControl/plugins
+## if using upstream ubuntu
+bro_prefix: '/usr'
+broids_etc: '/etc/bro'
+broids_site: '/etc/bro/site/'
+broids_group: 'root'
+broids_broctl: '/usr/bin/broctl'
+broids_spool: "/var/spool/bro"
+bro_extractedfiles: "/var/log/bro/extracted"
+broids_log: "/var/log/bro"
+broids_libdir: /usr/lib/broctl/BroControl
+broids_plugindir: /usr/lib/broctl/plugins
+
+monitrc: /etc/monit/monitrc
+
+broids_testing_pkgs:
+  - iproute2
