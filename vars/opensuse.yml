@@ -3,8 +3,8 @@
 
 broids_packages:
   - zeek-lts
-  - zeek-core
-  - zeekctl
+  - zeek-lts-core
+  - zeekctl-lts
 
 broids_packages_deps:
   - python3-pip
