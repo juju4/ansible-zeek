@@ -8,7 +8,7 @@
         manager: auto
     - name: Validate that needed packages are present
       ansible.builtin.assert:
-        that: ansible_facts.packages['zeek'] or ansible_facts.packages['zeek-lts']
+        that: ansible_facts.packages['zeek']|string or ansible_facts.packages['zeek-lts']|string
 
     - name: Ensure /opt/zeek/etc/zeekctl.cfg config file is present
       ansible.builtin.stat:
