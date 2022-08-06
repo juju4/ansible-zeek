@@ -6,14 +6,9 @@
     - name: Gather package facts
       ansible.builtin.package_facts:
         manager: auto
-    - name: Debian | Validate that needed packages are present
+    - name: Validate that needed packages are present
       ansible.builtin.assert:
-        that: ansible_facts.packages['zeek']
-      when: ansible_os_family == "Debian"
-    - name: RedHat | Validate that needed packages are present
-      ansible.builtin.assert:
-        that: ansible_facts.packages['zeek-lts']
-      when: ansible_os_family == "RedHat"
+        that: ansible_facts.packages['zeek'] or ansible_facts.packages['zeek-lts']
 
     - name: Ensure /opt/zeek/etc/zeekctl.cfg config file is present
       ansible.builtin.stat:
