@@ -2,7 +2,7 @@
 ## opensuse zeek repository
 
 broids_packages:
-  - zeek
+  - zeek-lts
   - zeek-core
   - zeekctl
 
