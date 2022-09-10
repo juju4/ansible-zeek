@@ -110,9 +110,9 @@
     mode: '0644'
     backup: yes
   notify:
-    - check zeek
-    - deploy zeek
-    - restart zeek
+    - Check zeek
+    - Deploy zeek
+    - Restart zeek
 
 ## Note: file is created by broctl: install and {{ broids_spool }}/broctl-config.sh
 ##  -> {{ bro_prefix }}/share/broctl/scripts/broctl-config.sh
