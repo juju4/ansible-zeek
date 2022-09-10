@@ -33,7 +33,6 @@
         state: present
     - name: Use Zeek opensuse variable
       ansible.builtin.include_vars: opensuse.yml
-  when: not use_securityonion_deb
 
 ## WARNING: The following packages cannot be authenticated! = force
 - name: Debug | broids_packages
@@ -45,7 +44,7 @@
   register: pkg_result
   until: pkg_result is success
 
-- name: update zeekctl LogDir
+- name: Update zeekctl LogDir
   ansible.builtin.replace:
     dest: "{{ broids_etc }}/zeekctl.cfg"
     regexp: "{{ item.re }}"
@@ -55,7 +54,7 @@
   with_items:
     - { re: '^LogDir = .*', rep: "LogDir = {{ broids_log }}" }
 
-- name: enable zeekctl MailConnectionSummary
+- name: Enable zeekctl MailConnectionSummary
   ansible.builtin.replace:
     dest: "{{ broids_etc }}/zeekctl.cfg"
     regexp: "^MailConnectionSummary = .*"
@@ -63,7 +62,7 @@
     mode: '0644'
     backup: yes
   when: bro_email_notification
-- name: disable zeekctl MailConnectionSummary
+- name: Disable zeekctl MailConnectionSummary
   ansible.builtin.replace:
     dest: "{{ broids_etc }}/zeekctl.cfg"
     regexp: "^MailConnectionSummary = .*"
@@ -72,7 +71,7 @@
     backup: yes
   when: not bro_email_notification
 
-- name: ensure aide hids directory exists
+- name: Ensure aide hids directory exists
   ansible.builtin.file: dest=/etc/aide/aide.conf.d state=directory mode=0755
 - name: Add custom configuration for aide HIDS
   ansible.builtin.copy: "src={{ item }} dest=/etc/aide/aide.conf.d owner=root mode=0644"

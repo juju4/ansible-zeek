@@ -1,4 +1,3 @@
 ---
 warn_list:
-  - syntax-check
   - schema

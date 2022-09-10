@@ -18,10 +18,10 @@
 #     - mysql_install_db
 #     - mysql_secure_installation    ## interactive
 
-- name: check that mysql is running
+- name: Check that mysql is running
   ansible.builtin.service: "name={{ mysql_svc }} state=started"
 
-- name: check if root my.cnf file
+- name: Check if root my.cnf file
   ansible.builtin.stat: path=/root/.my.cnf
   register: mycnf
 
@@ -51,13 +51,13 @@
     - ::1
     - localhost
   failed_when: false
-- name: ensure pdns database exists
+- name: Ensure pdns database exists
   mysql_db:
     name: pdns
     state: present
     login_user: "{{ mysql_user }}"
     login_password: "{{ mysql_root_password }}"
-- name: ensure pdns db user exists
+- name: Ensure pdns db user exists
   mysql_user:
     name: "{{ mysql_pdns_user }}"
     password: "{{ mysql_pdns_pass }}"
@@ -66,9 +66,9 @@
     login_user: "{{ mysql_user }}"
     login_password: "{{ mysql_root_password }}"
 
-- name: delete anonymous MySQL server user for localhost
+- name: Delete anonymous MySQL server user for localhost
   mysql_user: user="" state="absent" login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
-- name: remove the MySQL test database
+- name: Remove the MySQL test database
   mysql_db: db=test state=absent login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
 
 - name: Install Pdns requirements
@@ -77,7 +77,7 @@
   until: pkg_result is success
 
 ## 2016-2017 ongoing: rewrite in go without bro module
-- name: git clone bro-pdns
+- name: Git clone bro-pdns
   ansible.builtin.git:
     repo: https://github.com/JustinAzoff/bro-pdns.git
     dest: "{{ broids_site }}/bro-pdns"

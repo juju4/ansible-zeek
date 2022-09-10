@@ -3,7 +3,7 @@
   ansible.builtin.set_fact:
     daemon: bro
 
-- name: monit package
+- name: Monit package
   ansible.builtin.package: name=monit state=present
   register: pkg_result
   until: pkg_result is success
@@ -19,7 +19,7 @@
     - Restart monit
   when: ansible_os_family == 'Debian'
 
-- name: allow monit status/summary from localhost
+- name: Allow monit status/summary from localhost
   ansible.builtin.replace:
     dest: "{{ monitrc }}"
     regexp: "{{ item.re }}"

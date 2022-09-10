@@ -2,8 +2,8 @@
 
 - name: Debian
   block:
-    - name: ensure aide.conf.d directory exists
+    - name: Ensure aide.conf.d directory exists
       ansible.builtin.file: dest=/etc/aide/aide.conf.d state=directory mode=0755
-    - name: add additional aide HIDS configuration
+    - name: Add additional aide HIDS configuration
       ansible.builtin.template: src=99_aide_local_broids.j2 dest=/etc/aide/aide.conf.d/99_aide_local_broids mode=0644
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'

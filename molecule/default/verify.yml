@@ -31,7 +31,7 @@
               (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")
             )
 
-    - name: check all processes
+    - name: Check all processes
       ansible.builtin.command: ps aux
       changed_when: false
       failed_when: false
@@ -39,7 +39,7 @@
     - name: Debug | process output
       ansible.builtin.debug: var=psa verbosity=1
 
-    - name: check few directories
+    - name: Check few directories
       ansible.builtin.command: ls -l /opt/zeek/etc /opt/zeek/spool
       changed_when: false
       failed_when: false

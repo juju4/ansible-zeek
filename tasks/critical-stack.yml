@@ -57,22 +57,22 @@
       until: pkg_result is success
   when: ansible_os_family == "RedHat"
 
-- name: register critical stack API key
+- name: Register critical stack API key
   ansible.builtin.command: "critical-stack-intel api {{ bro_cs_apikey }}"
   args:
     creates: /opt/critical-stack/configs/critical-stack-intel.db
   become: yes
   when: bro_cs_apikey is defined and bro_cs_apikey
-- name: set a proxy for critical stack
+- name: Set a proxy for critical stack
   ansible.builtin.command: "critical-stack-intel config --set proxy.url=\"{{ bro_cs_proxy }}\""
   become: yes
   when: bro_cs_proxy is defined and bro_cs_proxy
 
-- name: check current settings in critical-stack
+- name: Check current settings in critical-stack
   ansible.builtin.command: "critical-stack-intel config --list-set"
   register: csconfig
   changed_when: false
-- name: update bro setup in critical-stack
+- name: Update bro setup in critical-stack
   ansible.builtin.command: "{{ item }}"
   with_items:
     - "critical-stack-intel config --set bro.path={{ bro_prefix }}"
@@ -80,12 +80,12 @@
     - "critical-stack-intel config --set bro.broctl.path={{ broids_broctl }}"
   when: not csconfig.stdout
   notify:
-    - fetch critical-stack-intel feeds
-    - check zeek
-    - deploy zeek
-    - restart zeek
+    - Fetch critical-stack-intel feeds
+    - Check zeek
+    - Deploy zeek
+    - Restart zeek
 
-- name: allow critical-stack to auto-restart bro
+- name: Allow critical-stack to auto-restart bro
   ansible.builtin.command: "critical-stack-intel config --set bro.restart=true"
   when: bro_cs_autorestart
 

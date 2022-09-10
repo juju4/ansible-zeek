@@ -1,13 +1,13 @@
 ---
 
-- name: install misp update script
+- name: Install misp update script
   ansible.builtin.template:
     src: misp-bro-fetch.sh.j2
     dest: /usr/local/bin/misp-bro-fetch.sh
     ## contains MISP api key!!!
     mode: '0700'
 
-- name: run misp-bro-fetch.sh once
+- name: Run misp-bro-fetch.sh once
   ansible.builtin.command: "/usr/local/bin/misp-bro-fetch.sh creates=/usr/share/bro/intel/ip.intel"
   failed_when: false
 

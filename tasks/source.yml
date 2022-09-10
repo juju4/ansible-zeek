@@ -61,7 +61,7 @@
 - name: Check if bro binary exists
   ansible.builtin.stat: path={{ bro_prefix }}/bin/bro
   register: brobin
-- name: compile and install bro
+- name: Compile and install bro
   ansible.builtin.command: "{{ item.command }}"
   args:
     chdir: "{{ item.chdir }}"
@@ -77,5 +77,5 @@
     - { command: 'make install', chdir: '/root/bro-{{ bro_v }}', c: "{{ bro_prefix }}/bin/bro" }
   when: not brobin.stat.exists
 
-- name: ensure bro group exists
+- name: Ensure bro group exists
   ansible.builtin.group: name=bro state=present

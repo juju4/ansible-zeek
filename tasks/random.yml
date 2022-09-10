@@ -4,7 +4,7 @@
   ansible.builtin.set_fact:
     secretdir: "{{ broids_etc }}"
 
-- name: ensure openssl is present
+- name: Ensure openssl is present
   ansible.builtin.package: name=openssl state=present
   register: pkg_result
   until: pkg_result is success
@@ -33,7 +33,7 @@
   no_log: true
 
 - name: Set fact salt
-  ansible.builtin.set_fact:  # noqa 503
+  ansible.builtin.set_fact:  # noqa no-handler
     salt: "{{ secrets.stdout_lines.0 }}"
   when: secrets.changed
   no_log: true

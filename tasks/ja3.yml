@@ -17,6 +17,6 @@
     backup: yes
   with_items: "{{ broids_ja3_files }}"
   notify:
-    - check zeek
-    - deploy zeek
-    - restart zeek
+    - Check zeek
+    - Deploy zeek
+    - Restart zeek

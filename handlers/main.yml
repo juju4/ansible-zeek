@@ -1,24 +1,24 @@
 ---
 
-- name: check zeek
+- name: Check zeek
   ansible.builtin.command: "{{ broids_broctl }} check"
   become: yes
   become_user: "{{ broids_user }}"
 
-- name: deploy zeek
+- name: Deploy zeek
   ansible.builtin.command: "{{ broids_broctl }} deploy"
   become: yes
   become_user: "{{ broids_user }}"
 
-- name: restart zeek
+- name: Restart zeek
   ansible.builtin.command: "{{ broids_broctl }} restart"
   become: yes
   become_user: "{{ broids_user }}"
 
-- name: restart monit
+- name: Restart monit
   ansible.builtin.service: name=monit state=restarted
 
-- name: fetch critical-stack-intel feeds
+- name: Fetch critical-stack-intel feeds
   ansible.builtin.command: critical-stack-intel pull
 
 - name: Restart apparmor

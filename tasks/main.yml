@@ -16,9 +16,7 @@
   register: pkg_result
   until: pkg_result is success
 
-- import_tasks: pyopenssl.yml
-
-- name: ensure unprivileged zeek user exists
+- name: Ensure unprivileged zeek user exists
   ansible.builtin.user:
     name: "{{ broids_user }}"
     home: "{{ broids_home }}"
@@ -44,7 +42,7 @@
   import_tasks: redhat.yml
   when: not bro_force_source_build and ansible_os_family == "RedHat"
 
-- name: install zeek from source
+- name: Install zeek from source
   import_tasks: source.yml
   when: bro_force_source_build and not use_zeek_opensuse_repo
 
@@ -68,7 +66,7 @@
     state: present
   when: broids_user != 'root'
 
-- name: ensure zeek directories exist
+- name: Ensure zeek directories exist
   ansible.builtin.file:
     dest: "{{ item }}"
     state: "directory"
@@ -105,7 +103,7 @@
 - import_tasks: random.yml
   vars:
     name: local
-- name: add zeek local configuration
+- name: Add zeek local configuration
   ansible.builtin.template:
     src: local.zeek.j2
     dest: "{{ broids_site }}/local.zeek"
@@ -121,7 +119,7 @@
 - name: Check if zeekctl-config.sh is present
   ansible.builtin.stat: path={{ broids_spool }}/zeekctl-config.sh
   register: st
-- name: zeekctl-config.sh
+- name: Zeekctl-config.sh
   block:
     - name: Configure zeekctl-config.sh
       ansible.builtin.lineinfile:
@@ -142,12 +140,12 @@
         - { regexp: '^logexpireinterval=.*', line: "logexpireinterval=\"{{ broids_logexpire_interval }}\"" }
         - { regexp: '^statslogexpireinterval=.*', line: "statslogexpireinterval=\"{{ broids_statslogexpire_interval }}\"" }
       notify:
-        - check zeek
-        - deploy zeek
-        - restart zeek
+        - Check zeek
+        - Deploy zeek
+        - Restart zeek
   when: st.stat.exists
 
-- name: configure zeek maintenance script as scheduled task
+- name: Configure zeek maintenance script as scheduled task
   ansible.builtin.cron:
     name: "zeek maintenance"
     minute: "*/5"
@@ -158,9 +156,9 @@
 - name: Configure node.cfg
   ansible.builtin.template: src=node.cfg.j2 dest={{ broids_etc }}/node.cfg mode=0664 owner=root group={{ broids_group }}
   notify:
-    - check zeek
-    - deploy zeek
-    - restart zeek
+    - Check zeek
+    - Deploy zeek
+    - Restart zeek
 
 - import_tasks: pdns.yml
   when: broids_pdns_enable
@@ -190,17 +188,17 @@
   args:
     creates: "{{ broids_config }}"
   notify:
-    - check zeek
-    - deploy zeek
-    - restart zeek
+    - Check zeek
+    - Deploy zeek
+    - Restart zeek
 
-- name: check if offloading marker is present
+- name: Check if offloading marker is present
   ansible.builtin.stat: path=/root/.ansible-zeek-offloading
   register: offload
 - name: Network offloading
   block:
     ## OR http://serverfault.com/questions/421995/disable-tcp-offloading-completely-generically-and-easily
-    - name: check network card checksum offloading state
+    - name: Check network card checksum offloading state
       ansible.builtin.command: "ethtool --show-offload {{ bro_nodes_if }}"
       register: ethtool
       changed_when: false
@@ -209,7 +207,7 @@
       ansible.builtin.command: "ethtool --offload {{ bro_nodes_if }} rx off tx off"
       when: "ethtool.stdout is defined and '-checksumming: on' in ethtool.stdout"
       failed_when: false
-    - name: add offloading marker
+    - name: Add offloading marker
       ansible.builtin.file:
         dest: /root/.ansible-zeek-offloading
         mode: '0644'
@@ -229,7 +227,7 @@
 - import_tasks: aide-hids.yml
 - import_tasks: monit.yml
 
-- name: zeek diag
+- name: Zeek diag
   ansible.builtin.command: "{{ broids_broctl }} diag"
   become: yes
   become_user: "{{ broids_user }}"

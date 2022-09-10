@@ -42,12 +42,12 @@
     regexp: '^enabled=.*'
     replace: '^enabled=1'
     mode: '0644'
-  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version|int >= 8)
+  when: (ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8)
 
 # opensuse mirror has issue sometimes
 # https://central.owncloud.org/t/client-install-redhat-repository-download-fails/9459/6
 # https://bugzilla.redhat.com/show_bug.cgi?id=1055478
-- name: opensuse mirror workaround | lower yum minrate
+- name: Opensuse mirror workaround | lower yum minrate
   ansible.builtin.lineinfile:
     dest: /etc/yum.conf
     regexp: '^minrate=.*'
@@ -55,7 +55,7 @@
     mode: '0644'
     backup: yes
 # repositories does not seem to be mirrored as much as distribution (subset of https://mirrors.opensuse.org/)
-- name: opensuse mirror workaround | review mirror
+- name: Opensuse mirror workaround | review mirror
   ansible.builtin.replace:
     dest: /etc/yum.repos.d/zeek.repo
     regexp: "^baseurl=.*/repositories/security:/zeek/"
@@ -69,7 +69,7 @@
   register: pkg_result
   until: pkg_result is success
 
-- name: update broctl LogDir
+- name: Update broctl LogDir
   ansible.builtin.replace:
     dest: "{{ broids_etc }}/zeekctl.cfg"
     regexp: "{{ item.re }}"
@@ -80,7 +80,7 @@
     - { re: '^LogDir = .*', rep: "LogDir = {{ broids_log }}" }
     - { re: '^SpoolDir = .*', rep: "SpoolDir = {{ broids_spool }}" }
 
-- name: update broctl LogDir - missing line
+- name: Update broctl LogDir - missing line
   ansible.builtin.lineinfile:
     dest: "{{ broids_etc }}/zeekctl.cfg"
     regexp: "{{ item.re }}"

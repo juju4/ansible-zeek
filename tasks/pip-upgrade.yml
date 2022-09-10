@@ -1,6 +1,6 @@
 ---
 
-- name: check current pip version
+- name: Check current pip version
   ansible.builtin.shell: |
     set -o pipefail
     pip --version | sed "s/pip \(.*\) from .*/\1/"
@@ -13,15 +13,15 @@
   ansible.builtin.debug: var=pipv.stdout
 
 ## does not seem to be handled well by ansible pip module
-- name: old pip
+- name: Old pip
   block:
 
-    - name: upgrade pip to latest
+    - name: Upgrade pip to latest
       ansible.builtin.command: pip install --upgrade pip
       when: ansible_os_family != "Debian"
 
-    - name: upgrade setuptools to latest
+    - name: Upgrade setuptools to latest
       ansible.builtin.command: pip install --upgrade setuptools
       when: ansible_os_family != "Debian"
 
-  when: pipv.stdout|int is version_compare( '10.1', '<')
+  when: pipv.stdout | int is version_compare('10.1', '<')
