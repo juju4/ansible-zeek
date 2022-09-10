@@ -6,11 +6,6 @@
 - name: Include version-specific variables for RedHat
   ansible.builtin.include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
   when: ansible_os_family == "RedHat"
-- name: Include securityonion variables
-  ansible.builtin.include_vars: securityonion.yml
-  when: >
-    use_securityonion_deb and
-    (ansible_distribution_release == "precise" or ansible_distribution_release == "trusty")
 
 - name: Debian | Install Bro dependencies
   ansible.builtin.apt:

@@ -8,31 +8,16 @@
   register: pkg_result
   until: pkg_result is success
 
-- name: Debian
-  block:
-    - name: Trusty
-      block:
-        - name: set monit configuration for {{ daemon }}
-          ansible.builtin.template: src={{ daemon }}-monit.j2 dest=/etc/monit/monitrc.d/{{ daemon }} mode=0644 backup=yes
-          notify:
-            - restart monit
-        - name: enable monit {{ daemon }}
-          ansible.builtin.file: src=/etc/monit/monitrc.d/{{ daemon }} dest=/etc/monit/conf.d/{{ daemon }} state=link
-          notify:
-            - restart monit
-      when: ansible_distribution_release == 'trusty'
-    - name: Xenial
-      block:
-        - name: set monit configuration for {{ daemon }}
-          ansible.builtin.template: src={{ daemon }}-monit.j2 dest=/etc/monit/conf-available/{{ daemon }} mode=0644 backup=yes
-          notify:
-            - restart monit
-        - name: enable monit {{ daemon }}
-          ansible.builtin.file: src=/etc/monit/conf-available/{{ daemon }} dest=/etc/monit/conf-enabled/{{ daemon }} state=link
-          notify:
-            - restart monit
-      when: ansible_distribution_release == 'xenial'
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+- name: Debian | set monit configuration for {{ daemon }}
+  ansible.builtin.template: src={{ daemon }}-monit.j2 dest=/etc/monit/conf-available/{{ daemon }} mode=0644 backup=yes
+  notify:
+    - Restart monit
+  when: ansible_os_family == 'Debian'
+- name: Enable monit {{ daemon }}
+  ansible.builtin.file: src=/etc/monit/conf-available/{{ daemon }} dest=/etc/monit/conf-enabled/{{ daemon }} state=link
+  notify:
+    - Restart monit
+  when: ansible_os_family == 'Debian'
 
 - name: allow monit status/summary from localhost
   ansible.builtin.replace:

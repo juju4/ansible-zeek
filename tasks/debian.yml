@@ -39,16 +39,7 @@
         repo: >
           deb https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_distribution_version }}/ /
         state: present
-  when: ansible_distribution == 'Debian' and not use_securityonion_deb
-## https://github.com/Security-Onion-Solutions/security-onion/wiki/InstallingOnUbuntu   Only Ubuntu 12.04
-- name: Precise,Trusty | Opensuse repository
-  block:
-    - name: Ubuntu | using securityonion repository
-      ansible.builtin.apt_repository: repo='ppa:securityonion/stable' update_cache=yes
-  when: >
-    use_securityonion_deb and
-    (ansible_distribution_release == "precise" or ansible_distribution_release == "trusty")
-
+  when: ansible_distribution == 'Debian'
 
 ## WARNING: The following packages cannot be authenticated! = force
 - name: Debian/Ubuntu | Install Bro and dependencies

@@ -16,9 +16,6 @@ broids_home: /nonexistent
 
 bro_email_notification: true
 
-## Only available for Ubuntu 12.04 (EOL Apr 2017) + trusty, has pfring
-## TODO test trusty
-use_securityonion_deb: false
 ## pfring/high network performance = build source
 bro_w_pfring: false
 ## for source install

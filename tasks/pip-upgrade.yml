@@ -1,9 +1,5 @@
 ---
 
-## ubuntu xenial: 8.1, trusty: 1.5, centos7: 8.1
-## trusty gets:
-## https://github.com/Toblerity/Shapely/issues/305      ImportError: No module named packaging.version
-## https://github.com/pypa/setuptools/issues/937
 - name: check current pip version
   ansible.builtin.shell: |
     set -o pipefail
