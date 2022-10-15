@@ -174,10 +174,6 @@
 - name: Import bro-scripts
   ansible.builtin.import_tasks: bro-scripts.yml
 
-- name: Import critical-stack
-  ansible.builtin.import_tasks: critical-stack.yml
-  when: bro_cs_enable is defined and bro_cs_enable
-
 - name: Check zeekctl-config.sh
   ansible.builtin.command: "cat {{ broids_config }}"
   changed_when: false
