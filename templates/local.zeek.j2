@@ -178,11 +178,6 @@ redef Intel::read_files += {
 @load frameworks/intel/do_notice
 
 {% endif %}
-{% if bro_cs_enable and bro_cs_apikey != '' %}
-# Critical Stack, Inc - https://intel.criticalstack.com
-@load /opt/critical-stack/frameworks/intel
-
-{% endif %}
 # @load apt1
 
 {% if broids_ja3_enable %}
