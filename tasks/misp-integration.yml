@@ -8,10 +8,16 @@
     mode: '0700'
 
 - name: Run misp-bro-fetch.sh once
-  ansible.builtin.command: "/usr/local/bin/misp-bro-fetch.sh creates=/usr/share/bro/intel/ip.intel"
+  ansible.builtin.command: "/usr/local/bin/misp-bro-fetch.sh"
+  args:
+    creates: /usr/share/bro/intel/ip.intel
   failed_when: false
 
 - name: Set misp2bro cron task
-  ansible.builtin.cron: name="misp2bro refresh" minute=0 hour=12
-    user="root" job="/usr/local/bin/misp-bro-fetch.sh"
-    cron_file=ansible_misp2bro-refresh
+  ansible.builtin.cron:
+    name: "misp2bro refresh"
+    minute: 0
+    hour: 12
+    user: "root"
+    job: "/usr/local/bin/misp-bro-fetch.sh"
+    cron_file: ansible_misp2bro-refresh

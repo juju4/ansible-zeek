@@ -10,10 +10,12 @@
   register: pipv
 
 - name: Debug | pip version
-  ansible.builtin.debug: var=pipv.stdout
+  ansible.builtin.debug:
+    var: pipv.stdout
 
 ## does not seem to be handled well by ansible pip module
 - name: Old pip
+  when: pipv.stdout | int is version_compare('10.1', '<')
   block:
 
     - name: Upgrade pip to latest
@@ -23,5 +25,3 @@
     - name: Upgrade setuptools to latest
       ansible.builtin.command: pip install --upgrade setuptools
       when: ansible_os_family != "Debian"
-
-  when: pipv.stdout | int is version_compare('10.1', '<')

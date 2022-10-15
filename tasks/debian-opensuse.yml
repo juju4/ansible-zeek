@@ -36,11 +36,18 @@
 
 ## WARNING: The following packages cannot be authenticated! = force
 - name: Debug | broids_packages
-  ansible.builtin.debug: var=broids_packages
+  ansible.builtin.debug:
+    var: broids_packages
 - name: Debug | broids_packages_deps
-  ansible.builtin.debug: var=broids_packages_deps
+  ansible.builtin.debug:
+    var: broids_packages_deps
 - name: Debian/Ubuntu | Install Zeek and dependencies
-  ansible.builtin.apt: name={{ broids_packages + broids_packages_deps }} state=present update_cache=yes cache_valid_time=3600 force=yes
+  ansible.builtin.apt:
+    name: "{{ broids_packages + broids_packages_deps }}"
+    state: "present"
+    update_cache: "yes"
+    cache_valid_time: "3600"
+    force: "yes"
   register: pkg_result
   until: pkg_result is success
 
@@ -74,7 +81,11 @@
 - name: Ensure aide hids directory exists
   ansible.builtin.file: dest=/etc/aide/aide.conf.d state=directory mode=0755
 - name: Add custom configuration for aide HIDS
-  ansible.builtin.copy: "src={{ item }} dest=/etc/aide/aide.conf.d owner=root mode=0644"
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/etc/aide/aide.conf.d"
+    owner: "root"
+    mode: "0644"
   with_items:
     - aide-criticalstack
 

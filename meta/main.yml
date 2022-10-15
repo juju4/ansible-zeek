@@ -27,6 +27,6 @@ galaxy_info:
     - system
     - security
 dependencies:
-  - juju4.redhat_epel
+  - role: juju4.redhat_epel
   ## not really required except for mail summary
-  - juju4.ipsumdump
+  - role: juju4.ipsumdump

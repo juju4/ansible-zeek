@@ -16,11 +16,15 @@
   become_user: "{{ broids_user }}"
 
 - name: Restart monit
-  ansible.builtin.service: name=monit state=restarted
+  ansible.builtin.service:
+    name: monit
+    state: restarted
 
 - name: Fetch critical-stack-intel feeds
   ansible.builtin.command: critical-stack-intel pull
 
 - name: Restart apparmor
-  ansible.builtin.service: name=apparmor state=restarted
+  ansible.builtin.service:
+    name: apparmor
+    state: restarted
   when: travisci is defined and travisci

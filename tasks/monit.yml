@@ -4,17 +4,26 @@
     daemon: bro
 
 - name: Monit package
-  ansible.builtin.package: name=monit state=present
+  ansible.builtin.package:
+    name: monit
+    state: present
   register: pkg_result
   until: pkg_result is success
 
 - name: Debian | set monit configuration for {{ daemon }}
-  ansible.builtin.template: src={{ daemon }}-monit.j2 dest=/etc/monit/conf-available/{{ daemon }} mode=0644 backup=yes
+  ansible.builtin.template:
+    src: "{{ daemon }}-monit.j2"
+    dest: "/etc/monit/conf-available/{{ daemon }}"
+    mode: "0644"
+    backup: "yes"
   notify:
     - Restart monit
   when: ansible_os_family == 'Debian'
 - name: Enable monit {{ daemon }}
-  ansible.builtin.file: src=/etc/monit/conf-available/{{ daemon }} dest=/etc/monit/conf-enabled/{{ daemon }} state=link
+  ansible.builtin.file:
+    src: "/etc/monit/conf-available/{{ daemon }}"
+    dest: "/etc/monit/conf-enabled/{{ daemon }}"
+    state: "link"
   notify:
     - Restart monit
   when: ansible_os_family == 'Debian'

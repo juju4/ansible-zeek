@@ -19,10 +19,13 @@
 #     - mysql_secure_installation    ## interactive
 
 - name: Check that mysql is running
-  ansible.builtin.service: "name={{ mysql_svc }} state=started"
+  ansible.builtin.service:
+    name: "{{ mysql_svc }}"
+    state: "started"
 
 - name: Check if root my.cnf file
-  ansible.builtin.stat: path=/root/.my.cnf
+  ansible.builtin.stat:
+    path: /root/.my.cnf
   register: mycnf
 
 - name: Ensure root my.cnf is set
@@ -40,7 +43,7 @@
   no_log: true
 
 - name: Set mysql root user password
-  mysql_user:
+  community.mysql.mysql_user:
     name: root
     host: "{{ item }}"
     password: "{{ mysql_root_password }}"
@@ -52,13 +55,13 @@
     - localhost
   failed_when: false
 - name: Ensure pdns database exists
-  mysql_db:
+  community.mysql.mysql_db:
     name: pdns
     state: present
     login_user: "{{ mysql_user }}"
     login_password: "{{ mysql_root_password }}"
 - name: Ensure pdns db user exists
-  mysql_user:
+  community.mysql.mysql_user:
     name: "{{ mysql_pdns_user }}"
     password: "{{ mysql_pdns_pass }}"
     priv: pdns.*:ALL
@@ -67,12 +70,22 @@
     login_password: "{{ mysql_root_password }}"
 
 - name: Delete anonymous MySQL server user for localhost
-  mysql_user: user="" state="absent" login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
+  community.mysql.mysql_user:
+    user: ""
+    state: "absent"
+    login_user: "{{ mysql_user }}"
+    login_password: "{{ mysql_root_password }}"
 - name: Remove the MySQL test database
-  mysql_db: db=test state=absent login_user="{{ mysql_user }}" login_password="{{ mysql_root_password }}"
+  community.mysql.mysql_db:
+    db: test
+    state: absent
+    login_user: "{{ mysql_user }}"
+    login_password: "{{ mysql_root_password }}"
 
 - name: Install Pdns requirements
-  ansible.builtin.pip: name=bottle state=present
+  ansible.builtin.pip:
+    name: bottle
+    state: present
   register: pkg_result
   until: pkg_result is success
 

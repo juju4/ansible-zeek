@@ -8,6 +8,9 @@
   until: pkg_result is success
 
 - name: Opensuse repository
+  ## upstream focal 2.5.5/bionic 2.5.3/xenial 2.4.1, opensuse repo zeek/3.0.1 (not available for 16.04) or 2.5.5
+  when: >
+    (ansible_distribution == 'Ubuntu' and ansible_distribution_version.split('.')[0]|int < 18)
   block:
     - name: Ubuntu | Add bro repository key
       ansible.builtin.apt_key:
@@ -21,10 +24,8 @@
         repo: >
           deb https://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/ /
         state: present
-  ## upstream focal 2.5.5/bionic 2.5.3/xenial 2.4.1, opensuse repo zeek/3.0.1 (not available for 16.04) or 2.5.5
-  when: >
-    (ansible_distribution == 'Ubuntu' and ansible_distribution_version.split('.')[0]|int < 18)
 - name: Opensuse repository2
+  when: ansible_distribution == 'Debian'
   block:
     - name: Debian | Add bro repository key
       ansible.builtin.apt_key:
@@ -38,18 +39,24 @@
         repo: >
           deb https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_distribution_version }}/ /
         state: present
-  when: ansible_distribution == 'Debian'
 
 ## WARNING: The following packages cannot be authenticated! = force
 - name: Debian/Ubuntu | Install Bro and dependencies
-  ansible.builtin.apt: name={{ broids_packages + broids_packages_deps }} state=present update_cache=yes cache_valid_time=3600 force=yes
+  ansible.builtin.apt:
+    name: "{{ broids_packages + broids_packages_deps }}"
+    state: "present"
+    update_cache: "yes"
+    cache_valid_time: "3600"
+    force: "yes"
   register: pkg_result
   until: pkg_result is success
 
 - name: Init.d
+  when: ansible_service_mgr != 'systemd'
   block:
     - name: Check if /etc/init.d/bro-ids is present
-      ansible.builtin.stat: path=/etc/init.d/bro-ids
+      ansible.builtin.stat:
+        path: /etc/init.d/bro-ids
       register: initbro
     - name: Download startup script for bro
       ansible.builtin.get_url:
@@ -68,7 +75,6 @@
         mode: '0644'
         backup: yes
       when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
-  when: ansible_service_mgr != 'systemd'
 
 - name: Install startup script for bro - systemd
   ansible.builtin.template:
@@ -109,9 +115,16 @@
   when: not bro_email_notification
 
 - name: Ensure aide hids directory exists
-  ansible.builtin.file: dest=/etc/aide/aide.conf.d state=directory mode=0755
+  ansible.builtin.file:
+    dest: /etc/aide/aide.conf.d
+    state: directory
+    mode: 0755
 - name: Add custom configuration for aide HIDS
-  ansible.builtin.copy: "src={{ item }} dest=/etc/aide/aide.conf.d owner=root mode=0644"
+  ansible.builtin.copy:
+    src: "{{ item }}"
+    dest: "/etc/aide/aide.conf.d"
+    owner: "root"
+    mode: "0644"
   with_items:
     - aide-criticalstack
 

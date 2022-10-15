@@ -37,7 +37,9 @@
       failed_when: false
       register: psa
     - name: Debug | process output
-      ansible.builtin.debug: var=psa verbosity=1
+      ansible.builtin.debug:
+        var: psa
+        verbosity: 1
 
     - name: Check few directories
       ansible.builtin.command: ls -l /opt/zeek/etc /opt/zeek/spool

@@ -65,7 +65,10 @@
 
 ## FIXME! travis: skipping + "[Errno 30] Read-only file system"
 - name: Redhat | Install Zeek and dependencies
-  ansible.builtin.yum: name={{ broids_packages + broids_packages_deps }} state=present update_cache=yes
+  ansible.builtin.yum:
+    name: "{{ broids_packages + broids_packages_deps }}"
+    state: "present"
+    update_cache: "yes"
   register: pkg_result
   until: pkg_result is success
 
@@ -92,7 +95,10 @@
     - { re: '^PluginDir = .*', rep: "PluginDir = {{ broids_plugindir }}" }
 
 - name: Redhat | Ensure Mysql/Mariadb is running and enabled on boot.
-  ansible.builtin.service: "name={{ mysql_svc }} state=started enabled=yes"
+  ansible.builtin.service:
+    name: "{{ mysql_svc }}"
+    state: "started"
+    enabled: "yes"
   when: >
     not (ansible_virtualization_type is defined and
       (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd")

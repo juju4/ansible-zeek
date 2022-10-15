@@ -5,11 +5,13 @@
     secretdir: "{{ broids_etc }}"
 
 - name: Ensure openssl is present
-  ansible.builtin.package: name=openssl state=present
+  ansible.builtin.package:
+    name: openssl
+    state: present
   register: pkg_result
   until: pkg_result is success
 
-- name: Generating salt
+- name: Generating salt  # noqa no-free-form
   ansible.builtin.shell: |
     set -o pipefail
     openssl rand -base64 32 | sed 's@[=\\/\\+]@@g;'| tee {{ secretdir }}/.zeek_secrets-{{ name }}

@@ -65,6 +65,7 @@
 
 ## https://github.com/MISP/MISP/issues/424
 - name: Misp2bro
+  when: broids_misp_url is defined and broids_misp_url and broids_misp_agent == 'misp2bro'
   block:
     - name: Git clone misp2bro
       ansible.builtin.git:
@@ -102,17 +103,23 @@
     ## Note: if Killed, probably lacking memory (check oom in kern.log)
     ##  OR UnicodeEncodeError: 'ascii' codec can't encode character u'\\u201c' in position 143: ordinal not in range(128)
     - name: Run misp2bro once
-      ansible.builtin.command: "python {{ broids_site }}/misp2bro/misp2bro.py creates={{ broids_misp2bro_output }}"
+      ansible.builtin.command: "python {{ broids_site }}/misp2bro/misp2bro.py"
+      args:
+        creates: "{{ broids_misp2bro_output }}"
       failed_when: false
     - name: Ensure misp2bro cron task is present
-      ansible.builtin.cron: name="misp2bro refresh" minute=0 hour=12
-        user="root" job="python {{ broids_site }}/misp2bro/misp2bro.py > /tmp/misp2bro-cron.out"
-        cron_file=ansible_misp2bro-refresh
-  when: broids_misp_url is defined and broids_misp_url and broids_misp_agent == 'misp2bro'
+      ansible.builtin.cron:
+        name: "misp2bro refresh"
+        minute: 0
+        hour: 12
+        user: "root"
+        job: "python {{ broids_site }}/misp2bro/misp2bro.py > /tmp/misp2bro-cron.out"
+        cron_file: ansible_misp2bro-refresh
 
 ## http://feathub.com/MISP/MISP/+21
 ## or curl ? http://10.252.116.20/events/downloadExport/bro
-- import_tasks: misp-integration.yml
+- name: Import misp-integration
+  ansible.builtin.import_tasks: misp-integration.yml
   when: broids_misp_url is defined and broids_misp_url and broids_misp_agent == 'curl'
 
 - name: Copy zeek plugins from templates
@@ -123,7 +130,8 @@
     backup: yes
   with_items: "{{ broids_plugins_templates }}"
 
-- import_tasks: ja3.yml
+- name: Import ja3
+  ansible.builtin.import_tasks: ja3.yml
   when: broids_ja3_enable
 
 ## Anything to recover?

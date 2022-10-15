@@ -25,25 +25,25 @@
   when: broids_user != 'root'
 
 - name: Debian | install zeek
-  import_tasks: debian.yml
+  ansible.builtin.import_tasks: debian.yml
   when: >
     not bro_force_source_build and
     (not use_zeek_opensuse_repo or ansible_distribution_release == "xenial") and
     (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
 
 - name: Debian opensuse repo-based | install zeek
-  import_tasks: debian-opensuse.yml
+  ansible.builtin.import_tasks: debian-opensuse.yml
   when: >
     not bro_force_source_build and
     (use_zeek_opensuse_repo and ansible_distribution_release != "xenial") and
     (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
 
 - name: Redhat | install zeek
-  import_tasks: redhat.yml
+  ansible.builtin.import_tasks: redhat.yml
   when: not bro_force_source_build and ansible_os_family == "RedHat"
 
 - name: Install zeek from source
-  import_tasks: source.yml
+  ansible.builtin.import_tasks: source.yml
   when: bro_force_source_build and not use_zeek_opensuse_repo
 
 ## Extra configuration
@@ -60,7 +60,7 @@
     - { regexp: '^export PATH=', line: 'export PATH=$PATH:$BROPATH/bin' }
 
 - name: Unprivileged zeek with Linux Capabilities
-  capabilities:
+  community.general.capabilities:
     path: "{{ bro_prefix }}/bin/zeek"
     capability: 'cap_net_admin,cap_net_raw+eip'
     state: present
@@ -100,7 +100,8 @@
     mode: '0644'
   with_items:
     - file_analysis_02.bro
-- import_tasks: random.yml
+- name: Import random
+  ansible.builtin.import_tasks: random.yml
   vars:
     name: local
 - name: Add zeek local configuration
@@ -117,9 +118,11 @@
 ## Note: file is created by broctl: install and {{ broids_spool }}/broctl-config.sh
 ##  -> {{ bro_prefix }}/share/broctl/scripts/broctl-config.sh
 - name: Check if zeekctl-config.sh is present
-  ansible.builtin.stat: path={{ broids_spool }}/zeekctl-config.sh
+  ansible.builtin.stat:
+    path: "{{ broids_spool }}/zeekctl-config.sh"
   register: st
 - name: Zeekctl-config.sh
+  when: st.stat.exists
   block:
     - name: Configure zeekctl-config.sh
       ansible.builtin.lineinfile:
@@ -143,7 +146,6 @@
         - Check zeek
         - Deploy zeek
         - Restart zeek
-  when: st.stat.exists
 
 - name: Configure zeek maintenance script as scheduled task
   ansible.builtin.cron:
@@ -154,18 +156,26 @@
     cron_file: "ansible_bro"
 
 - name: Configure node.cfg
-  ansible.builtin.template: src=node.cfg.j2 dest={{ broids_etc }}/node.cfg mode=0664 owner=root group={{ broids_group }}
+  ansible.builtin.template:
+    src: "node.cfg.j2"
+    dest: "{{ broids_etc }}/node.cfg"
+    mode: "0664"
+    owner: "root"
+    group: "{{ broids_group }}"
   notify:
     - Check zeek
     - Deploy zeek
     - Restart zeek
 
-- import_tasks: pdns.yml
+- name: Import pdns
+  ansible.builtin.import_tasks: pdns.yml
   when: broids_pdns_enable
 
-- import_tasks: bro-scripts.yml
+- name: Import bro-scripts
+  ansible.builtin.import_tasks: bro-scripts.yml
 
-- import_tasks: critical-stack.yml
+- name: Import critical-stack
+  ansible.builtin.import_tasks: critical-stack.yml
   when: bro_cs_enable is defined and bro_cs_enable
 
 - name: Check zeekctl-config.sh
@@ -193,9 +203,11 @@
     - Restart zeek
 
 - name: Check if offloading marker is present
-  ansible.builtin.stat: path=/root/.ansible-zeek-offloading
+  ansible.builtin.stat:
+    path: /root/.ansible-zeek-offloading
   register: offload
 - name: Network offloading
+  when: not offload.stat.exists
   block:
     ## OR http://serverfault.com/questions/421995/disable-tcp-offloading-completely-generically-and-easily
     - name: Check network card checksum offloading state
@@ -212,7 +224,6 @@
         dest: /root/.ansible-zeek-offloading
         mode: '0644'
         state: touch
-  when: not offload.stat.exists
 
 # - name: start BRO_PDNS API service
 #   ansible.builtin.command: >
@@ -223,9 +234,12 @@
 # Test
 # curl http://localhost:8081/dns/www.youtube.com
 
-- import_tasks: zkg.yml
-- import_tasks: aide-hids.yml
-- import_tasks: monit.yml
+- name: Import zkg
+  ansible.builtin.import_tasks: zkg.yml
+- name: Import aide-hids
+  ansible.builtin.import_tasks: aide-hids.yml
+- name: Import monit
+  ansible.builtin.import_tasks: monit.yml
 
 - name: Zeek diag
   ansible.builtin.command: "{{ broids_broctl }} diag"
