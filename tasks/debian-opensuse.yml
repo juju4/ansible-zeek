@@ -33,6 +33,7 @@
         state: present
     - name: Use Zeek opensuse variable
       ansible.builtin.include_vars: opensuse.yml
+  when: (ansible_os_family == "Ubuntu" and ansible_distribution_major_version | int >= 20)
 
 ## WARNING: The following packages cannot be authenticated! = force
 - name: Debug | broids_packages
