@@ -47,6 +47,7 @@ broids_etc: '/etc/bro'
 broids_site: '/etc/bro/site/'
 broids_group: 'root'
 broids_broctl: '/usr/bin/broctl'
+broids_ctlcfg: ""
 broids_spool: "/var/spool/bro"
 bro_extractedfiles: "/var/log/bro/extracted"
 broids_log: "/var/log/bro"

@@ -56,17 +56,19 @@
 
 - name: Update zeekctl LogDir
   ansible.builtin.replace:
-    dest: "{{ broids_etc }}/zeekctl.cfg"
+    dest: "{{ broids_ctlcfg }}"
     regexp: "{{ item.re }}"
     replace: "{{ item.rep }}"
     mode: '0644'
     backup: yes
   with_items:
     - { re: '^LogDir = .*', rep: "LogDir = {{ broids_log }}" }
+  when:
+    - broids_ctlcfg|string
 
 - name: Enable zeekctl MailConnectionSummary
   ansible.builtin.replace:
-    dest: "{{ broids_etc }}/zeekctl.cfg"
+    dest: "{{ broids_ctlcfg }}"
     regexp: "^MailConnectionSummary = .*"
     replace: "MailConnectionSummary = 1"
     mode: '0644'
@@ -74,12 +76,14 @@
   when: bro_email_notification
 - name: Disable zeekctl MailConnectionSummary
   ansible.builtin.replace:
-    dest: "{{ broids_etc }}/zeekctl.cfg"
+    dest: "{{ broids_ctlcfg }}"
     regexp: "^MailConnectionSummary = .*"
     replace: "MailConnectionSummary = 0"
     mode: '0644'
     backup: yes
-  when: not bro_email_notification
+  when:
+    - not bro_email_notification
+    - broids_ctlcfg|string
 
 - name: Ensure aide hids directory exists
   ansible.builtin.file:
