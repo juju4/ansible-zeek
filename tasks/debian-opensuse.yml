@@ -18,6 +18,7 @@
   when: ansible_distribution == 'Ubuntu'
 
 - name: Opensuse repository
+  when: (ansible_os_family == "Ubuntu" and ansible_distribution_major_version | int >= 20)
   block:
     - name: Debian | Add zeek repository key
       ansible.builtin.apt_key:
@@ -33,7 +34,6 @@
         state: present
     - name: Use Zeek opensuse variable
       ansible.builtin.include_vars: opensuse.yml
-  when: (ansible_os_family == "Ubuntu" and ansible_distribution_major_version | int >= 20)
 
 ## WARNING: The following packages cannot be authenticated! = force
 - name: Debug | broids_packages
@@ -80,7 +80,10 @@
   when: not bro_email_notification
 
 - name: Ensure aide hids directory exists
-  ansible.builtin.file: dest=/etc/aide/aide.conf.d state=directory mode=0755
+  ansible.builtin.file:
+    dest: /etc/aide/aide.conf.d
+    state: directory
+    mode: 0755
 - name: Add custom configuration for aide HIDS
   ansible.builtin.copy:
     src: "{{ item }}"

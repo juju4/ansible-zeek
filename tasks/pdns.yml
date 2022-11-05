@@ -29,7 +29,7 @@
   register: mycnf
 
 - name: Ensure root my.cnf is set
-  ansible.builtin.ini_file:
+  community.general.files.ini_file:
     path: /root/.my.cnf
     section: client
     option: "{{ item.o }}"
