@@ -73,7 +73,9 @@
     replace: "MailConnectionSummary = 1"
     mode: '0644'
     backup: yes
-  when: bro_email_notification
+  when:
+    - bro_email_notification
+    - broids_ctlcfg|string
 - name: Disable zeekctl MailConnectionSummary
   ansible.builtin.replace:
     dest: "{{ broids_ctlcfg }}"
