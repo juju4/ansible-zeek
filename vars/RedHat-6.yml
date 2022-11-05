@@ -26,6 +26,7 @@ broids_site: '/opt/bro/share/bro/site'
 broids_group: 'bro'
 broids_broctl: '/opt/bro/bin/broctl'
 broids_spool: "{{ bro_prefix }}/spool"
+broids_bin: "{{ bro_prefix }}/bin/bro"
 broids_libdir: /opt/bro/lib/broctl/BroControl
 broids_plugindir: /opt/bro/lib/broctl/plugins
 bro_extractedfiles: "/var/log/bro/extracted"

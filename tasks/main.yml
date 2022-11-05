@@ -61,7 +61,7 @@
 
 - name: Unprivileged zeek with Linux Capabilities
   community.general.capabilities:
-    path: "{{ bro_prefix }}/bin/zeek"
+    path: "{{ broids_bin }}"
     capability: 'cap_net_admin,cap_net_raw+eip'
     state: present
   when: broids_user != 'root'
