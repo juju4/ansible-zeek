@@ -63,7 +63,7 @@
         url: https://raw.githubusercontent.com/lruppert/bro-scripts/master/shell/bro-ids
         dest: /etc/init.d/bro-ids
         mode: '0755'
-        sha256sum: 'cafc0b8eebae434c4600bc71a4a3448e0e3a59ff306f5ef8408a838f58e33860'
+        checksum: 'sha256:cafc0b8eebae434c4600bc71a4a3448e0e3a59ff306f5ef8408a838f58e33860'
       when: >
         (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and
         not initbro.stat.exists
