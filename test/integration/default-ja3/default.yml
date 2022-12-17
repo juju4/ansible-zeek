@@ -6,9 +6,9 @@
 
 - hosts: all
   vars:
-    - use_zeek_opensuse_repo: true
-    - bro_intel: "/opt/zeek/intel"
-    - broids_ja3_enable: true
-    - broids_testing: true
+    use_zeek_opensuse_repo: true
+    bro_intel: "/opt/zeek/intel"
+    broids_ja3_enable: true
+    broids_testing: true
   roles:
     - juju4.zeek

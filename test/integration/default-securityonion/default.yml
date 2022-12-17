@@ -6,7 +6,7 @@
 
 - hosts: all
   vars:
-    - use_securityonion_deb: true
-    - broids_testing: true
+    use_securityonion_deb: true
+    broids_testing: true
   roles:
     - juju4.zeek
