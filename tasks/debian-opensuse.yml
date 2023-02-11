@@ -34,6 +34,8 @@
         repo: >
           deb {{ opensuse_url }}/ /
         state: present
+      register: pkg_result
+      until: pkg_result is success
     - name: Use Zeek opensuse variable
       ansible.builtin.include_vars: opensuse.yml
 
