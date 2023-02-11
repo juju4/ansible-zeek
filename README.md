@@ -107,6 +107,7 @@ $ MOLECULE_DISTRO=ubuntu:18.04 molecule test --destroy=never
 * role is not idempotent, mostly broctl
 * "Error bro: capstats failed (Host 127.0.0.1 is not alive)" (/opt/bro/logs/stats/stats.log)
 * Monit: bro_rc and bro process falls in "Not monitored" state so no automatic restart
+* For packages provided by opensuse, ensure your distribution is supported by checking [opensuse repo](https://download.opensuse.org/repositories/security:/zeek/). At Feb 2022, Centos 8 stream is no longer supported
 
 ## License
 
