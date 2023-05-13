@@ -1,17 +1,20 @@
 ---
 
 - name: Check zeek
-  ansible.builtin.command: "{{ broids_broctl }} check"
+  ansible.builtin.command:  # noqa no-changed-when
+    cmd: "{{ broids_broctl }} check"
   become: yes
   become_user: "{{ broids_user }}"
 
 - name: Deploy zeek
-  ansible.builtin.command: "{{ broids_broctl }} deploy"
+  ansible.builtin.command:  # noqa no-changed-when
+    cmd: "{{ broids_broctl }} deploy"
   become: yes
   become_user: "{{ broids_user }}"
 
 - name: Restart zeek
-  ansible.builtin.command: "{{ broids_broctl }} restart"
+  ansible.builtin.command:  # noqa no-changed-when
+    cmd: "{{ broids_broctl }} restart"
   become: yes
   become_user: "{{ broids_user }}"
 
@@ -21,7 +24,8 @@
     state: restarted
 
 - name: Fetch critical-stack-intel feeds
-  ansible.builtin.command: critical-stack-intel pull
+  ansible.builtin.command:  # noqa no-changed-when
+    cmd: critical-stack-intel pull
 
 - name: Restart apparmor
   ansible.builtin.service:

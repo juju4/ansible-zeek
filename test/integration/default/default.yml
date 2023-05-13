@@ -1,15 +1,17 @@
 ---
 
 ## https://github.com/ansible/ansible/issues/9260
-- hosts: all
+- name: Test integration playbook zero
+  hosts: all
   tasks: []
 
-- hosts: all
+- name: Test integration playbook
+  hosts: all
   vars:
     broids_testing: true
   pre_tasks:
     - name: Debian | set fact
-      set_fact:
+      ansible.builtin.set_fact:
         bro_v: '2.5'
       when: ansible_os_family == "Debian"
   roles:

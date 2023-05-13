@@ -212,7 +212,8 @@
       changed_when: false
     ## FIXME! not working on digitalocean droplet: got: 'rx-checksumming: on [fixed] tx-checksumming: off' and can't change
     - name: Disable network card offloading for eth0
-      ansible.builtin.command: "ethtool --offload {{ bro_nodes_if }} rx off tx off"
+      ansible.builtin.command:  # noqa no-changed-when
+        cmd: "ethtool --offload {{ bro_nodes_if }} rx off tx off"
       when: "ethtool.stdout is defined and '-checksumming: on' in ethtool.stdout"
       failed_when: false
     - name: Add offloading marker
