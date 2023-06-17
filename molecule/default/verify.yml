@@ -99,6 +99,6 @@
         port: "{{ item.p }}"
         timeout: 10
       with_items:
-        - { h: localhost, p: "47760" }
+        - { h: localhost, p: "27760" }
       when:
         - not is_container|bool

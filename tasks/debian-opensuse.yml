@@ -56,6 +56,18 @@
   register: pkg_result
   until: pkg_result is success
 
+- name: Update zeek port
+  ansible.builtin.replace:
+    dest: "{{ broids_ctlcfg }}"
+    regexp: "{{ item.re }}"
+    replace: "{{ item.rep }}"
+    mode: '0644'
+    backup: yes
+  with_items:
+    - { re: '^ZeekPort = .*', rep: "ZeekPort = {{ zeek_port }}" }
+  when:
+    - zeek_port|string
+
 - name: Update zeekctl LogDir
   ansible.builtin.replace:
     dest: "{{ broids_ctlcfg }}"

@@ -13,6 +13,8 @@ bro_nodes_if: eth0
 # broids_user: root
 broids_user: _zeek
 broids_home: /nonexistent
+# https://github.com/zeek/zeekctl/pull/41
+zeek_port: 27760
 
 bro_email_notification: true
 

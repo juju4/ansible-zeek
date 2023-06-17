@@ -13,8 +13,8 @@ set :backend, :exec
 
 describe process('bro') do
   it { should be_running }
-  it "is listening on port 47760" do
-    expect(port(47760)).to be_listening
+  it "is listening on port 27760" do
+    expect(port(27760)).to be_listening
   end
 end
 
