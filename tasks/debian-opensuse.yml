@@ -66,7 +66,10 @@
   with_items:
     - { re: '^ZeekPort = .*', rep: "ZeekPort = {{ zeek_port }}" }
   when:
-    - zeek_port|string
+    zeek_port|string and (
+      (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int >= 20) or
+      (ansible_distribution == "Debian" and ansible_distribution_major_version | int >= 11)
+    )
 
 - name: Update zeekctl LogDir
   ansible.builtin.replace:
