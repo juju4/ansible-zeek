@@ -51,9 +51,12 @@
         # workaround for apt_key not supporting proxy (ansible#31691)
         - name: Download Opensuse Zeek Apt signing key  # noqa command-instead-of-module
           ansible.builtin.shell:
-            cmd: curl -fsSL https://download.opensuse.org/repositories/security:zeek/xUbuntu_22.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/security_zeek.asc > /dev/null
+            cmd: |
+              set -o pipefail
+              curl -fsSL https://download.opensuse.org/repositories/security:zeek/xUbuntu_22.04/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/security_zeek.asc > /dev/null
           args:
             creates: /etc/apt/trusted.gpg.d/security_zeek.asc
+            executable: /bin/bash
           environment:
             http_proxy: "{{ proxy_url | default(omit) }}"
 
