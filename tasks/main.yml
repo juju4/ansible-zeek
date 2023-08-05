@@ -103,7 +103,7 @@
 - name: Import random
   ansible.builtin.import_tasks: random.yml
   vars:
-    name: local
+    random_name: local
 - name: Add zeek local configuration
   ansible.builtin.template:
     src: local.zeek.j2

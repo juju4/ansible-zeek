@@ -14,21 +14,21 @@
 - name: Generating salt  # noqa no-free-form
   ansible.builtin.shell: |
     set -o pipefail
-    openssl rand -base64 32 | sed 's@[=\\/\\+]@@g;'| tee {{ secretdir }}/.zeek_secrets-{{ name }}
+    openssl rand -base64 32 | sed 's@[=\\/\\+]@@g;'| tee {{ secretdir }}/.zeek_secrets-{{ random_name }}
   args:
     executable: /bin/bash
-    creates: "{{ secretdir }}/.zeek_secrets-{{ name }}"
+    creates: "{{ secretdir }}/.zeek_secrets-{{ random_name }}"
   register: secrets
   changed_when: false
   no_log: true
 
 - name: Check if existing secrets
   ansible.builtin.stat:
-    path: "{{ secretdir }}/.zeek_secrets-{{ name }}"
+    path: "{{ secretdir }}/.zeek_secrets-{{ random_name }}"
   register: s
 
 - name: Recover existing salt
-  ansible.builtin.command: "cat {{ secretdir }}/.zeek_secrets-{{ name }}"
+  ansible.builtin.command: "cat {{ secretdir }}/.zeek_secrets-{{ random_name }}"
   changed_when: false
   register: s2
   when: s.stat.exists
