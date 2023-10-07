@@ -37,14 +37,11 @@ broids_statslogexpire_interval: 0
 ## http://blog.bro.org/2014/01/intelligence-data-and-bro_4980.html
 broids_intels: []
 
-broids_plugins_templates:
-  - smb-detect-malicious-files
-  - smb-hidden-shares
-  - smb-rogue-hostname
-  # - tls_finger
-  ## if virustotal api key?
-  # - virus-total
-  # - vt-hashing
+broids_plugins_templates: []
+# - tls_finger
+## if virustotal api key?
+# - virus-total
+# - vt-hashing
 
 broids_vt_api_key: ''
 
