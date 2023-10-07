@@ -88,10 +88,10 @@
   until: pkg_result is success
 
 - name: Update zeek port
-  ansible.builtin.replace:
+  ansible.builtin.lineinfile:
     dest: "{{ broids_ctlcfg }}"
     regexp: "{{ item.re }}"
-    replace: "{{ item.rep }}"
+    line: "{{ item.rep }}"
     mode: '0644'
     backup: yes
   with_items:
