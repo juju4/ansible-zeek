@@ -1,0 +1,133 @@
+#!/bin/sh
+{{ ansible_managed | comment }}
+
+export export PATH=/usr/bin:/bin
+umask 077
+
+# inline stdout redirection for sh
+# https://stackoverflow.com/questions/3173131/redirect-copy-of-stdout-to-log-file-from-within-bash-script-itself
+check_tee_output()
+{
+    # copy (append) stdout and stderr to log file if TEE is unset or true
+    if [ -z "${TEE}" ] || [ "${TEE}" = true ]; then
+	TEE=false "$0" 2>&1 | tee {{ zeek_reporting_dest }}/zeek-report-"$(date +%Y%m%d)" >/dev/null
+        exit $?
+    fi
+}
+
+check_tee_output
+
+date=$(date +%Y%m%d)
+zeeklogdir=/var/log/zeek/current
+connf="${zeeklogdir}/conn.log"
+dnsf="${zeeklogdir}/dns.log"
+filesf="${zeeklogdir}/files.log"
+httpf="${zeeklogdir}/http.log"
+sshf="${zeeklogdir}/ssh.log"
+echo
+echo
+echo "      ZEEK DAILY REPORT ${date} for ${f}"
+echo
+echo
+
+echo "*** conn"
+echo "** conn head/tail ${f}"
+head -2 "${connf}"
+echo "[...]"
+tail -2 "${connf}"
+echo
+
+echo "** Protocol"
+jq -r .proto "${connf}" | sort | uniq -c | sort -nr
+echo "** Service"
+jq -r .service "${connf}" | sort | uniq -c | sort -nr
+echo "** Conn state"
+jq -r .conn_state "${connf}" | sort | uniq -c | sort -nr
+echo "** Orig host"
+jq -r '."id.orig_h"' "${connf}" | sort | uniq -c | sort -nr | head -15
+echo "** Resp host"
+jq -r '."id.resp_h"' "${connf}" | sort | uniq -c | sort -nr | head -15
+echo
+
+# https://isc.sans.edu/diary/What%27s%20Normal%3F%20Connection%20Sizes/30278
+echo "** Tcp bytes median/avg/min/max"
+jq -r 'select(.proto=="tcp")' "${connf}" | jq -s 'map(.orig_ip_bytes+.resp_ip_bytes) | "Median: " + (sort | if length % 2 == 0 then .[length/2] else .[(length-1)/2] end |  tostring), "Average: " + (map(select(. != null)) | add/length | tostring), "Min: " + (map(select(. != null)) | min | tostring), "Max: " + (max | tostring)'
+echo "** Udp bytes median/avg/min/max"
+jq -r 'select(.proto=="udp")' "${connf}" | jq -s 'map(.orig_ip_bytes+.resp_ip_bytes) | "Median: " + (sort | if length % 2 == 0 then .[length/2] else .[(length-1)/2] end |  tostring), "Average: " + (map(select(. != null)) | add/length | tostring), "Min: " + (map(select(. != null)) | min | tostring), "Max: " + (max | tostring)'
+echo
+echo
+
+echo "*** dns"
+if [ -f "${dnsf}" ]; then
+echo "** query"
+jq -r .query "${dnsf}" | sort | uniq -c | sort -nr
+echo "** qclass_name"
+jq -r .qclass_name "${dnsf}" | sort | uniq -c | sort -nr
+echo "** qtype_name"
+jq -r .qtype_name "${dnsf}" | sort | uniq -c | sort -nr
+echo "** Orig host"
+jq -r '."id.orig_h"' "${dnsf}" | sort | uniq -c | sort -nr | head -15
+echo "** Resp host"
+jq -r '."id.resp_h"' "${dnsf}" | sort | uniq -c | sort -nr | head -15
+else
+    echo "No ${dnsf}"
+fi
+echo
+echo
+
+echo "*** files"
+if [ -f "${filesf}" ]; then
+echo "** Source"
+jq -r .source "${filesf}" | sort | uniq -c | sort -nr
+echo "** Mime type"
+jq -r .mime_type "${filesf}" | sort | uniq -c | sort -nr
+echo "** duration median/avg/min/max"
+jq -s 'map(.duration) | "Median: " + (sort | if length % 2 == 0 then .[length/2] else .[(length-1)/2] end |  tostring), "Average: " + (map(select(. != null)) | add/length | tostring), "Min: " + (map(select(. != null)) | min | tostring), "Max: " + (max | tostring)' "${filesf}"
+echo "** Seen bytes median/avg/min/max"
+jq -s 'map(.seen_bytes) | "Median: " + (sort | if length % 2 == 0 then .[length/2] else .[(length-1)/2] end |  tostring), "Average: " + (map(select(. != null)) | add/length | tostring), "Min: " + (map(select(. != null)) | min | tostring), "Max: " + (max | tostring)' "${filesf}"
+else
+    echo "No ${filesf}"
+fi
+echo
+echo
+
+echo "*** http"
+if [ -f "${httpf}" ]; then
+echo "** Method"
+jq -r .method "${httpf}" | sort | uniq -c | sort -nr
+echo "** Mime type"
+jq -r .resp_mime_type "${httpf}" | sort | uniq -c | sort -nr
+echo "** user_agent"
+jq -r .user_agent "${httpf}" | sort | uniq -c | sort -nr
+echo "** status_code"
+jq -r .status_code "${httpf}" | sort | uniq -c | sort -nr
+echo "** response_body_len median/avg/min/max"
+jq -s 'map(.response_body_len) | "Median: " + (sort | if length % 2 == 0 then .[length/2] else .[(length-1)/2] end |  tostring), "Average: " + (map(select(. != null)) | add/length | tostring), "Min: " + (map(select(. != null)) | min | tostring), "Max: " + (max | tostring)' "${httpf}"
+else
+    echo "No ${httpf}"
+fi
+echo
+echo
+
+echo "*** ssh"
+if [ -f "${sshf}" ]; then
+echo "** Client"
+jq -r .client "${sshf}" | sort | uniq -c | sort -nr
+echo "** Server"
+jq -r .server "${sshf}" | sort | uniq -c | sort -nr
+echo "** Version"
+jq -r .version "${sshf}" | sort | uniq -c | sort -nr
+echo "** auth_success"
+jq -r .auth_success "${sshf}" | sort | uniq -c | sort -nr
+echo "** Orig host"
+jq -r '."id.orig_h"' "${sshf}" | sort | uniq -c | sort -nr | head -15
+echo "** Resp host"
+jq -r '."id.resp_h"' "${sshf}" | sort | uniq -c | sort -nr | head -15
+else
+    echo "No ${sshf}"
+fi
+echo
+echo
+
+
+find {{ zeek_reporting_dest }} -name 'nextcloud-report-*' -mtime +{{ zeek_reporting_purge | default('15') }} -exec rm {} \; 2>/dev/null

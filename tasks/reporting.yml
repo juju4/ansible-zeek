@@ -1,0 +1,22 @@
+---
+
+- name: Ensure /usr/local/scripts exists
+  ansible.builtin.file:
+    dest: /usr/local/scripts
+    state: directory
+    mode: '0755'
+
+- name: Ensure reporting script exists
+  ansible.builtin.template:
+    src: "{{ zeek_reporting_template }}.j2"
+    dest: "/usr/local/scripts/{{ zeek_reporting_template | basename }}"
+    mode: '0755'
+
+- name: Creates a daily scheduled task for reporting
+  ansible.builtin.cron:
+    name: zeek_reporting
+    minute: "55"
+    hour: "23"
+    user: "_zeek"
+    job: "/usr/local/scripts/zeek_report.sh"
+    cron_file: ansible_zeek_reporting

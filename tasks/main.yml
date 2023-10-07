@@ -237,6 +237,9 @@
   ansible.builtin.import_tasks: aide-hids.yml
 - name: Import monit
   ansible.builtin.import_tasks: monit.yml
+- name: Import reporting
+  ansible.builtin.import_tasks: reporting.yml
+  when: zeek_reporting
 
 - name: Zeek diag
   ansible.builtin.command: "{{ broids_broctl }} diag"

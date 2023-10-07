@@ -86,3 +86,7 @@ broids_misp2bro_sensors: ['example.bro']
 # broids_scripts_version: HEAD
 
 broids_testing: false
+
+zeek_reporting: true
+zeek_reporting_template: zeek_report.sh
+zeek_reporting_dest: /var/tmp
