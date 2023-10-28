@@ -24,6 +24,7 @@ dnsf="${zeeklogdir}/dns.log"
 filesf="${zeeklogdir}/files.log"
 httpf="${zeeklogdir}/http.log"
 sshf="${zeeklogdir}/ssh.log"
+sslf="${zeeklogdir}/ssl.log"
 echo
 echo
 echo "      ZEEK DAILY REPORT ${date} for ${f}"
@@ -125,6 +126,19 @@ echo "** Resp host"
 jq -r '."id.resp_h"' "${sshf}" | sort | uniq -c | sort -nr | head -15
 else
     echo "No ${sshf}"
+fi
+echo
+echo
+
+echo "*** ssl"
+if [ -f "${sslf}" ]; then
+jq -r '[.server_name, .version, .cipher, .established] | @csv' "${sslf}" | sort | uniq -c | sort -nr | head -15
+echo "** Resp host"
+jq -r '."id.resp_h"' "${sslf}" | sort | uniq -c | sort -nr | head -15
+echo "** Resp port"
+jq -r '."id.resp_p"' "${sslf}" | sort | uniq -c | sort -nr | head -15
+else
+    echo "No ${sslf}"
 fi
 echo
 echo
