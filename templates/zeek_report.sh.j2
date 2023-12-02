@@ -144,4 +144,4 @@ echo
 echo
 
 
-find {{ zeek_reporting_dest }} -name 'nextcloud-report-*' -mtime +{{ zeek_reporting_purge | default('15') }} -exec rm {} \; 2>/dev/null
+find {{ zeek_reporting_dest }} -name 'zeek-report-*' -mtime +{{ zeek_reporting_purge | default('15') }} -exec rm {} \; 2>/dev/null
