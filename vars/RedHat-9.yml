@@ -1,0 +1,50 @@
+---
+
+## bro fedora pkg
+broids_packages:
+  - zeek-lts
+  - zeek-lts-core
+  - zeekctl-lts
+
+broids_packages_deps:
+  - GeoIP-devel
+  - mariadb
+  - mariadb-server
+  - python3-mysql
+  - python3-pip
+  - git
+  - dnf-command(config-manager)
+  # requires PowerTools repository enabled in /etc/yum.repos.d/CentOS-Linux-PowerTools.repo
+  - libpcap-devel
+  ## to review network card offloading settings
+  - ethtool
+  - python3-pyOpenSSL
+  - crontabs
+  # ifconfig for bro-scripts
+  - net-tools
+
+mysql_svc: mariadb
+mysql_confdir: /etc/my.cnf.d
+
+bro_prefix: '/opt/zeek'
+broids_etc: '/opt/zeek/etc'
+broids_site: '/opt/zeek/share/zeek/site'
+broids_group: 'zeek'
+broids_broctl: '/opt/zeek/bin/zeekctl'
+broids_config: "{{ broids_spool }}/zeekctl-config.sh"
+broids_spool: "{{ bro_prefix }}/spool"
+broids_bin: "{{ bro_prefix }}/bin/zeek"
+zeekctl_lib: /opt/zeek/lib/zeek/python/zeekctl
+broids_libdir: /opt/zeek/lib/zeek/python/zeekctl/ZeekControl
+broids_plugindir: /opt/zeek/lib/zeek/python/zeekctl/plugins
+bro_extractedfiles: "/var/log/zeek/extracted"
+broids_log: "/var/log/zeek"
+
+monitrc: /etc/monitrc
+monitconfd: /etc/monit.d
+
+broids_testing_pkgs:
+  - iproute
+
+zeek_opensuse_yum_repo_url: https://download.opensuse.org/repositories/security:zeek/CentOS_{{ ansible_distribution_major_version }}_Stream/security:zeek.repo
+zeek_redhat_powertools_repofile: /etc/yum.repos.d/CentOS-Stream-PowerTools.repo
