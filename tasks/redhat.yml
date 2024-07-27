@@ -65,7 +65,7 @@
 
 ## FIXME! travis: skipping + "[Errno 30] Read-only file system"
 - name: Redhat | Install Zeek and dependencies
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name: "{{ broids_packages + broids_packages_deps }}"
     state: "present"
     update_cache: "yes"

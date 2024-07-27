@@ -25,7 +25,7 @@
   register: pkg_result
   until: pkg_result is success
 - name: Redhat | Install Bro dependencies
-  ansible.builtin.yum:
+  ansible.builtin.dnf:
     name:
       - cmake
       - make
