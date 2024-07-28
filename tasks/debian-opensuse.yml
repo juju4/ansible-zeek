@@ -9,7 +9,7 @@
 
 - name: Debian | Set opensuse repo url
   ansible.builtin.set_fact:
-    opensuse_url: "https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_distribution_version }}"
+    opensuse_url: "https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_distribution_major_version }}"
   when: ansible_distribution == 'Debian'
 
 - name: Ubuntu | Set opensuse repo url
