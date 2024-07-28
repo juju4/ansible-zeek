@@ -56,3 +56,5 @@ monitrc: /etc/monit/monitrc
 
 broids_testing_pkgs:
   - iproute2
+
+zeek_python_version: '3.12'

@@ -1,5 +1,8 @@
 ---
 
+- name: Python externally managed
+  ansible.builtin.import_tasks: python-externally-managed.yml
+
 - name: Ensure Zkg Zeek Package Manager is present
   ansible.builtin.pip:
     name: zkg
