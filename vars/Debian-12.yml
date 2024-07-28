@@ -14,7 +14,7 @@ broids_packages_deps:
   ## trace-summary
   - python-subnettree
   ## pip upgrade
-  - libmysqlclient-dev
+  - default-libmysqlclient-dev
   ## offloading
   - ethtool
 
