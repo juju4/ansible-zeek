@@ -14,11 +14,14 @@ broids_packages_deps:
   - cron
   ## trace-summary
   - python3-subnettree
-  ## pip upgrade
-  - libmysqlclient-dev
   ## offloading
   - ethtool
   - libcap2-bin
+broids_packages_deps_ubuntu:
+  ## pip upgrade
+  - libmysqlclient-dev
+broids_packages_deps_debian:
+  - default-libmysqlclient-dev
 
 broid_pdns_packages_deps:
   - mysql-server

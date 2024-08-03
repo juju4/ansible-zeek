@@ -71,6 +71,14 @@
     - name: Use Zeek opensuse variable
       ansible.builtin.include_vars: opensuse.yml
 
+- name: Debian distrib | Set fact
+  ansible.builtin.set_fact:
+    zeek_opensuse_packages_all: "{{ broids_packages + broids_packages_deps + broids_packages_deps_debian }}"
+  when: ansible_distribution == "Debian"
+- name: Ubuntu distrib | Set fact
+  ansible.builtin.set_fact:
+    zeek_opensuse_packages_all: "{{ broids_packages + broids_packages_deps + broids_packages_deps_ubuntu }}"
+  when: ansible_distribution == "Ubuntu"
 ## WARNING: The following packages cannot be authenticated! = force
 - name: Debug | broids_packages
   ansible.builtin.debug:
@@ -80,7 +88,7 @@
     var: broids_packages_deps
 - name: Debian/Ubuntu | Install Zeek and dependencies
   ansible.builtin.apt:
-    name: "{{ broids_packages + broids_packages_deps }}"
+    name: "{{ zeek_opensuse_packages_all }}"
     state: "present"
     update_cache: "yes"
     cache_valid_time: "3600"
