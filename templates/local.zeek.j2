@@ -17,7 +17,8 @@ redef ignore_checksums = T;
 @load misc/loaded-scripts
 
 # Apply the default tuning scripts for common tuning settings.
-@load tuning/defaults
+# Remove in v7.1 The policy/tuning/defaults package is deprecated. The options set here are now the defaults for Zeek in general.
+#@load tuning/defaults
 
 # Estimate and log capture loss.
 @load misc/capture-loss
@@ -195,8 +196,8 @@ redef Intel::read_files += {
 #@load {{ broids_site }}/securitykitten-bro/bro_beacons.bro
 #@load {{ broids_site }}/securitykitten-bro/bro_typosquatting.bro
 #@load {{ broids_site }}/securitykitten-bro/bro_typosquatting_email.bro
-## fast-flux, non-standard port dns
-## errors?
+# fast-flux, non-standard port dns
+# errors?
 #@load {{ broids_site }}/sooshie-bro/2.4-scripts/ffluxDNS.bro
 #@load {{ broids_site }}/sooshie-bro/2.4-scripts/dns-bad_behavior.bro
 #@load {{ broids_site }}/sooshie-bro/2.4-scripts/largeUpload.bro
