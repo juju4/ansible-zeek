@@ -48,7 +48,7 @@ broids_vt_api_key: ''
 broids_ja3_enable: false
 broids_ja3_files:
   - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/zeek/intel_ja3.zeek', c: 'sha256:f170763c8055a2213193062b73d115798d1aa649724f82ebfce069034722e2e0' }
-  - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/zeek/ja3.zeek', c: 'sha256:6c25081fc95881384dd381700d73b26a8ca93191867f2fdce2fdd89cef30fcd0' }
+  - { u: 'https://raw.githubusercontent.com/salesforce/ja3/52c665ab70dfaf693e2b2c0bddf4389cd30a3bff/zeek/ja3.zeek', c: 'sha256:ab2ea51c426f3828f8cee78d16d1b1a5b8f3cfefa47ab86150020896a28d0863' }
   - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/zeek/__load__.zeek', c: 'sha256:7aa97a38a2be359f6ecd9be58322aeb03193a7c0a348f23c6943276b6ef61433' }
   - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/zeek/ja3s.zeek', c: 'sha256:7ab6a6b8d74e416ced6a225217637f63a5c6c1c1593b5d5f8414becc14bd0832' }
 
