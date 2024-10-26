@@ -1,6 +1,6 @@
 {{ ansible_managed | comment }}
-# check process bro with pidfile /var/run/bro.pid
- check process bro matching "\/bro"
+# check process zeek with pidfile /var/run/zeek.pid
+ check process zeek matching "\/zeek"
    group system
    group bro
    start program = "{{ broids_broctl }} start"
@@ -9,7 +9,7 @@
    depend on bro_bin
    depend on bro_rc
 
- check file bro_bin with path {{ bro_prefix }}/bin/bro
+ check file bro_bin with path {{ bro_prefix }}/bin/zeek
    group bro
    include /etc/monit/templates/rootbin
 

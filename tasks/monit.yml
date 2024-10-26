@@ -1,7 +1,7 @@
 ---
 - name: Set daemon fact
   ansible.builtin.set_fact:
-    daemon: bro
+    daemon: zeek
 
 - name: Monit package
   ansible.builtin.package:
