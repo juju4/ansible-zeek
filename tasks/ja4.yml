@@ -1,0 +1,19 @@
+---
+# https://github.com/FoxIO-LLC/ja4
+
+- name: Git clone FoxIO-LLC ja4 repo
+  ansible.builtin.git:
+    repo: https://github.com/FoxIO-LLC/ja4.git
+    dest: "{{ broids_site }}/ja4"
+    version: "{{ zeek_ja4_version }}"
+
+- name: Symlink ja4 zeek folder
+  ansible.builtin.file:
+    src: "{{ broids_site }}/ja4/zeek"
+    dest: "{{ broids_site }}/ja4plus"
+    state: link
+    mode: '0755'
+  notify:
+    - Check zeek
+    - Deploy zeek
+    - Restart zeek

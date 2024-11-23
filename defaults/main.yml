@@ -52,6 +52,10 @@ broids_ja3_files:
   - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/zeek/__load__.zeek', c: 'sha256:7aa97a38a2be359f6ecd9be58322aeb03193a7c0a348f23c6943276b6ef61433' }
   - { u: 'https://raw.githubusercontent.com/salesforce/ja3/master/zeek/ja3s.zeek', c: 'sha256:7ab6a6b8d74e416ced6a225217637f63a5c6c1c1593b5d5f8414becc14bd0832' }
 
+
+zeek_ja4_enable: true
+zeek_ja4_version: 3f37b93446284e964f0474dd2f48448114dedb12
+
 ## mysql setup for passivedns
 broids_pdns_enable: false
 mysql_user: root

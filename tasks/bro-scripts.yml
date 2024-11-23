@@ -134,6 +134,10 @@
   ansible.builtin.import_tasks: ja3.yml
   when: broids_ja3_enable
 
+- name: Import ja4
+  ansible.builtin.import_tasks: ja4.yml
+  when: zeek_ja4_enable | bool
+
 ## Anything to recover?
 ##  https://github.com/Security-Onion-Solutions/securityonion-bro-scripts
 ## https://github.com/LiamRandall/bro-scripts
