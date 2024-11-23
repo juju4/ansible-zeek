@@ -102,6 +102,8 @@ echo "** user_agent"
 jq -r .user_agent "${httpf}" | sort | uniq -c | sort -nr
 echo "** status_code"
 jq -r .status_code "${httpf}" | sort | uniq -c | sort -nr
+echo "** host"
+jq -r .host "${httpf}" | sort | uniq -c | sort -nr | head -15
 echo "** response_body_len median/avg/min/max"
 jq -s 'map(.response_body_len) | "Median: " + (sort | if length % 2 == 0 then .[length/2] else .[(length-1)/2] end |  tostring), "Average: " + (map(select(. != null)) | add/length | tostring), "Min: " + (map(select(. != null)) | min | tostring), "Max: " + (max | tostring)' "${httpf}"
 else
