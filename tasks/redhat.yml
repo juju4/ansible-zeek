@@ -27,7 +27,7 @@
     dest: /etc/yum.repos.d/zeek.repo
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   register: dl_result
   until: dl_result is success
   when: ansible_os_family == "Fedora"

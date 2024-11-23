@@ -148,7 +148,7 @@
   ansible.builtin.file:
     dest: /etc/aide/aide.conf.d
     state: directory
-    mode: 0755
+    mode: '0755'
 - name: Add custom configuration for aide HIDS
   ansible.builtin.copy:
     src: "{{ item }}"

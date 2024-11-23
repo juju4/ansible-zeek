@@ -7,9 +7,9 @@
       ansible.builtin.file:
         dest: /etc/aide/aide.conf.d
         state: directory
-        mode: 0755
+        mode: '0755'
     - name: Add additional aide HIDS configuration
       ansible.builtin.template:
         src: 99_aide_local_broids.j2
         dest: /etc/aide/aide.conf.d/99_aide_local_broids
-        mode: 0644
+        mode: '0644'
