@@ -22,8 +22,6 @@ jobs:
       max-parallel: 4
       matrix:
         include:
-          - molecule_distro: 'rockylinux:9'
-            experimental: true
           - molecule_distro: 'ubuntu:24.04'
             experimental: false
           - molecule_distro: 'ubuntu:22.04'
