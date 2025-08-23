@@ -236,6 +236,7 @@
 
 - name: Import zkg
   ansible.builtin.import_tasks: zkg.yml
+  when: zeek_zkg_enable | bool
 - name: Import aide-hids
   ansible.builtin.import_tasks: aide-hids.yml
 - name: Import monit

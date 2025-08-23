@@ -89,6 +89,9 @@ broids_misp2bro_sensors: ['example.bro']
 
 # broids_scripts_version: HEAD
 
+# pip install. be mindful of system package interactions
+zeek_zkg_enable: false
+
 broids_testing: false
 
 zeek_reporting: true
