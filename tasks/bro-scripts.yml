@@ -65,7 +65,10 @@
 
 ## https://github.com/MISP/MISP/issues/424
 - name: Misp2bro
-  when: broids_misp_url is defined and broids_misp_url and broids_misp_agent == 'misp2bro'
+  when:
+    - broids_misp_url is defined
+    - broids_misp_url | length > 0
+    - broids_misp_agent == 'misp2bro'
   block:
     - name: Git clone misp2bro
       ansible.builtin.git:
@@ -120,7 +123,10 @@
 ## or curl ? http://10.252.116.20/events/downloadExport/bro
 - name: Import misp-integration
   ansible.builtin.import_tasks: misp-integration.yml
-  when: broids_misp_url is defined and broids_misp_url and broids_misp_agent == 'curl'
+  when:
+    - broids_misp_url is defined
+    - broids_misp_url | length > 0
+    - broids_misp_agent == 'curl'
 
 - name: Copy zeek plugins from templates
   ansible.builtin.template:
@@ -132,7 +138,7 @@
 
 - name: Import ja3
   ansible.builtin.import_tasks: ja3.yml
-  when: broids_ja3_enable
+  when: broids_ja3_enable | bool
 
 - name: Import ja4
   ansible.builtin.import_tasks: ja4.yml
