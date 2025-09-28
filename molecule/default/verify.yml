@@ -62,7 +62,7 @@
       failed_when: false
     - name: Validate ps output
       ansible.builtin.assert:
-        that: ps.stdout
+        that: ps.stdout | length > 0
       when:
         - not is_container|bool
 
