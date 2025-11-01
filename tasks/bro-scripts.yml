@@ -1,6 +1,14 @@
 ---
 ## Note: if you edit anything here, adapt templates/local.bro as needed
 
+- name: Git | Configure temporary workload proxy
+  ansible.builtin.command:
+    cmd: "git config --global http.proxy {{ proxy_url }}"
+  no_log: true
+  when:
+    - proxy_url is defined
+    - proxy_url | length > 0
+
 - name: Git clone seth hall APT1
   ansible.builtin.git:
     repo: https://github.com/sethhall/bro-apt1
@@ -150,3 +158,11 @@
 ## https://github.com/sethhall/bro-scripts
 ## https://github.com/TravisFSmith/MyBroElk
 ## https://gist.github.com/mavam/5028034
+
+- name: Git | Clean proxy settings
+  ansible.builtin.command:
+    cmd: "git config --global --unset http.proxy"
+  when:
+    - proxy_url is defined
+    - proxy_url | length > 0
+    - zeek_scripts_proxy_clean | bool

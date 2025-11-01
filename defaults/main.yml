@@ -88,6 +88,7 @@ broids_misp2bro_output: "{{ bro_intel }}/misp-intel.dat"
 broids_misp2bro_sensors: ['example.bro']
 
 # broids_scripts_version: HEAD
+zeek_scripts_proxy_clean: true
 
 # pip install. be mindful of system package interactions
 zeek_zkg_enable: false
