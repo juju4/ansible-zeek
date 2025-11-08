@@ -2,8 +2,10 @@
 ## Note: if you edit anything here, adapt templates/local.bro as needed
 
 - name: Git | Configure temporary workload proxy
-  ansible.builtin.command:
-    cmd: "git config --global http.proxy {{ proxy_url }}"
+  community.general.git_config:
+    name: http.proxy
+    scope: global
+    value: "{{ proxy_url }}"
   no_log: true
   when:
     - proxy_url is defined
@@ -160,8 +162,10 @@
 ## https://gist.github.com/mavam/5028034
 
 - name: Git | Clean proxy settings
-  ansible.builtin.command:
-    cmd: "git config --global --unset http.proxy"
+  community.general.git_config:
+    name: http.proxy
+    scope: global
+    state: absent
   when:
     - proxy_url is defined
     - proxy_url | length > 0
