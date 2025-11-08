@@ -35,6 +35,9 @@ jobs:
           - molecule_distro: 'debian:12'
             experimental: false
             suite: default
+          - molecule_distro: 'ubuntu:24.04'
+            experimental: false
+            suite: default-src
 
     env:
       ANSIBLE_CALLBACKS_ENABLED: profile_tasks

@@ -1,0 +1,104 @@
+---
+
+- name: Verify
+  hosts: zeek
+  vars:
+    zeek_ctlcfg: /opt/zeek/etc/zeekctl.cfg
+    zeek_ps: zeek
+    zeek_user: _zeek
+    zeek_etc: /opt/zeek/etc
+    zeek_spool: /opt/zeek/spool
+    zeek_logs: /var/log/zeek
+    is_container: false
+  pre_tasks:
+    - name: Debug | var ansible_virtualization_type
+      ansible.builtin.debug:
+        var: ansible_virtualization_type
+    - name: Set fact is_container
+      ansible.builtin.set_fact:
+        is_container: true
+      when: >
+        (ansible_virtualization_type is defined and
+          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd"
+           or ansible_virtualization_type == "container"
+          )
+        )
+    - name: Ubuntu 18.04 | Set fact
+      ansible.builtin.set_fact:
+        zeek_ctlcfg: ""
+        zeek_ps: bro
+        zeek_user: _zeek
+        zeek_etc: /etc/bro
+        zeek_spool: /var/spool/bro
+        zeek_logs: /var/log/bro
+      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int == 18)
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+    - name: Validate that needed packages are present
+      ansible.builtin.assert:
+        that: >
+          ansible_facts.packages['zeek'] is defined or
+          ansible_facts.packages['zeek-lts'] is defined or
+          ansible_facts.packages['bro'] is defined
+
+    - name: Ensure /opt/zeek/etc/zeekctl.cfg config file is present
+      ansible.builtin.stat:
+        path: "{{ zeek_ctlcfg }}"
+      register: cfg
+      when:
+        - zeek_ctlcfg|string
+    - name: Validate config present
+      ansible.builtin.assert:
+        that: cfg.stat.exists and cfg.stat.size != 0
+      when:
+        - zeek_ctlcfg|string
+
+    - name: Ensure process is running
+      ansible.builtin.command: "pgrep -u {{ zeek_user }} {{ zeek_ps }}"
+      register: ps
+      changed_when: false
+      failed_when: false
+    - name: Validate ps output
+      ansible.builtin.assert:
+        that: ps.stdout | length > 0
+      when:
+        - not is_container|bool
+
+    - name: Check all processes
+      ansible.builtin.command: ps aux
+      changed_when: false
+      failed_when: false
+      register: psa
+    - name: Debug | process output
+      ansible.builtin.debug:
+        var: psa
+        verbosity: 1
+
+    - name: Check few directories
+      ansible.builtin.command: "ls -l {{ zeek_etc }} {{ zeek_spool }}"
+      changed_when: false
+      failed_when: false
+
+    - name: Fetch content of current/stderr.log
+      ansible.builtin.slurp:
+        src: "{{ zeek_logs }}/current/stderr.log"
+      register: log1
+      failed_when: false
+    - name: Validate current/stderr.log
+      ansible.builtin.assert:
+        that: >
+          "'listening on' in log1['content'] | b64decode"
+      when:
+        - not is_container|bool
+
+    - name: Ensure ports are listening
+      ansible.builtin.wait_for:
+        host: "{{ item.h }}"
+        port: "{{ item.p }}"
+        timeout: 10
+      with_items:
+        - { h: localhost, p: "27760" }
+      when:
+        - not is_container|bool
