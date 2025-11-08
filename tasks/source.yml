@@ -57,7 +57,7 @@
     url: "{{ bro_src_url }}"
     dest: "/root/bro-{{ bro_v }}.tar.gz"
     mode: '0400'
-    checksum: "sha256:{{ bro_archive_sha256 }}"
+    checksum: "{{ bro_archive_hash | default(omit) }}"
   when: not broarchive.stat.exists
 - name: Check if bro binary exists
   ansible.builtin.stat:
