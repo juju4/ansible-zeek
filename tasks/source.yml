@@ -12,7 +12,7 @@
       - libpcap-dev
       - libgeoip-dev
       - libssl-dev
-      - python-dev
+      - python3-dev
       - zlib1g-dev
       - libmagic-dev
       - swig2.0
@@ -35,7 +35,7 @@
       - bison
       - libpcap-devel
       - openssl-devel
-      - python-devel
+      - python3-devel
       - swig
       - zlib-devel
       - file-devel
