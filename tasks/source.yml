@@ -1,4 +1,5 @@
 ---
+
 - name: Debian | Install Bro dependencies
   ansible.builtin.apt:
     name:
@@ -18,7 +19,6 @@
       - git
       - curl
       - libgoogle-perftools-dev
-      - "{{ broids_packages_deps }}"
     state: present
     update_cache: yes
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
@@ -39,12 +39,15 @@
       - swig
       - zlib-devel
       - file-devel
-      - "{{ broids_packages_deps }}"
     state: present
     update_cache: yes
   when: ansible_os_family == "RedHat"
   register: pkg_result
   until: pkg_result is success
+- name: All | Install Bro dependencies
+  ansible.builtin.package:
+    name: "{{ broids_packages_deps }}"
+    state: present
 
 - name: Check if bro archive already exists
   ansible.builtin.stat:
