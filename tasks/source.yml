@@ -15,7 +15,7 @@
       - python3-dev
       - zlib1g-dev
       - libmagic-dev
-      - swig2.0
+      - swig
       - git
       - curl
       - libgoogle-perftools-dev
