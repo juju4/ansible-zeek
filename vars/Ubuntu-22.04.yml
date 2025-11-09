@@ -9,10 +9,10 @@ broids_packages_deps:
   - python3-pip
   - python3-setuptools
   - ca-certificates
-  - python-openssl
+  - python3-openssl
   - cron
   ## trace-summary
-  - python-subnettree
+  - python3-subnettree
   ## pip upgrade
   - libmysqlclient-dev
   ## offloading
