@@ -102,3 +102,5 @@ broids_testing: false
 zeek_reporting: true
 zeek_reporting_template: zeek_report.sh
 zeek_reporting_dest: /var/tmp
+
+install_archives: /var/_install

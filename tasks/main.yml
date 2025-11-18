@@ -10,6 +10,17 @@
   ansible.builtin.include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
   when: ansible_os_family == "RedHat"
 
+- name: Ensure archives folder exists
+  ansible.builtin.file:
+    dest: "{{ install_archives }}"
+    state: directory
+    mode: '0755'
+  become: yes
+  become_user: root
+  when:
+    - install_archives != '/tmp'
+    - install_archives != '/var/tmp'
+
 - name: Debian | Install Bro dependencies
   ansible.builtin.apt:
     name: ['git', 'gdb', 'gpg']

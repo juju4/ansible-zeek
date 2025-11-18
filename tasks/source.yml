@@ -51,14 +51,14 @@
 
 - name: Check if bro archive already exists
   ansible.builtin.stat:
-    path: "/root/bro-{{ bro_v }}.tar.gz"
+    path: "{{ install_archives }}/bro-{{ bro_v }}.tar.gz"
   register: broarchive
 - name: Download BRO archive
   ## github archive doesn't contain submodules/not recursive
   # get_url: url=https://github.com/bro/bro/archive/v{{ bro_v }}.tar.gz
   ansible.builtin.get_url:
     url: "{{ bro_src_url }}"
-    dest: "/root/bro-{{ bro_v }}.tar.gz"
+    dest: "{{ install_archives }}/bro-{{ bro_v }}.tar.gz"
     mode: '0400'
     checksum: "{{ bro_archive_hash | default(omit) }}"
   when: not broarchive.stat.exists
@@ -73,13 +73,13 @@
     creates: "{{ item.c }}"
   with_items:
     ## https://github.com/ansible/ansible/issues/8260
-    - { command: 'tar xzf /root/bro-{{ bro_v }}.tar.gz', chdir: '/root', c: '/root/bro-{{ bro_v }}/configure' }
+    - { command: 'tar xzf {{ install_archives }}/bro-{{ bro_v }}.tar.gz', chdir: '{{ install_archives }}', c: '{{ instal_archives }}/bro-{{ bro_v }}/configure' }
     - { command: './configure --prefix={{ bro_prefix }} --spooldir={{ broids_spool }} --logdir={{ broids_log }} --conf-files-dir={{ broids_etc }}',
-        chdir: '/root/bro-{{ bro_v }}',
-        c: '/root/bro-{{ bro_v }}/build/Makefile'
+        chdir: '{{ install_archives }}/bro-{{ bro_v }}',
+        c: '{{ install_archives }}/bro-{{ bro_v }}/build/Makefile'
     }
-    - { command: 'make', chdir: '/root/bro-{{ bro_v }}', c: '/root/bro-{{ bro_v }}/build/src/bro' }
-    - { command: 'make install', chdir: '/root/bro-{{ bro_v }}', c: "{{ bro_prefix }}/bin/bro" }
+    - { command: 'make', chdir: '{{ install_archives }}/bro-{{ bro_v }}', c: '{{ install_archives }}/bro-{{ bro_v }}/build/src/bro' }
+    - { command: 'make install', chdir: '{{ install_archives }}/bro-{{ bro_v }}', c: "{{ bro_prefix }}/bin/bro" }
   when: not brobin.stat.exists
 
 - name: Ensure bro group exists
