@@ -48,12 +48,12 @@
         path: "{{ zeek_ctlcfg }}"
       register: cfg
       when:
-        - zeek_ctlcfg|string
+        - zeek_ctlcfg | length > 0
     - name: Validate config present
       ansible.builtin.assert:
         that: cfg.stat.exists and cfg.stat.size != 0
       when:
-        - zeek_ctlcfg|string
+        - zeek_ctlcfg | length > 0
 
     - name: Ensure process is running
       ansible.builtin.command: "pgrep -u {{ zeek_user }} {{ zeek_ps }}"
@@ -88,8 +88,8 @@
       failed_when: false
     - name: Validate current/stderr.log
       ansible.builtin.assert:
-        that: >
-          "'listening on' in log1['content'] | b64decode"
+        that:
+          - "'listening on' in log1['content'] | b64decode"
       when:
         - not is_container|bool
 
