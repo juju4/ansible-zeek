@@ -27,7 +27,7 @@ zeek_github_version: 'v8.0.3'
 zeek_version: "{{ zeek_github_version | regex_replace('^v', '') }}"
 bro_v: "{{ zeek_version }}"
 # bro_archive_hash: 'sha256:79f4f3efd883c9c2960295778dc290372d10874380fd88450271652e829811d2'
-bro_src_url: "https://www.zeek.org/downloads/zeek-{{ bro_v }}.tar.gz"
+bro_src_url: "https://download.zeek.org/zeek-{{ bro_v }}.tar.gz"
 # bro_src_url: "https://github.com/zeek/zeek/releases/download/{{ zeek_github_version }}/zeek-{{ zeek_version }}.tar.gz"
 use_zeek_opensuse_repo: true
 # opensuse mirror has issue sometimes
