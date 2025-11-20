@@ -21,7 +21,7 @@ jobs:
       ANSIBLE_ROLE: juju4.zeek
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6
         with:
           path: ${{ env.ANSIBLE_ROLE }}
       - name: Set up Python
