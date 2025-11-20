@@ -73,7 +73,7 @@
     creates: "{{ item.c }}"
   with_items:
     ## https://github.com/ansible/ansible/issues/8260
-    - { command: 'tar xzf {{ install_archives }}/bro-{{ bro_v }}.tar.gz', chdir: '{{ install_archives }}', c: '{{ instal_archives }}/bro-{{ bro_v }}/configure' }
+    - { command: 'tar xzf {{ install_archives }}/bro-{{ bro_v }}.tar.gz', chdir: '{{ install_archives }}', c: '{{ install_archives }}/bro-{{ bro_v }}/configure' }
     - { command: './configure --prefix={{ bro_prefix }} --spooldir={{ broids_spool }} --logdir={{ broids_log }} --conf-files-dir={{ broids_etc }}',
         chdir: '{{ install_archives }}/bro-{{ bro_v }}',
         c: '{{ install_archives }}/bro-{{ bro_v }}/build/Makefile'
