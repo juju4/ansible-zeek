@@ -1,6 +1,6 @@
 ---
 
-- name: Debian | Install Bro dependencies
+- name: Debian | Install zeek dependencies
   ansible.builtin.apt:
     name:
       - cmake
@@ -24,7 +24,7 @@
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
   register: pkg_result
   until: pkg_result is success
-- name: Redhat | Install Bro dependencies
+- name: Redhat | Install zeek dependencies
   ansible.builtin.dnf:
     name:
       - cmake
@@ -44,45 +44,45 @@
   when: ansible_os_family == "RedHat"
   register: pkg_result
   until: pkg_result is success
-- name: All | Install Bro dependencies
+- name: All | Install zeek dependencies
   ansible.builtin.package:
     name: "{{ broids_packages_deps }}"
     state: present
 
-- name: Check if bro archive already exists
+- name: Check if zeek archive already exists
   ansible.builtin.stat:
-    path: "{{ install_archives }}/bro-{{ bro_v }}.tar.gz"
+    path: "{{ install_archives }}/zeek-{{ bro_v }}.tar.gz"
   register: broarchive
-- name: Download BRO archive
+- name: Download zeek archive
   ## github archive doesn't contain submodules/not recursive
   # get_url: url=https://github.com/bro/bro/archive/v{{ bro_v }}.tar.gz
   ansible.builtin.get_url:
     url: "{{ bro_src_url }}"
-    dest: "{{ install_archives }}/bro-{{ bro_v }}.tar.gz"
+    dest: "{{ install_archives }}/zeek-{{ bro_v }}.tar.gz"
     mode: '0400'
     checksum: "{{ bro_archive_hash | default(omit) }}"
   when: not broarchive.stat.exists
-- name: Check if bro binary exists
+- name: Check if zeek binary exists
   ansible.builtin.stat:
-    path: "{{ bro_prefix }}/bin/bro"
+    path: "{{ bro_prefix }}/bin/zeek"
   register: brobin
-- name: Compile and install bro
+- name: Compile and install zeek
   ansible.builtin.command: "{{ item.command }}"
   args:
     chdir: "{{ item.chdir }}"
     creates: "{{ item.c }}"
   with_items:
     ## https://github.com/ansible/ansible/issues/8260
-    - { command: 'tar xzf {{ install_archives }}/bro-{{ bro_v }}.tar.gz', chdir: '{{ install_archives }}', c: '{{ install_archives }}/bro-{{ bro_v }}/configure' }
+    - { command: 'tar xzf {{ install_archives }}/zeek-{{ bro_v }}.tar.gz', chdir: '{{ install_archives }}', c: '{{ install_archives }}/zeek-{{ bro_v }}/configure' }
     - { command: './configure --prefix={{ bro_prefix }} --spooldir={{ broids_spool }} --logdir={{ broids_log }} --conf-files-dir={{ broids_etc }}',
-        chdir: '{{ install_archives }}/bro-{{ bro_v }}',
-        c: '{{ install_archives }}/bro-{{ bro_v }}/build/Makefile'
+        chdir: '{{ install_archives }}/zeek-{{ bro_v }}',
+        c: '{{ install_archives }}/zeek-{{ bro_v }}/build/Makefile'
     }
-    - { command: 'make', chdir: '{{ install_archives }}/bro-{{ bro_v }}', c: '{{ install_archives }}/bro-{{ bro_v }}/build/src/bro' }
-    - { command: 'make install', chdir: '{{ install_archives }}/bro-{{ bro_v }}', c: "{{ bro_prefix }}/bin/bro" }
+    - { command: 'make', chdir: '{{ install_archives }}/zeek-{{ bro_v }}', c: '{{ install_archives }}/zeek-{{ bro_v }}/build/src/zeek' }
+    - { command: 'make install', chdir: '{{ install_archives }}/zeek-{{ bro_v }}', c: "{{ bro_prefix }}/bin/zeek" }
   when: not brobin.stat.exists
 
-- name: Ensure bro group exists
+- name: Ensure zeek group exists
   ansible.builtin.group:
-    name: bro
+    name: zeek
     state: present
