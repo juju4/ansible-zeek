@@ -10,6 +10,8 @@
   vars:
     bro_force_source_build: true
     use_zeek_opensuse_repo: false
+    nodejs_version: 24.x
+    nodejs_install_npm_user: root
   pre_tasks:
     - name: Ubuntu | Install python3
       ansible.builtin.raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3-minimal)
@@ -32,4 +34,5 @@
         (ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8)
   roles:
     - { role: juju4.redhat_epel, when: ansible_os_family == "RedHat" and ansible_distribution != "Fedora"}
+    - geerlingguy.nodejs
     - juju4.zeek

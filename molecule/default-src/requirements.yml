@@ -7,3 +7,6 @@ roles:
   - src: https://github.com/juju4/ansible-ipsumdump/
     version: main
     name: juju4.ipsumdump
+  - name: geerlingguy.nodejs
+    src: https://github.com/juju4/ansible-role-nodejs/
+    version: devel
