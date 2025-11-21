@@ -19,13 +19,15 @@ jobs:
       ANSIBLE_CALLBACKS_ENABLED: profile_tasks
       ANSIBLE_EXTRA_VARS: ""
       ANSIBLE_ROLE: juju4.zeek
+      SUITE: default-src
 
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout code
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8  # tag=v5.0.0
         with:
           path: ${{ env.ANSIBLE_ROLE }}
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c  # tag=v6.0.0
         with:
           python-version: '3.13'
       - name: Install dependencies
@@ -36,12 +38,10 @@ jobs:
           pip3 install ansible
           pip3 show ansible
           ls -l $HOME/.local/bin || true
-          ls -l /opt/hostedtoolcache/Python/3.9.1/x64/bin || true
-          echo "/opt/hostedtoolcache/Python/3.9.1/x64/bin" >> $GITHUB_PATH
           ansible --version
           cd $GITHUB_WORKSPACE/$ANSIBLE_ROLE
           [ -f get-dependencies.sh ] && sh -x get-dependencies.sh
-          [ -f molecule/default/requirements.yml ] && ansible-galaxy install -r molecule/default/requirements.yml
+          [ -f molecule/${SUITE}/requirements.yml ] && ansible-galaxy install -r molecule/${SUITE}/requirements.yml
           { echo '[defaults]'; echo 'callbacks_enabled = profile_tasks, timer'; echo 'roles_path = ../:/home/runner/.ansible/roles'; echo 'ansible_python_interpreter: /usr/bin/python3'; } >> ansible.cfg
       - name: Fetch central settings repository
         run: |
