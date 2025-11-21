@@ -32,6 +32,11 @@
       when: >
         (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int >= 16) or
         (ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 8)
+    - name: Debian | Update cache
+      ansible.builtin.apt:
+        update_cache: true
+        cache_valid_time: 3600
+      when: ansible_os_family == 'Debian'
   roles:
     - { role: juju4.redhat_epel, when: ansible_os_family == "RedHat" and ansible_distribution != "Fedora"}
     - geerlingguy.nodejs
