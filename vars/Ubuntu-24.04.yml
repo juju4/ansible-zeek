@@ -1,9 +1,6 @@
 ---
-## bro has 2.5.3 in official repository
 
-broids_packages:
-  - bro
-  - broctl
+broids_packages: []
 
 broids_packages_deps:
   - python3-pip
@@ -28,29 +25,20 @@ broid_pdns_packages_deps:
 mysql_svc: mysql
 mysql_confdir: /etc/mysql
 
-### if using opensuse repository 2.5
-# bro_prefix: '/opt/bro'
-# broids_etc: '/opt/bro/etc'
-# broids_site: '/opt/bro/share/bro/site'
-# broids_group: 'bro'
-# broids_broctl: '/opt/bro/bin/broctl'
-# broids_spool: "{{ bro_prefix }}/spool"
-# bro_extractedfiles: "/var/log/bro/extracted"
-# broids_log: "/var/log/bro"
-# broids_libdir: /opt/bro/lib/broctl/BroControl
-# broids_plugindir: /opt/bro/lib/broctl/BroControl/plugins
-## if using upstream ubuntu
+## if using source build
 bro_prefix: '/usr'
-broids_etc: '/etc/bro'
-broids_site: '/etc/bro/site/'
-broids_group: 'root'
-broids_broctl: '/usr/bin/broctl'
-broids_spool: "/var/spool/bro"
-broids_bin: "{{ bro_prefix }}/bin/bro"
-bro_extractedfiles: "/var/log/bro/extracted"
-broids_log: "/var/log/bro"
-broids_libdir: /usr/lib/broctl/BroControl
-broids_plugindir: /usr/lib/broctl/plugins
+broids_etc: '/etc/zeek'
+broids_site: '/etc/zeek/site/'
+broids_group: 'zeek'
+broids_broctl: '/usr/bin/zeekctl'
+broids_spool: "/var/spool/zeek"
+broids_bin: "{{ bro_prefix }}/bin/zeek"
+bro_extractedfiles: "/var/log/zeek/extracted"
+broids_log: "/var/log/zeek"
+broids_libdir: /usr/lib/zeekctl/ZeekControl
+broids_plugindir: /usr/lib/zeek/python/zeekctl/plugins
+bro_intel: "{{ bro_prefix }}/intel"
+zeekctl_lib: "{{ bro_prefix }}/lib/zeek/python"
 
 monitrc: /etc/monit/monitrc
 
