@@ -1,4 +1,5 @@
 ---
+# https://docs.zeek.org/en/master/building-from-source.html
 
 - name: Debian | Install zeek dependencies
   ansible.builtin.apt:
@@ -20,6 +21,7 @@
       - curl
       - libgoogle-perftools-dev
       - libnode-dev
+      - cppzmq-dev
     state: present
     update_cache: yes
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
@@ -42,6 +44,7 @@
       - file-devel
       - nodejs-devel
       - v8-devel
+      - cppzmq-devel
     state: present
     update_cache: yes
   when: ansible_os_family == "RedHat"
