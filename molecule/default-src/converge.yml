@@ -39,5 +39,5 @@
       when: ansible_os_family == 'Debian'
   roles:
     - { role: juju4.redhat_epel, when: ansible_os_family == "RedHat" and ansible_distribution != "Fedora"}
-    - geerlingguy.nodejs
+    # - geerlingguy.nodejs
     - juju4.zeek
