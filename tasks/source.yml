@@ -19,6 +19,7 @@
       - git
       - curl
       - libgoogle-perftools-dev
+      - libnode-dev
     state: present
     update_cache: yes
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
@@ -39,6 +40,8 @@
       - swig
       - zlib-devel
       - file-devel
+      - nodejs-devel
+      - v8-devel
     state: present
     update_cache: yes
   when: ansible_os_family == "RedHat"
