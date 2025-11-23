@@ -3,11 +3,11 @@
 - name: Verify
   hosts: zeek
   vars:
-    zeek_ctlcfg: /opt/zeek/etc/zeekctl.cfg
+    zeek_ctlcfg: /etc/zeek/zeekctl.cfg
     zeek_ps: zeek
     zeek_user: _zeek
-    zeek_etc: /opt/zeek/etc
-    zeek_spool: /opt/zeek/spool
+    zeek_etc: /etc/zeek
+    zeek_spool: /var/spool/zeek
     zeek_logs: /var/log/zeek
     is_container: false
   pre_tasks:
@@ -33,17 +33,8 @@
         zeek_logs: /var/log/bro
       when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int == 18)
   tasks:
-    - name: Gather package facts
-      ansible.builtin.package_facts:
-        manager: auto
-    - name: Validate that needed packages are present
-      ansible.builtin.assert:
-        that: >
-          ansible_facts.packages['zeek'] is defined or
-          ansible_facts.packages['zeek-lts'] is defined or
-          ansible_facts.packages['bro'] is defined
 
-    - name: Ensure /opt/zeek/etc/zeekctl.cfg config file is present
+    - name: Ensure zeekctl.cfg config file is present
       ansible.builtin.stat:
         path: "{{ zeek_ctlcfg }}"
       register: cfg
@@ -55,6 +46,16 @@
       when:
         - zeek_ctlcfg | length > 0
 
+    - name: Check all processes
+      ansible.builtin.command: ps aux
+      changed_when: false
+      failed_when: false
+      register: psa
+    - name: Debug | process output
+      ansible.builtin.debug:
+        var: psa
+        verbosity: 1
+
     - name: Ensure process is running
       ansible.builtin.command: "pgrep -u {{ zeek_user }} {{ zeek_ps }}"
       register: ps
@@ -65,16 +66,6 @@
         that: ps.stdout | length > 0
       when:
         - not is_container|bool
-
-    - name: Check all processes
-      ansible.builtin.command: ps aux
-      changed_when: false
-      failed_when: false
-      register: psa
-    - name: Debug | process output
-      ansible.builtin.debug:
-        var: psa
-        verbosity: 1
 
     - name: Check few directories
       ansible.builtin.command: "ls -l {{ zeek_etc }} {{ zeek_spool }}"
