@@ -31,6 +31,7 @@ broids_etc: '/etc/zeek'
 broids_site: '/etc/zeek/site/'
 broids_group: 'zeek'
 broids_broctl: '/usr/bin/zeekctl'
+broids_config: "{{ broids_spool }}/zeekctl-config.sh"
 broids_spool: "/var/spool/zeek"
 broids_bin: "{{ bro_prefix }}/bin/zeek"
 bro_extractedfiles: "/var/log/zeek/extracted"
