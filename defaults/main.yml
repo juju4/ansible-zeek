@@ -23,7 +23,7 @@ bro_w_pfring: false
 ## for source install
 bro_force_source_build: false
 # renovate: datasource=github-releases depName=zeek/zeek
-zeek_github_version: 'v8.0.3'
+zeek_github_version: 'v8.0.4'
 zeek_version: "{{ zeek_github_version | regex_replace('^v', '') }}"
 bro_v: "{{ zeek_version }}"
 # bro_archive_hash: 'sha256:79f4f3efd883c9c2960295778dc290372d10874380fd88450271652e829811d2'
