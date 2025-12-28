@@ -11,16 +11,16 @@
     zeek_logs: /var/log/zeek
     is_container: false
   pre_tasks:
-    - name: Debug | var ansible_virtualization_type
+    - name: Debug | var ansible_facts['virtualization_type']
       ansible.builtin.debug:
-        var: ansible_virtualization_type
+        var: ansible_facts['virtualization_type']
     - name: Set fact is_container
       ansible.builtin.set_fact:
         is_container: true
       when: >
-        (ansible_virtualization_type is defined and
-          (ansible_virtualization_type == "docker" or ansible_virtualization_type == "containerd"
-           or ansible_virtualization_type == "container"
+        (ansible_facts['virtualization_type'] is defined and
+          (ansible_facts['virtualization_type'] == "docker" or ansible_facts['virtualization_type'] == "containerd"
+           or ansible_facts['virtualization_type'] == "container"
           )
         )
     - name: Ubuntu 18.04 | Set fact
@@ -31,7 +31,7 @@
         zeek_etc: /etc/bro
         zeek_spool: /var/spool/bro
         zeek_logs: /var/log/bro
-      when: (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int == 18)
+      when: (ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] | int == 18)
   tasks:
     - name: Gather package facts
       ansible.builtin.package_facts:

@@ -3,7 +3,7 @@
 ##!
 ##! This file will not be overwritten when upgrading or reinstalling!
 
-{% if not (ansible_os_family == 'RedHat' and ansible_distribution_major_version|int <= 7) %}
+{% if not (ansible_facts['os_family'] == 'RedHat' and ansible_facts['distribution_major_version']|int <= 7) %}
 {# centos7=zeek 3.0, ubuntu 18.04=zeek 3.2 #}
 # Installation-wide salt value that is used in some digest hashes, e.g., for
 # the creation of file IDs. Please change this to a hard to guess value.
@@ -144,7 +144,7 @@ redef HTTP::default_capture_password = T;
 @load policy/tuning/json-logs.zeek
 
 {% endif %}
-{% if (ansible_os_family == "RedHat" and ansible_distribution_major_version | int >= 9) or use_zeek_opensuse_repo|bool %}
+{% if (ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] | int >= 9) or use_zeek_opensuse_repo|bool %}
 {# Zeek 5.1 #}
 @load policy/protocols/ssl/log-certs-base64
 {% else %}

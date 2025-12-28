@@ -10,8 +10,8 @@
 [bro]
 type=standalone
 host=localhost
-{% if hostvars is defined and hostvars[inventory_hostname].ansible_default_ipv4 is defined and hostvars[inventory_hostname].ansible_default_ipv4.alias is defined and hostvars[inventory_hostname].ansible_default_ipv4.alias != '' %}
-interface={{ hostvars[inventory_hostname].ansible_default_ipv4.alias }}
+{% if hostvars is defined and hostvars[inventory_hostname].ansible_facts['default_ipv4'] is defined and hostvars[inventory_hostname].ansible_facts['default_ipv4.alias'] is defined and hostvars[inventory_hostname].ansible_facts['default_ipv4.alias'] != '' %}
+interface={{ hostvars[inventory_hostname].ansible_facts['default_ipv4.alias'] }}
 {% else %}
 interface=eth0
 {% endif %}
