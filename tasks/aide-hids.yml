@@ -1,7 +1,7 @@
 ---
 
 - name: Debian
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  when: ansible_facts['distribution'] == 'Debian' or ansible_facts['distribution'] == 'Ubuntu'
   block:
     - name: Ensure aide.conf.d directory exists
       ansible.builtin.file:

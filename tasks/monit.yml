@@ -18,7 +18,7 @@
     backup: "yes"
   notify:
     - Restart monit
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts['os_family'] == 'Debian'
 - name: Enable monit {{ daemon }}
   ansible.builtin.file:
     src: "/etc/monit/conf-available/{{ daemon }}"
@@ -26,7 +26,7 @@
     state: "link"
   notify:
     - Restart monit
-  when: ansible_os_family == 'Debian'
+  when: ansible_facts['os_family'] == 'Debian'
 
 - name: Allow monit status/summary from localhost
   ansible.builtin.replace:

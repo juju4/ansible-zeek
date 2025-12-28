@@ -24,7 +24,7 @@
       - cppzmq-dev
     state: present
     update_cache: yes
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  when: ansible_facts['distribution'] == 'Debian' or ansible_facts['distribution'] == 'Ubuntu'
   register: pkg_result
   until: pkg_result is success
 - name: Redhat | Install zeek dependencies
@@ -47,7 +47,7 @@
       - cppzmq-devel
     state: present
     update_cache: yes
-  when: ansible_os_family == "RedHat"
+  when: ansible_facts['os_family'] == "RedHat"
   register: pkg_result
   until: pkg_result is success
 - name: All | Install zeek dependencies

@@ -10,34 +10,34 @@
 - name: Opensuse repository
   ## upstream focal 2.5.5/bionic 2.5.3/xenial 2.4.1, opensuse repo zeek/3.0.1 (not available for 16.04) or 2.5.5
   when: >
-    (ansible_distribution == 'Ubuntu' and ansible_distribution_version.split('.')[0]|int < 18)
+    (ansible_facts['distribution'] == 'Ubuntu' and ansible_facts['distribution_major_version']|int < 18)
   block:
     - name: Ubuntu | Add bro repository key
       ansible.builtin.apt_key:
         url: >
-          https://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/Release.key
+          https://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_facts['distribution_version'] }}/Release.key
         state: present
       register: pkg_result
       until: pkg_result is success
     - name: Ubuntu | Add bro repository
       ansible.builtin.apt_repository:
         repo: >
-          deb https://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_distribution_version }}/ /
+          deb https://download.opensuse.org/repositories/network:/bro/xUbuntu_{{ ansible_facts['distribution_version'] }}/ /
         state: present
 - name: Opensuse repository2
-  when: ansible_distribution == 'Debian'
+  when: ansible_facts['distribution'] == 'Debian'
   block:
     - name: Debian | Add bro repository key
       ansible.builtin.apt_key:
         url: >
-          https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_distribution_version }}/Release.key
+          https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_facts['distribution_version'] }}/Release.key
         state: present
       register: pkg_result
       until: pkg_result is success
     - name: Debian | Add bro repository
       ansible.builtin.apt_repository:
         repo: >
-          deb https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_distribution_version }}/ /
+          deb https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_facts['distribution_version'] }}/ /
         state: present
 
 ## WARNING: The following packages cannot be authenticated! = force
@@ -52,7 +52,7 @@
   until: pkg_result is success
 
 - name: Init.d
-  when: ansible_service_mgr != 'systemd'
+  when: ansible_facts['service_mgr'] != 'systemd'
   block:
     - name: Check if /etc/init.d/bro-ids is present
       ansible.builtin.stat:
@@ -65,7 +65,7 @@
         mode: '0755'
         checksum: 'sha256:cafc0b8eebae434c4600bc71a4a3448e0e3a59ff306f5ef8408a838f58e33860'
       when: >
-        (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu') and
+        (ansible_facts['distribution'] == 'Debian' or ansible_facts['distribution'] == 'Ubuntu') and
         not initbro.stat.exists
     - name: Update bro path in init.d/bro-ids
       ansible.builtin.replace:
@@ -74,7 +74,7 @@
         replace: "DAEMON={{ broids_broctl }}"
         mode: '0644'
         backup: yes
-      when: not use_securityonion_deb and (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+      when: not use_securityonion_deb and (ansible_facts['distribution'] == 'Debian' or ansible_facts['distribution'] == 'Ubuntu')
 
 - name: Install startup script for bro - systemd
   ansible.builtin.template:
@@ -82,7 +82,7 @@
     dest: /lib/systemd/system/bro.service
     mode: '0644'
     backup: yes
-  when: ansible_service_mgr == 'systemd'
+  when: ansible_facts['service_mgr'] == 'systemd'
 
 - name: Opensuse repository
   block:

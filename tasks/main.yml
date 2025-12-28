@@ -1,14 +1,14 @@
 ---
 
 - name: Include version-specific variables for Debian
-  ansible.builtin.include_vars: "Debian-{{ ansible_distribution_major_version }}.yml"
-  when: ansible_os_family == "Debian" and ansible_distribution != "Ubuntu"
+  ansible.builtin.include_vars: "Debian-{{ ansible_facts['distribution_major_version'] }}.yml"
+  when: ansible_facts['os_family'] == "Debian" and ansible_facts['distribution'] != "Ubuntu"
 - name: Include version-specific variables for Ubuntu.
-  ansible.builtin.include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
-  when: ansible_distribution == 'Ubuntu'
+  ansible.builtin.include_vars: "{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_version'] }}.yml"
+  when: ansible_facts['distribution'] == 'Ubuntu'
 - name: Include version-specific variables for RedHat
-  ansible.builtin.include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
-  when: ansible_os_family == "RedHat"
+  ansible.builtin.include_vars: "{{ ansible_facts['distribution'] }}-{{ ansible_facts['distribution_major_version'] }}.yml"
+  when: ansible_facts['os_family'] == "RedHat"
 
 - name: Ensure archives folder exists
   ansible.builtin.file:
@@ -26,7 +26,7 @@
     name: ['git', 'gdb', 'gpg']
     state: present
     update_cache: yes
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  when: ansible_facts['distribution'] == 'Debian' or ansible_facts['distribution'] == 'Ubuntu'
   register: pkg_result
   until: pkg_result is success
 
@@ -42,19 +42,19 @@
   ansible.builtin.import_tasks: debian.yml
   when: >
     not bro_force_source_build and
-    (not use_zeek_opensuse_repo or ansible_distribution_release == "xenial") and
-    (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+    (not use_zeek_opensuse_repo or ansible_facts['distribution_release'] == "xenial") and
+    (ansible_facts['distribution'] == 'Debian' or ansible_facts['distribution'] == 'Ubuntu')
 
 - name: Debian opensuse repo-based | install zeek
   ansible.builtin.import_tasks: debian-opensuse.yml
   when: >
     not bro_force_source_build and
-    (use_zeek_opensuse_repo and ansible_distribution_release != "xenial") and
-    (ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu')
+    (use_zeek_opensuse_repo and ansible_facts['distribution_release'] != "xenial") and
+    (ansible_facts['distribution'] == 'Debian' or ansible_facts['distribution'] == 'Ubuntu')
 
 - name: Redhat | install zeek
   ansible.builtin.import_tasks: redhat.yml
-  when: not bro_force_source_build and ansible_os_family == "RedHat"
+  when: not bro_force_source_build and ansible_facts['os_family'] == "RedHat"
 
 - name: Install zeek from source
   ansible.builtin.import_tasks: source.yml

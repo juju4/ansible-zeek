@@ -9,18 +9,18 @@
 
 - name: Debian | Set opensuse repo url
   ansible.builtin.set_fact:
-    opensuse_url: "https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_distribution_major_version }}"
-  when: ansible_distribution == 'Debian'
+    opensuse_url: "https://download.opensuse.org/repositories/security:/zeek/Debian_{{ ansible_facts['distribution_major_version'] }}"
+  when: ansible_facts['distribution'] == 'Debian'
 
 - name: Ubuntu | Set opensuse repo url
   ansible.builtin.set_fact:
-    opensuse_url: "https://download.opensuse.org/repositories/security:/zeek/xUbuntu_{{ ansible_distribution_version }}"
-  when: ansible_distribution == 'Ubuntu'
+    opensuse_url: "https://download.opensuse.org/repositories/security:/zeek/xUbuntu_{{ ansible_facts['distribution_version'] }}"
+  when: ansible_facts['distribution'] == 'Ubuntu'
 
 - name: Opensuse repository
   when: >
-    (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int >= 20) or
-    (ansible_distribution == "Debian" and ansible_distribution_major_version | int >= 11)
+    (ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] | int >= 20) or
+    (ansible_facts['distribution'] == "Debian" and ansible_facts['distribution_major_version'] | int >= 11)
   block:
     - name: Setup Opensuse Zeek APT key
       ansible.builtin.get_url:
@@ -61,11 +61,11 @@
 - name: Debian distrib | Set fact
   ansible.builtin.set_fact:
     zeek_opensuse_packages_all: "{{ broids_packages + broids_packages_deps + broids_packages_deps_debian }}"
-  when: ansible_distribution == "Debian"
+  when: ansible_facts['distribution'] == "Debian"
 - name: Ubuntu distrib | Set fact
   ansible.builtin.set_fact:
     zeek_opensuse_packages_all: "{{ broids_packages + broids_packages_deps + broids_packages_deps_ubuntu }}"
-  when: ansible_distribution == "Ubuntu"
+  when: ansible_facts['distribution'] == "Ubuntu"
 ## WARNING: The following packages cannot be authenticated! = force
 - name: Debug | broids_packages
   ansible.builtin.debug:
@@ -94,8 +94,8 @@
     - { re: '^ZeekPort = .*', rep: "ZeekPort = {{ zeek_port }}" }
   when:
     zeek_port | int > 0 and (
-      (ansible_distribution == "Ubuntu" and ansible_distribution_major_version | int >= 20) or
-      (ansible_distribution == "Debian" and ansible_distribution_major_version | int >= 11)
+      (ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] | int >= 20) or
+      (ansible_facts['distribution'] == "Debian" and ansible_facts['distribution_major_version'] | int >= 11)
     )
 
 - name: Update zeekctl LogDir
