@@ -28,5 +28,5 @@
         (ansible_facts['distribution'] == "Ubuntu" and ansible_facts['distribution_major_version'] | int >= 16) or
         (ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] | int >= 8)
   roles:
-    - { role: juju4.redhat_epel, when: ansible_os_family == "RedHat" and ansible_distribution != "Fedora"}
+    - { role: juju4.redhat_epel, when: ansible_facts.os_family == "RedHat" and ansible_facts.distribution != "Fedora"}
     - juju4.zeek
