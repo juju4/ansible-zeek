@@ -16,19 +16,16 @@ redef ignore_checksums = T;
 # This script logs which scripts were loaded during each run.
 @load misc/loaded-scripts
 
-# Apply the default tuning scripts for common tuning settings.
-# Remove in v7.1 The policy/tuning/defaults package is deprecated. The options set here are now the defaults for Zeek in general.
-#@load tuning/defaults
-
 # Estimate and log capture loss.
 @load misc/capture-loss
 
 # Enable logging of memory, packet and lag statistics.
 @load misc/stats
 
-# Load the scan detection script.  It's disabled by default because
-# it often causes performance issues.
-#@load misc/scan
+# For TCP scan detection, we recommend installing the package from
+# 'https://github.com/ncsa/bro-simple-scan'. E.g., by installing it via
+#
+#     zkg install ncsa/bro-simple-scan
 
 # Detect traceroute being run on the network. This could possibly cause
 # performance trouble when there are a lot of traceroutes on your network.
@@ -88,7 +85,7 @@ redef ignore_checksums = T;
 @load protocols/ssh/interesting-hostnames
 
 # Detect SQL injection attacks.
-@load protocols/http/detect-sqli
+@load protocols/http/detect-sql-injection
 
 # Log HTTP server header names
 @load protocols/http/header-names
@@ -124,9 +121,20 @@ redef HTTP::default_capture_password = T;
 # Extend email alerting to include hostnames
 @load policy/frameworks/notice/extend-email/hostnames
 
+# Extend the notice.log with Community ID hashes
+# @load policy/frameworks/notice/community-id
+
+# Enable logging of telemetry data into telemetry.log and
+# telemetry_histogram.log.
+@load frameworks/telemetry/log
+
 # Uncomment the following line to enable detection of the heartbleed attack. Enabling
 # this might impact performance a bit.
 @load policy/protocols/ssl/heartbleed
+
+# Uncomment the following line to enable logging of Community ID hashes in
+# the conn.log file.
+# @load policy/protocols/conn/community-id-logging
 
 {% if broids_vlanlogging_enable is defined and broids_vlanlogging_enable %}
 # Uncomment the following line to enable logging of connection VLANs. Enabling
@@ -140,6 +148,10 @@ redef HTTP::default_capture_password = T;
 @load policy/protocols/conn/mac-logging
 
 {% endif %}
+
+# Uncomment this to source zkg's package state
+# @load packages
+
 {% if broids_jsonlog_enable is defined and broids_jsonlog_enable %}
 @load policy/tuning/json-logs.zeek
 
