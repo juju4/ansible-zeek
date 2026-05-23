@@ -3,10 +3,14 @@
 - name: Python externally managed
   ansible.builtin.import_tasks: python-externally-managed.yml
 
+- name: Copy Zkg requirements
+  ansible.builtin.copy:
+    src: requirements-zkg.txt
+    dest: "{{ broids_etc }}/requirements-zkg.txt"
+    mode: '0600'
 - name: Ensure Zkg Zeek Package Manager is present
   ansible.builtin.pip:
-    name: zkg
-    state: present
+    requirements: requirements-zkg.txt
     executable: "{{ pip_bin | default('pip3') }}"
   register: pkg_result
   until: pkg_result is success
