@@ -15,13 +15,6 @@ broids_packages_deps:
   ## offloading
   - ethtool
 
-broid_pdns_packages_deps:
-  - mysql-server
-  - php-mysql
-  - python3-sqlalchemy
-  - python3-mysqldb
-  - python3-pymysql
-
 mysql_svc: mysql
 mysql_confdir: /etc/mysql
 

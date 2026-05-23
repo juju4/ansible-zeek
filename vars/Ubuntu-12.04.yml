@@ -13,8 +13,6 @@ broids_packages_deps:
   ## python, SNI
   - ca-certificates
   - python-openssl
-  ## bro-pdns
-  - python-pymysql
   ## trace-summary
   - python-subnettree
   ## pip upgrade

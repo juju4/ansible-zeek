@@ -20,9 +20,6 @@ end
 describe file('/opt/bro/logs/current/conn.log') do
   its(:size) { should > 0 }
 end
-#describe file('/opt/bro/logs/current/pdns.log') do
-#  its(:content) { should_not match /Traceback/ }
-#end
 describe file('/opt/bro/logs/current/dns-passivedns.log') do
   its(:size) { should > 0 }
 end

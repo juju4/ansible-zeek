@@ -60,14 +60,6 @@ broids_ja3_files:
 zeek_ja4_enable: true
 zeek_ja4_version: 3f37b93446284e964f0474dd2f48448114dedb12
 
-## mysql setup for passivedns
-broids_pdns_enable: false
-mysql_user: root
-mysql_root_password: mysql_root_pass_to_change_or_get_lost
-# mysql_old_root_password:
-mysql_pdns_user: pdns
-mysql_pdns_pass: pdns_pass_to_change_or_get_lost
-
 ## if using misp, either python script or curl/MISP API since sep 2016
 # broids_misp_agent: 'misp2bro'
 broids_misp_agent: 'curl'

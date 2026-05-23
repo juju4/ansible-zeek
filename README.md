@@ -67,14 +67,6 @@ bro_w_pfring: false
 force_source_build: false
 bro_v: 2.4
 bro_archive_sha256: 740c0d0b0bec279c2acef5e1b6b4d0016c57cd02a729f5e2924ae4a922e208b2
-
-
-## mysql setup for passivedns
-mysql_user: root
-mysql_root_password: mysql_root_pass_to_change_or_get_lost
-mysql_old_root_password:
-mysql_pdns_user: pdns
-mysql_pdns_pass: pdns_pass_to_change_or_get_lost
 ```
 
 ## Continuous integration

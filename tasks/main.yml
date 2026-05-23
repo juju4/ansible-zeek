@@ -181,10 +181,6 @@
     - Deploy zeek
     - Restart zeek
 
-- name: Import pdns
-  ansible.builtin.import_tasks: pdns.yml
-  when: broids_pdns_enable
-
 - name: Import bro-scripts
   ansible.builtin.import_tasks: bro-scripts.yml
 
@@ -235,15 +231,6 @@
         dest: /root/.ansible-zeek-offloading
         mode: '0644'
         state: touch
-
-# - name: start BRO_PDNS API service
-#   ansible.builtin.command: >
-#     {{ broids_site }}/bro-pdns/bro_pdns.py serve
-#   environment:
-#     BRO_PDNS_DB: "mysql://{{ mysql_pdns_user }}::{{ mysql_pdns_pass }}@localhost/pdns"
-
-# Test
-# curl http://localhost:8081/dns/www.youtube.com
 
 - name: Import zkg
   ansible.builtin.import_tasks: zkg.yml

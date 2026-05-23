@@ -20,13 +20,6 @@ broids_packages_deps:
   - ethtool
   - libcap2-bin
 
-broid_pdns_packages_deps:
-  - mysql-server
-  - php-mysql
-  - python-sqlalchemy
-  - python-mysqldb
-  - python-pymysql
-
 mysql_svc: mysql
 mysql_confdir: /etc/mysql
 

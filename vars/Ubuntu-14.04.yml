@@ -12,8 +12,6 @@ broids_packages_deps:
   - python-mysqldb
   - ca-certificates
   - python-openssl
-  ## bro-pdns
-  # - python-pymysql   ## Not available
   ## trace-summary
   - python-subnettree
   ## pip upgrade

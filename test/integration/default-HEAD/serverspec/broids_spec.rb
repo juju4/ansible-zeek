@@ -32,9 +32,6 @@ end
 #describe file('/var/log/bro/current/dns.log') do
 #  its(:size) { should > 0 }
 #end
-#describe file('/opt/bro/logs/current/pdns.log') do
-#  its(:content) { should_not match /Traceback/ }
-#end
 ## only with opensuse package, xenial too
 describe file('/var/log/bro/current/dns-passivedns.log'), :if => os[:family] == 'ubuntu' do
   its(:size) { should > 0 }
