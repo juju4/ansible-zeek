@@ -136,14 +136,6 @@
     dest: /etc/aide/aide.conf.d
     state: directory
     mode: '0755'
-- name: Add custom configuration for aide HIDS
-  ansible.builtin.copy:
-    src: "{{ item }}"
-    dest: "/etc/aide/aide.conf.d"
-    owner: "root"
-    mode: "0644"
-  with_items:
-    - aide-criticalstack
 
 ## from https://github.com/geerlingguy/drupal-vm/pull/456/files#diff-b1546b21a9366075f1e1245d7551eee6R11
 - name: Detect if AppArmor is installed.
