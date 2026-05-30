@@ -27,7 +27,7 @@ jobs:
       max-parallel: 4
       matrix:
         include:
-          - molecule_distro: 'ubuntu:24.04'
+          - molecule_distro: 'ubuntu:26.04'
             experimental: false
             suite: default
           - molecule_distro: 'debian:13'
