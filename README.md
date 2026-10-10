@@ -6,6 +6,7 @@
 Ansible role to setup [Zeek](https://www.zeek.org/), previously Bro IDS
 
 Installation from
+
 * [Opensuse repository](https://software.opensuse.org/download.html?project=security%3Azeek&package=zeek) (rpm or deb)(default)
 * SecurityOnion repository (precise or trusty only)
 * source
@@ -13,11 +14,13 @@ Installation from
 ## Requirements & Dependencies
 
 ### Ansible
+
 It was tested on the following versions:
- * 2.0
- * 2.2
- * 2.5
- * 2.9
+
+* 2.0
+* 2.2
+* 2.5
+* 2.9
 
 ### Operating systems
 
@@ -28,7 +31,7 @@ Tested on Ubuntu 14.04, 16.04, 18.04, Centos 7. Kitchen test vagrant or lxd, Tra
 Just include this role in your list.
 For example
 
-```
+```text
 - hosts: server
   roles:
     - juju4.zeek
@@ -38,7 +41,8 @@ For example
 ?Some nrpe commands are included to help for monitoring.
 
 Post-install check
-```
+
+```shell
 $ sudo /opt/bro/bin/broctl
 [BroControl] > install
 [BroControl] > diag
@@ -49,7 +53,7 @@ $ sudo /opt/bro/bin/broctl
 There is a good number of variables to set the different settings.
 Some like password should be stored in ansible vault for production systems at least.
 
-```
+```text
 bro_mode: alone
 #bro_mode: manager
 #bro_mode: node
@@ -74,23 +78,28 @@ bro_archive_sha256: 740c0d0b0bec279c2acef5e1b6b4d0016c57cd02a729f5e2924ae4a922e2
 This role has a travis basic test (for github), more advanced with kitchen and also a Vagrantfile (test/vagrant).
 
 Once you ensured all necessary roles are present, You can test with:
+
+```shell
+cd /path/to/roles/juju.zeek
+kitchen verify
+kitchen login
+KITCHEN_YAML=".kitchen.vagrant.yml" kitchen verify
 ```
-$ cd /path/to/roles/juju.zeek
-$ kitchen verify
-$ kitchen login
-$ KITCHEN_YAML=".kitchen.vagrant.yml" kitchen verify
-```
+
 or
+
+```shell
+cd /path/to/roles/juju4.zeek/test/vagrant
+vagrant up
+vagrant ssh
 ```
-$ cd /path/to/roles/juju4.zeek/test/vagrant
-$ vagrant up
-$ vagrant ssh
-```
+
 or
-```
-$ pip install molecule docker
-$ molecule test
-$ MOLECULE_DISTRO=ubuntu:18.04 molecule test --destroy=never
+
+```shell
+pip install molecule docker
+molecule test
+MOLECULE_DISTRO=ubuntu:18.04 molecule test --destroy=never
 ```
 
 ## Troubleshooting & Known issues
