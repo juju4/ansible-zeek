@@ -1,7 +1,7 @@
+# Zeek ansible role
+
 [![Actions Status - Main](https://github.com/juju4/ansible-zeek/workflows/AnsibleCI/badge.svg)](https://github.com/juju4/ansible-zeek/actions?query=branch%3Amain)
 [![Actions Status - Devel](https://github.com/juju4/ansible-zeek/workflows/AnsibleCI/badge.svg?branch=devel)](https://github.com/juju4/ansible-zeek/actions?query=branch%3Adevel)
-
-# Zeek ansible role
 
 Ansible role to setup [Zeek](https://www.zeek.org/), previously Bro IDS
 
