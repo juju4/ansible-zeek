@@ -6,7 +6,7 @@ After=network.target
 [Service]
 Type=forking
 Environment=HOME=/
-ExecStart={{ broids_broctl }} start
+ExecStart={{ broids_broctl }} start
 
 [Install]
 WantedBy=multi-user.target

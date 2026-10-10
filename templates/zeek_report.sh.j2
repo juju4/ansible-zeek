@@ -10,7 +10,7 @@ check_tee_output()
 {
     # copy (append) stdout and stderr to log file if TEE is unset or true
     if [ -z "${TEE}" ] || [ "${TEE}" = true ]; then
-	TEE=false "$0" 2>&1 | tee {{ zeek_reporting_dest }}/zeek-report-"$(date +%Y%m%d)" >/dev/null
+        TEE=false "$0" 2>&1 | tee {{ zeek_reporting_dest }}/zeek-report-"$(date +%Y%m%d)" >/dev/null
         exit $?
     fi
 }

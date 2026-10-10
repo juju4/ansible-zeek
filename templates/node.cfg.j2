@@ -10,13 +10,13 @@
 [bro]
 type=standalone
 host=localhost
-{% if hostvars is defined and hostvars[inventory_hostname].ansible_facts['default_ipv4'] is defined and hostvars[inventory_hostname].ansible_facts['default_ipv4'].alias is defined and hostvars[inventory_hostname].ansible_facts['default_ipv4'].alias != '' %}
+{%     if hostvars is defined and hostvars[inventory_hostname].ansible_facts['default_ipv4'] is defined and hostvars[inventory_hostname].ansible_facts['default_ipv4'].alias is defined and hostvars[inventory_hostname].ansible_facts['default_ipv4'].alias != '' %}
 # from ansible_facts
 interface={{ hostvars[inventory_hostname].ansible_facts['default_ipv4'].alias }}
-{% else %}
+{%     else %}
 # default bro_nodes_if
 interface={{ bro_nodes_if }}
-{% endif %}
+{%     endif %}
 
 {% elif bro_mode is defined and (bro_mode == 'manager' or bro_mode == 'node') %}
 ## Below is an example clustered configuration. If you use this,
@@ -31,7 +31,7 @@ host={{ bro_manager }}
 #host=host1
 #
 
-{% for item in bro_nodes %}
+{%     for item in bro_nodes %}
 [node-{{ item }}]
 type=worker
 host={{ item }}
@@ -39,6 +39,6 @@ interface={{ bro_nodes_if }}
 #lb_method=pf_ring
 #lb_procs=4
 
-{% endfor %}
+{%     endfor %}
 
 {% endif %}
